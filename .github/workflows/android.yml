@@ -1,4 +1,4 @@
-name: Ets Amani Android Build
+Name: Ets Amani Android Build
 
 on:
   workflow_dispatch:
@@ -33,7 +33,7 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm install --force
 
       - name: Build web application
         run: npm run build
