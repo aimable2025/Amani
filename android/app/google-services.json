@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "697171148070",
+    "project_id": "ets-amani",
+    "storage_bucket": "ets-amani.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:697171148070:android:a6b54ccd6a01f80ead55e7",
+        "android_client_info": {
+          "package_name": "com.aimable.etsamani"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "697171148070-856co9mhqj9u68oksmh00hureunjdfd7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkcvmGF_-0LCbUh1cPXEO50JrYi4Jk1TA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "697171148070-856co9mhqj9u68oksmh00hureunjdfd7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:697171148070:android:1a1c6cc6abcfe470ad55e7",
+        "android_client_info": {
+          "package_name": "com.bunotech.liqlink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "697171148070-856co9mhqj9u68oksmh00hureunjdfd7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkcvmGF_-0LCbUh1cPXEO50JrYi4Jk1TA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "697171148070-856co9mhqj9u68oksmh00hureunjdfd7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

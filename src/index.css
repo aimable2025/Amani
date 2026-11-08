@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --app-bg: #f8fafc;
+  --app-surface: #ffffff;
+  --app-card: #ffffff;
+  --app-header: rgba(255, 255, 255, 0.95);
+  --app-sidebar: #ffffff;
+  --app-border: #e2e8f0;
+  --app-border-strong: #cbd5e1;
+  --app-text: #0f172a;
+  --app-text-muted: #64748b;
+  --app-text-subtle: #94a3b8;
+  color-scheme: light;
+}
+
+.dark {
+  --app-bg: #020617;
+  --app-surface: #0b1120;
+  --app-card: #0f172a;
+  --app-header: rgba(15, 23, 42, 0.95);
+  --app-sidebar: #0b1120;
+  --app-border: #1e293b;
+  --app-border-strong: #334155;
+  --app-text: #f8fafc;
+  --app-text-muted: #94a3b8;
+  --app-text-subtle: #64748b;
+  color-scheme: dark;
+}
+
+@theme {
+  --color-app-bg: var(--app-bg);
+  --color-app-surface: var(--app-surface);
+  --color-app-card: var(--app-card);
+  --color-app-header: var(--app-header);
+  --color-app-sidebar: var(--app-sidebar);
+  --color-app-border: var(--app-border);
+  --color-app-border-strong: var(--app-border-strong);
+  --color-app-text: var(--app-text);
+  --color-app-text-muted: var(--app-text-muted);
+  --color-app-text-subtle: var(--app-text-subtle);
+}
