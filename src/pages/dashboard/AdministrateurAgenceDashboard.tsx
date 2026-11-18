@@ -1,6 +1,7 @@
 import {
   Activity,
   ArrowLeftRight,
+  ClipboardList,
   Coins,
   FileText,
   History,
@@ -31,14 +32,17 @@ import ChatModule from './components/ChatModule';
 import TreasuryTransfersDebtsModule from './components/TreasuryTransfersDebtsModule';
 import SalaryModule from './components/SalaryModule';
 import AuditModule from './components/AuditModule';
+import CommandesClientsModule from './components/CommandesClientsModule';
 import UnifiedExecutiveOverview from '../../components/dashboard/UnifiedExecutiveOverview';
 import { db } from '../../lib/db';
 import { getAgency } from '../../services/AgencyService';
 import { getAgencyUsers } from '../../services/AgencyUserService';
+import { fetchScopedClientOrders } from '../../services/ClientOrderService';
 
 type ModuleId =
   | 'billetage'
   | 'operations'
+  | 'commandes'
   | 'agents'
   | 'registrations'
   | 'connectivity'
@@ -73,6 +77,13 @@ const AGENCY_MODULES_META: Record<
     description: 'Affectation des tâches opérationnelles aux agents et suivi.',
     category: 'Missions & Mouvements',
     icon: Activity,
+  },
+  commandes: {
+    title: 'Commandes & Réclamations Clients',
+    shortTitle: 'Commandes',
+    description: 'Réception, affectation aux agents et décision sur les réclamations/restitutions.',
+    category: 'Missions & Mouvements',
+    icon: ClipboardList,
   },
   reports: {
     title: "Rapports d'Agence & Exports",
@@ -180,6 +191,15 @@ const AGENCY_MODULE_CARDS: Array<{
     variant: 'primary',
   },
   {
+    id: 'commandes',
+    pole: '02. Missions & Mouvements',
+    title: 'Commandes & Réclamations Clients',
+    shortTitle: 'Commandes',
+    description: 'Commandes clients/abonnés, affectation agents et restitutions.',
+    icon: ClipboardList,
+    variant: 'primary',
+  },
+  {
     id: 'transfers',
     pole: '02. Missions & Mouvements',
     title: 'Transferts Inter-Agences',
@@ -256,6 +276,7 @@ export default function AdministrateurAgenceDashboard() {
   const [totalCdf, setTotalCdf] = useState(0);
   const [activeAgentsCount, setActiveAgentsCount] = useState(0);
   const [activeOperationsCount, setActiveOperationsCount] = useState(0);
+  const [pendingClientOrdersCount, setPendingClientOrdersCount] = useState(0);
   const [search, setSearch] = useState('');
   const [viewMode, setViewMode] = useState<DashboardViewMode>('grid');
 
@@ -298,11 +319,24 @@ export default function AdministrateurAgenceDashboard() {
           agentsCount = agencyUsers.filter((u) => u.status === 'active' && u.role === 'agent').length;
         }
 
+        let pendingOrdersCount = 0;
+        if (user) {
+          const scopedOrders = await fetchScopedClientOrders(user, false);
+          pendingOrdersCount = scopedOrders.filter(
+            (o) =>
+              o.status === 'soumise' ||
+              o.status === 'prise_en_charge' ||
+              o.status === 'en_cours' ||
+              o.status === 'en_attente_info'
+          ).length;
+        }
+
         if (isMounted) {
           setTotalUsd(usdSum);
           setTotalCdf(cdfSum);
           setActiveOperationsCount(agencyOps.length);
           setActiveAgentsCount(agentsCount);
+          setPendingClientOrdersCount(pendingOrdersCount);
         }
       } catch (err) {
         console.warn('[Ets AMANI] Erreur chargement statistiques agence :', err);
@@ -327,6 +361,9 @@ export default function AdministrateurAgenceDashboard() {
       overview: null,
       operations: 'operations',
       transactions: 'operations',
+      commandes: 'commandes',
+      orders: 'commandes',
+      'client-orders': 'commandes',
       treasury: 'billetage',
       billetage: 'billetage',
       members: 'agents',
@@ -354,6 +391,7 @@ export default function AdministrateurAgenceDashboard() {
     const reverseMap: Record<ModuleId, string> = {
       billetage: 'treasury',
       operations: 'transactions',
+      commandes: 'commandes',
       agents: 'members',
       registrations: 'registrations',
       connectivity: 'connectivity',
@@ -397,6 +435,12 @@ export default function AdministrateurAgenceDashboard() {
                   icon: Activity,
                   badge: activeOperationsCount > 0 ? activeOperationsCount : undefined,
                 },
+                {
+                  id: 'commandes',
+                  label: 'Commandes',
+                  icon: ClipboardList,
+                  badge: pendingClientOrdersCount > 0 ? pendingClientOrdersCount : undefined,
+                },
                 { id: 'transfers', label: 'Transferts', icon: ArrowLeftRight },
                 { id: 'debts', label: 'Dettes', icon: Scale },
                 { id: 'chat', label: 'Chat', icon: MessageSquare },
@@ -424,6 +468,9 @@ export default function AdministrateurAgenceDashboard() {
               )}
               {activeModule === 'operations' && (
                 <OperationModule onClose={() => setActiveModule(null)} />
+              )}
+              {activeModule === 'commandes' && (
+                <CommandesClientsModule onClose={() => setActiveModule(null)} />
               )}
               {activeModule === 'agents' && (
                 <AgentManagementModule
@@ -560,9 +607,11 @@ export default function AdministrateurAgenceDashboard() {
                           badge={
                             item.id === 'operations' && activeOperationsCount > 0
                               ? `${activeOperationsCount}`
-                              : item.id === 'agents' && activeAgentsCount > 0
-                                ? `${activeAgentsCount}`
-                                : item.badge
+                              : item.id === 'commandes' && pendingClientOrdersCount > 0
+                                ? `${pendingClientOrdersCount}`
+                                : item.id === 'agents' && activeAgentsCount > 0
+                                  ? `${activeAgentsCount}`
+                                  : item.badge
                           }
                           layout={viewMode === 'list' ? 'list' : 'tile'}
                           onClick={() => {

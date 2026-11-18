@@ -4,6 +4,7 @@ import {
   BellRing,
   Briefcase,
   CheckCircle2,
+  ClipboardList,
   Coins,
   Database,
   Eye,
@@ -30,13 +31,16 @@ import ConnectivityModule from './components/ConnectivityModule';
 import TreasuryTransfersDebtsModule from './components/TreasuryTransfersDebtsModule';
 import SalaryModule from './components/SalaryModule';
 import ReportsModule from './components/ReportsModule';
+import CommandesClientsModule from './components/CommandesClientsModule';
 import { db } from '../../lib/db';
 import { getAgency } from '../../services/AgencyService';
+import { fetchScopedClientOrders } from '../../services/ClientOrderService';
 import { triggerSyncNow } from '../../services/SyncWorker';
 import {
   getNotificationPermissionStatus,
   requestNotificationPermission,
   startAgentNotificationWatcher,
+  startClientOrderNotificationWatcher,
   triggerTestUrgentNotification,
 } from '../../services/LocalNotificationService';
 import {
@@ -51,6 +55,7 @@ import type { Operation } from '../../types/operation';
 
 type AgentView =
   | 'overview'
+  | 'commandes'
   | 'billetage'
   | 'salary'
   | 'transfers'
@@ -61,6 +66,7 @@ type AgentView =
 
 const AGENT_TABS: WorkspaceTab[] = [
   { id: 'overview', label: 'Missions', icon: LayoutDashboard },
+  { id: 'commandes', label: 'Commandes Clients', icon: ClipboardList },
   { id: 'reports', label: 'Rapports', icon: FileText },
   { id: 'billetage', label: 'Billetage', icon: Coins },
   { id: 'salary', label: 'Mon Salaire', icon: WalletCards },
@@ -79,6 +85,7 @@ export default function AgentDashboard() {
   const [completingId, setCompletingId] = useState<string | null>(null);
   const [agencyLabel, setAgencyLabel] = useState<string>('');
   const [pendingReportsBadge, setPendingReportsBadge] = useState<number>(0);
+  const [pendingClientOrdersCount, setPendingClientOrdersCount] = useState<number>(0);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>(
     getNotificationPermissionStatus()
   );
@@ -147,6 +154,16 @@ export default function AgentDashboard() {
         (r) => r.createdBy === user.uid && (r.status === 'retourne' || r.status === 'brouillon')
       );
       setPendingReportsBadge(myAlerts.length);
+
+      const scopedOrders = await fetchScopedClientOrders(user, false);
+      const actionableOrders = scopedOrders.filter(
+        (o) =>
+          o.status === 'soumise' ||
+          o.status === 'prise_en_charge' ||
+          o.status === 'en_cours' ||
+          o.status === 'en_attente_info'
+      );
+      setPendingClientOrdersCount(actionableOrders.length);
     } catch (err) {
       console.warn('Erreur chargement opérations en cache local :', err);
     } finally {
@@ -185,8 +202,18 @@ export default function AgentDashboard() {
       void loadOperations();
     });
 
+    const stopOrderWatcher = startClientOrderNotificationWatcher(user, (evt) => {
+      setToastAlert({
+        title: evt.title,
+        message: evt.body,
+        isUrgent: evt.order.priority === 'urgente',
+      });
+      void loadOperations();
+    });
+
     return () => {
       stopWatcher();
+      stopOrderWatcher();
     };
   }, [user?.uid]);
 
@@ -289,6 +316,8 @@ export default function AgentDashboard() {
     }
     if (item === 'reports') {
       handleSelectView('reports');
+    } else if (item === 'commandes' || item === 'orders' || item === 'client-orders') {
+      handleSelectView('commandes');
     } else if (item === 'billetage' || item === 'accounting' || item === 'treasury') {
       handleSelectView('billetage');
     } else if (item === 'salaries') {
@@ -369,19 +398,21 @@ export default function AgentDashboard() {
           activeModuleTitle={
             activeView === 'overview'
               ? 'Missions & Opérations'
-              : activeView === 'reports'
-                ? "Mes Rapports d'Activité"
-                : activeView === 'billetage'
-                  ? 'Billetage & Tenue de Caisse'
-                  : activeView === 'salary'
-                    ? 'Mon Salaire'
-                    : activeView === 'transfers'
-                      ? 'Transferts Inter-Agences'
-                      : activeView === 'debts'
-                        ? 'Engagements & Dettes'
-                        : activeView === 'connectivity'
-                          ? 'Disponibilité & Synchro'
-                          : 'Messagerie & Annonces'
+              : activeView === 'commandes'
+                ? 'Commandes & Réclamations Clients'
+                : activeView === 'reports'
+                  ? "Mes Rapports d'Activité"
+                  : activeView === 'billetage'
+                    ? 'Billetage & Tenue de Caisse'
+                    : activeView === 'salary'
+                      ? 'Mon Salaire'
+                      : activeView === 'transfers'
+                        ? 'Transferts Inter-Agences'
+                        : activeView === 'debts'
+                          ? 'Engagements & Dettes'
+                          : activeView === 'connectivity'
+                            ? 'Disponibilité & Synchro'
+                            : 'Messagerie & Annonces'
           }
           backLabel="Missions"
           onBack={() => handleSelectView('overview')}
@@ -390,14 +421,22 @@ export default function AgentDashboard() {
             badge:
               tab.id === 'overview' && pendingOpsCount > 0
                 ? pendingOpsCount
-                : tab.id === 'reports' && pendingReportsBadge > 0
-                  ? pendingReportsBadge
-                  : undefined,
+                : tab.id === 'commandes' && pendingClientOrdersCount > 0
+                  ? pendingClientOrdersCount
+                  : tab.id === 'reports' && pendingReportsBadge > 0
+                    ? pendingReportsBadge
+                    : undefined,
           }))}
           activeTabId={activeView}
           onTabChange={(id) => handleSelectView(id as AgentView)}
         />
 
+        {activeView === 'commandes' && (
+          <CommandesClientsModule
+            onClose={() => handleSelectView('overview')}
+            onOrdersUpdated={() => void loadOperations()}
+          />
+        )}
         {activeView === 'reports' && (
           <ReportsModule
             onClose={() => handleSelectView('overview')}

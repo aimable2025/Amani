@@ -56,6 +56,7 @@ export interface Operation {
   agencyName: string;
   assignedAgentIds: string[];
   assignedAgentNames: string[];
+  clientUid?: string | null;
   createdBy: string;
   createdByName: string;
   createdByRole: 'directeur_general' | 'administrateur_agence' | 'administrateur_systeme';

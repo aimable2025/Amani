@@ -1254,6 +1254,16 @@ match /billetages/{billetageId} {
       )
       &&
       globalFeatureEnabled('billetage.access')
+    )
+
+    ||
+
+    (
+      (isClient() || isAbonne())
+      &&
+      resource.data.get('userId', null) == request.auth.uid
+      &&
+      resource.data.get('type', null) == 'personal'
     );
 
 
@@ -1295,6 +1305,16 @@ match /billetages/{billetageId} {
       &&
       request.resource.data.get('agencyId', null)
          == currentAgencyId()
+    )
+
+    ||
+
+    (
+      (isClient() || isAbonne())
+      &&
+      request.resource.data.get('userId', null) == request.auth.uid
+      &&
+      request.resource.data.get('type', null) == 'personal'
     );
 
 
@@ -1343,6 +1363,20 @@ match /billetages/{billetageId} {
       &&
       request.resource.data.get('agencyId', null)
          == currentAgencyId()
+    )
+
+    ||
+
+    (
+      (isClient() || isAbonne())
+      &&
+      resource.data.get('userId', null) == request.auth.uid
+      &&
+      resource.data.get('type', null) == 'personal'
+      &&
+      request.resource.data.get('userId', null) == request.auth.uid
+      &&
+      request.resource.data.get('type', null) == 'personal'
     );
 
 
@@ -1644,6 +1678,8 @@ match /operations/{operationId} {
       &&
       (
         resource.data.get('clientUid', null) == request.auth.uid
+        ||
+        resource.data.get('createdBy', null) == request.auth.uid
         ||
         resource.data.get('senderId', null) == request.auth.uid
       )
@@ -2224,6 +2260,154 @@ match /regulationAcceptances/{acceptanceId} {
     request.resource.data.userId == request.auth.uid;
 
   allow update, delete: if isSystemAdmin();
+}
+
+
+/* =========================================================
+   COMMANDES, RECLAMATIONS & RESTITUTIONS (clientOrders)
+   - Isolation stricte Client / Abonné sur authorUid
+   - Isolation par agence et affectation agent
+   - Aucune validation automatique de restitution par Client/Abonné
+   - Aucune suppression autorisée (traçabilité immuable)
+   ========================================================= */
+
+match /clientOrders/{orderId} {
+
+  allow read: if
+    isSystemAdmin()
+    ||
+    isDG()
+    ||
+    (
+      (isClient() || isAbonne())
+      &&
+      resource.data.get('authorUid', null) == request.auth.uid
+    )
+    ||
+    (
+      isAdministrateurAgence()
+      &&
+      resource.data.get('agencyId', null) == currentAgencyId()
+    )
+    ||
+    (
+      isAgent()
+      &&
+      (
+        resource.data.get('assignedAgentId', null) == request.auth.uid
+        ||
+        resource.data.get('targetAgentId', null) == request.auth.uid
+        ||
+        (
+          resource.data.get('assignedAgentId', null) == null
+          &&
+          resource.data.get('agencyId', null) == currentAgencyId()
+          &&
+          (hasPermission('transactions.manage') || hasPermission('operations_read'))
+        )
+      )
+    );
+
+  allow create: if
+    (isClient() || isAbonne())
+    &&
+    request.resource.data.get('authorUid', null) == request.auth.uid
+    &&
+    request.resource.data.get('authorRole', null) == currentUserData().get('role', null)
+    &&
+    request.resource.data.get('status', null) == 'soumise'
+    &&
+    request.resource.data.get('assignedAgentId', null) == null
+    &&
+    request.resource.data.get('category', null) in [
+      'nouvelle_commande',
+      'transaction_non_recue',
+      'reclamation_service',
+      'restitution_argent'
+    ]
+    &&
+    request.resource.data.get('refundDecision', null) != 'acceptee';
+
+  allow update: if
+    (
+      (isSystemAdmin() || isDG())
+      &&
+      request.resource.data.get('authorUid', null) == resource.data.get('authorUid', null)
+      &&
+      request.resource.data.get('category', null) == resource.data.get('category', null)
+    )
+    ||
+    (
+      isAdministrateurAgence()
+      &&
+      resource.data.get('agencyId', null) == currentAgencyId()
+      &&
+      request.resource.data.get('authorUid', null) == resource.data.get('authorUid', null)
+      &&
+      request.resource.data.get('category', null) == resource.data.get('category', null)
+      &&
+      request.resource.data.get('agencyId', null) == resource.data.get('agencyId', null)
+    )
+    ||
+    (
+      isAgent()
+      &&
+      (
+        resource.data.get('assignedAgentId', null) == request.auth.uid
+        ||
+        resource.data.get('targetAgentId', null) == request.auth.uid
+        ||
+        (
+          resource.data.get('assignedAgentId', null) == null
+          &&
+          resource.data.get('agencyId', null) == currentAgencyId()
+          &&
+          (hasPermission('transactions.manage') || hasPermission('operations_read'))
+        )
+      )
+      &&
+      request.resource.data.get('authorUid', null) == resource.data.get('authorUid', null)
+      &&
+      request.resource.data.get('category', null) == resource.data.get('category', null)
+      &&
+      request.resource.data.get('agencyId', null) == resource.data.get('agencyId', null)
+      &&
+      request.resource.data.get('refundDecision', null) == resource.data.get('refundDecision', null)
+      &&
+      (
+        resource.data.get('category', '') != 'restitution_argent'
+        ||
+        !(request.resource.data.get('status', '') in ['traitee', 'rejetee', 'cloturee'])
+      )
+    )
+    ||
+    (
+      (isClient() || isAbonne())
+      &&
+      resource.data.get('authorUid', null) == request.auth.uid
+      &&
+      request.resource.data.get('authorUid', null) == resource.data.get('authorUid', null)
+      &&
+      request.resource.data.get('category', null) == resource.data.get('category', null)
+      &&
+      request.resource.data.get('assignedAgentId', null) == resource.data.get('assignedAgentId', null)
+      &&
+      request.resource.data.get('refundDecision', null) == resource.data.get('refundDecision', null)
+      &&
+      request.resource.data.get('amount', null) == resource.data.get('amount', null)
+      &&
+      (
+        request.resource.data.get('status', null) == resource.data.get('status', null)
+        ||
+        (
+          resource.data.get('status', null) == 'en_attente_info'
+          &&
+          request.resource.data.get('status', null) == 'en_cours'
+        )
+      )
+    );
+
+  allow delete: if false;
 }
 
 

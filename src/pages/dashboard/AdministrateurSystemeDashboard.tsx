@@ -2,6 +2,7 @@ import {
   ArrowLeftRight,
   Building2,
   CheckCircle2,
+  ClipboardList,
   Eye,
   EyeOff,
   FileText,
@@ -44,6 +45,7 @@ import RegistrationRequestsModule from './components/RegistrationRequestsModule'
 import DirectorGeneralGovernanceModule from './components/DirectorGeneralGovernanceModule';
 import AgenciesModule from './components/AgenciesModule';
 import InternalNumbersModule from './components/InternalNumbersModule';
+import CommandesClientsModule from './components/CommandesClientsModule';
 import UnifiedExecutiveOverview from '../../components/dashboard/UnifiedExecutiveOverview';
 import { getAgencies, type Agency } from '../../services/AgencyService';
 import {
@@ -58,6 +60,7 @@ import type { AccountStatus, UserCategory, UserFunction, UserRole } from '../../
 type ActiveView =
   | 'overview'
   | 'operations'
+  | 'commandes'
   | 'transfers'
   | 'reports'
   | 'chat'
@@ -84,6 +87,11 @@ const SYSTEM_VIEWS_META: Record<
   operations: {
     title: 'Opérations de Caisse & Réseau',
     description: 'Gestion des dépôts, retraits, changes et virements',
+    category: 'Opérations',
+  },
+  commandes: {
+    title: 'Commandes & Réclamations Clients',
+    description: 'Supervision des commandes, réclamations et demandes de restitution clients & abonnés',
     category: 'Opérations',
   },
   transfers: {
@@ -207,6 +215,15 @@ const SYSTEM_MODULE_CARDS: Array<{
     shortTitle: 'Opérations',
     description: 'Supervision des dépôts, retraits, changes et missions.',
     icon: Share2,
+    variant: 'primary',
+  },
+  {
+    id: 'commandes',
+    pole: '02. Supervision & Communication',
+    title: 'Commandes & Réclamations Clients',
+    shortTitle: 'Commandes',
+    description: 'Supervision des demandes de transactions, réclamations et restitutions.',
+    icon: ClipboardList,
     variant: 'primary',
   },
   {
@@ -471,6 +488,9 @@ export default function AdministrateurSystemeDashboard() {
       overview: 'overview',
       operations: 'operations',
       transactions: 'operations',
+      commandes: 'commandes',
+      orders: 'commandes',
+      'client-orders': 'commandes',
       transfers: 'transfers',
       treasury: 'transfers',
       billetage: 'operations',
@@ -641,6 +661,7 @@ export default function AdministrateurSystemeDashboard() {
                 { id: 'dg_governance', label: 'Gouvernance DG', icon: Shield },
                 { id: 'agencies', label: 'Agences', icon: Building2, badge: agencies.length },
                 { id: 'operations', label: 'Opérations', icon: Share2 },
+                { id: 'commandes', label: 'Commandes', icon: ClipboardList },
                 { id: 'transfers', label: 'Transferts', icon: ArrowLeftRight },
                 { id: 'reports', label: 'Rapports', icon: FileText },
                 { id: 'chat', label: 'Chat & Notes', icon: MessageSquare },
@@ -813,6 +834,9 @@ export default function AdministrateurSystemeDashboard() {
 
             {activeView === 'operations' && (
               <OperationModule onClose={() => setActiveView('overview')} />
+            )}
+            {activeView === 'commandes' && (
+              <CommandesClientsModule onClose={() => setActiveView('overview')} />
             )}
             {activeView === 'transfers' && (
               <TreasuryTransfersDebtsModule mode="transfers" onClose={() => setActiveView('overview')} />

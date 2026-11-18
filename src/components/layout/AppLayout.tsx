@@ -78,26 +78,47 @@ export default function AppLayout({
 
   const isOnline = isOnlineProp ?? networkOnline;
 
+  const isExternalRole = user?.role === 'client' || user?.role === 'abonne';
+
   const loadCounts = useCallback(async () => {
     try {
-      const [queue, smsQueue, ops] = await Promise.all([
+      const [queue, smsQueue, ops, orders] = await Promise.all([
         db.syncQueue.where('status').equals('pending').count(),
         db.smsSyncQueue.where('status').equals('pending').count(),
         db.operations.toArray(),
+        db.clientOrders.toArray(),
       ]);
       setPendingSyncCount(queue + smsQueue);
-      const myOps = ops.filter(
-        (o) =>
-          o.status !== 'termine' &&
-          o.status !== 'annule' &&
-          o.status !== 'rejete' &&
-          (!user?.agencyId || o.agencyId === user.agencyId)
-      );
-      setActiveOpsCount(myOps.length);
+      if (isExternalRole && user?.uid) {
+        const activeClientOrders = orders.filter(
+          (o) =>
+            o.authorUid === user.uid &&
+            o.status !== 'traitee' &&
+            o.status !== 'cloturee' &&
+            o.status !== 'rejetee',
+        );
+        const myOps = ops.filter(
+          (o) =>
+            (o.createdBy === user.uid || o.clientUid === user.uid) &&
+            o.status !== 'termine' &&
+            o.status !== 'annule' &&
+            o.status !== 'rejete',
+        );
+        setActiveOpsCount(activeClientOrders.length + myOps.length);
+      } else {
+        const myOps = ops.filter(
+          (o) =>
+            o.status !== 'termine' &&
+            o.status !== 'annule' &&
+            o.status !== 'rejete' &&
+            (!user?.agencyId || o.agencyId === user.agencyId),
+        );
+        setActiveOpsCount(myOps.length);
+      }
     } catch {
       // ignore
     }
-  }, [user?.agencyId]);
+  }, [isExternalRole, user?.agencyId, user?.uid]);
 
   const handleSyncNow = async () => {
     if (isSyncingNow) return;
@@ -199,15 +220,27 @@ export default function AppLayout({
         triggerShortcutFeedback('Billetage de Caisse');
       } else if (key === 'm') {
         event.preventDefault();
-        onNavigate?.('transactions');
-        setMobileMenuOpen(false);
-        triggerShortcutFeedback('Missions & Opérations');
+        if (isExternalRole) {
+          onNavigate?.('commandes');
+          setMobileMenuOpen(false);
+          triggerShortcutFeedback('Commande & Réclamations');
+        } else {
+          onNavigate?.('transactions');
+          setMobileMenuOpen(false);
+          triggerShortcutFeedback('Missions & Opérations');
+        }
       } else if (key === 'r' && (event.altKey || event.shiftKey)) {
         event.preventDefault();
-        onNavigate?.('reports');
-        setMobileMenuOpen(false);
-        triggerShortcutFeedback('Rapports d’Activité');
-      } else if (key === 'c' && (event.altKey || event.shiftKey)) {
+        if (isExternalRole) {
+          onNavigate?.('commandes');
+          setMobileMenuOpen(false);
+          triggerShortcutFeedback('Commande & Réclamations');
+        } else {
+          onNavigate?.('reports');
+          setMobileMenuOpen(false);
+          triggerShortcutFeedback('Rapports d’Activité');
+        }
+      } else if (key === 'c' && (event.altKey || event.shiftKey) && !isExternalRole) {
         event.preventDefault();
         if (onNavigateToChat) {
           onNavigateToChat();
@@ -216,7 +249,7 @@ export default function AppLayout({
         }
         setMobileMenuOpen(false);
         triggerShortcutFeedback('Messagerie Interne');
-      } else if (key === 'a' && (event.altKey || event.shiftKey)) {
+      } else if (key === 'a' && (event.altKey || event.shiftKey) && !isExternalRole) {
         event.preventDefault();
         onNavigate?.('audit');
         setMobileMenuOpen(false);
@@ -281,6 +314,8 @@ export default function AppLayout({
   const handleMobileBottomNavigate = (item: MobileNavigationItem) => {
     if (item === 'dashboard') {
       onNavigate?.('dashboard');
+    } else if (item === 'commandes') {
+      onNavigate?.('commandes');
     } else if (item === 'operations') {
       onNavigate?.('transactions');
     } else if (item === 'chat') {

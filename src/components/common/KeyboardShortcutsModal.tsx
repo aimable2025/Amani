@@ -1,7 +1,6 @@
-import React from 'react';
 import {
   Activity,
-  ArrowRight,
+  ClipboardList,
   Command,
   FileText,
   HelpCircle,
@@ -15,6 +14,7 @@ import {
   ShieldCheck,
   X,
 } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface KeyboardShortcutsModalProps {
   isOpen: boolean;
@@ -35,57 +35,83 @@ export default function KeyboardShortcutsModal({
   onClose,
   onNavigateShortcut,
 }: KeyboardShortcutsModalProps) {
+  const { role } = useAuth();
   if (!isOpen) return null;
 
+  const isExternal = role === 'client' || role === 'abonne';
   const isMac =
     typeof navigator !== 'undefined' &&
     /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
   const modKey = isMac ? '⌘' : 'Ctrl';
 
-  const navigationShortcuts: ShortcutItem[] = [
-    {
-      keys: [modKey, 'D'],
-      description: 'Tableau de bord principal / Vue générale',
-      actionId: 'dashboard',
-      icon: Activity,
-      badge: 'Principal',
-    },
-    {
-      keys: [modKey, 'B'],
-      description: 'Billetage de Caisse & Devises USD/CDF',
-      actionId: 'billetage',
-      icon: WalletCards,
-      badge: 'Trésorerie',
-    },
-    {
-      keys: [modKey, 'M'],
-      description: 'Missions & Opérations Réseau',
-      actionId: 'transactions',
-      icon: Activity,
-      badge: 'Missions',
-    },
-    {
-      keys: ['Alt', 'R'],
-      description: 'Rapports d’Activité & Synthèses d’Agence',
-      actionId: 'reports',
-      icon: FileText,
-      badge: 'Rapports',
-    },
-    {
-      keys: ['Alt', 'C'],
-      description: 'Messagerie Interne & Notes Officielles',
-      actionId: 'chat',
-      icon: MessageSquare,
-      badge: 'Chat',
-    },
-    {
-      keys: ['Alt', 'A'],
-      description: "Journal d'Activité & Audit Système (Administrateurs)",
-      actionId: 'audit',
-      icon: ShieldCheck,
-      badge: 'Audit',
-    },
-  ];
+  const navigationShortcuts: ShortcutItem[] = isExternal
+    ? [
+        {
+          keys: [modKey, 'D'],
+          description: 'Accueil & Mes Opérations',
+          actionId: 'dashboard',
+          icon: Activity,
+          badge: 'Principal',
+        },
+        {
+          keys: ['Alt', 'R'],
+          description: 'Commande, Réclamations & Restitutions',
+          actionId: 'commandes',
+          icon: ClipboardList,
+          badge: 'Commande',
+        },
+        {
+          keys: [modKey, 'B'],
+          description: 'Calculateur Billetage & Devises USD/CDF',
+          actionId: 'billetage',
+          icon: WalletCards,
+          badge: 'Billetage',
+        },
+      ]
+    : [
+        {
+          keys: [modKey, 'D'],
+          description: 'Tableau de bord principal / Vue générale',
+          actionId: 'dashboard',
+          icon: Activity,
+          badge: 'Principal',
+        },
+        {
+          keys: [modKey, 'B'],
+          description: 'Billetage de Caisse & Devises USD/CDF',
+          actionId: 'billetage',
+          icon: WalletCards,
+          badge: 'Trésorerie',
+        },
+        {
+          keys: [modKey, 'M'],
+          description: 'Missions & Opérations Réseau',
+          actionId: 'transactions',
+          icon: Activity,
+          badge: 'Missions',
+        },
+        {
+          keys: ['Alt', 'R'],
+          description: 'Rapports d’Activité & Synthèses d’Agence',
+          actionId: 'reports',
+          icon: FileText,
+          badge: 'Rapports',
+        },
+        {
+          keys: ['Alt', 'C'],
+          description: 'Messagerie Interne & Notes Officielles',
+          actionId: 'chat',
+          icon: MessageSquare,
+          badge: 'Chat',
+        },
+        {
+          keys: ['Alt', 'A'],
+          description: "Journal d'Activité & Audit Système (Administrateurs)",
+          actionId: 'audit',
+          icon: ShieldCheck,
+          badge: 'Audit',
+        },
+      ];
 
   const actionShortcuts: ShortcutItem[] = [
     {

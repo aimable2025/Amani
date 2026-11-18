@@ -1,6 +1,7 @@
 import Dexie, { type Table } from 'dexie';
 import type { Operation, OperationAssignment } from '../types/operation';
 import type { AgentCategorySpecificData } from '../types/report';
+import type { ClientOrder } from '../types/clientOrder';
 
 export interface BilletageDenomination {
   id?: number;
@@ -43,7 +44,8 @@ export interface SyncQueueItem {
     | 'interAgencyTransfer'
     | 'salary'
     | 'salaryClaim'
-    | 'salaryAdvance';
+    | 'salaryAdvance'
+    | 'clientOrder';
   entityId: string;
   operation: 'create' | 'update' | 'delete';
   attempts: number;
@@ -692,6 +694,7 @@ export class EtsAmaniDatabase extends Dexie {
   salaries!: Table<LocalSalaryRecord, string>;
   salaryClaims!: Table<LocalSalaryClaim, string>;
   salaryAdvances!: Table<LocalSalaryAdvance, string>;
+  clientOrders!: Table<ClientOrder, string>;
 
   constructor() {
     super('EtsAmaniDB');
@@ -816,6 +819,43 @@ export class EtsAmaniDatabase extends Dexie {
         'id, reference, salaryId, periodKey, agentId, agencyId, status, syncStatus, createdAt, updatedAt',
       salaryAdvances:
         'id, reference, agentId, agencyId, status, dgDecision, designatedPayerId, designatedPayerService, syncStatus, createdAt, updatedAt',
+    });
+
+    this.version(7).stores({
+      billetages:
+        'id, userId, agencyId, type, currency, status, syncStatus, transactionId, createdAt, updatedAt',
+      billetageDenominations:
+        '++id, billetageId, currency, denomination, createdAt, updatedAt',
+      syncQueue:
+        '++id, entity, entityId, operation, status, createdAt, updatedAt',
+      operations:
+        'id, operationNumber, agencyId, status, priority, type, createdBy, createdAt, updatedAt, syncStatus',
+      operationAssignments:
+        'id, operationId, agencyId, agentId, status, createdAt, updatedAt, syncStatus',
+      internalNumbers:
+        'id, phoneNumber, operator, agencyId, assignedUserId, status, monitoringEnabled, createdAt, updatedAt',
+      smsOperations:
+        'id, internalNumberId, agencyId, operator, sender, transactionReference, amount, transactionType, operationDate, receivedAt, status, syncStatus, createdAt, updatedAt',
+      smsSyncQueue:
+        '++id, smsOperationId, operation, status, attempts, nextAttemptAt, lastAttemptAt, createdAt, updatedAt',
+      reports:
+        'id, reference, type, period, agencyId, status, createdBy, syncStatus, createdAt, updatedAt',
+      chatMessages:
+        'id, channelType, channelId, agencyId, senderId, recipientId, syncStatus, createdAt, updatedAt',
+      broadcasts:
+        'id, severity, scope, agencyId, authorId, syncStatus, createdAt, updatedAt',
+      debts:
+        'id, reference, category, agencyId, currency, status, dueDate, syncStatus, createdAt, updatedAt',
+      interAgencyTransfers:
+        'id, reference, transferType, sourceAgencyId, targetAgencyId, currency, status, syncStatus, createdAt, updatedAt',
+      salaries:
+        'id, &periodKey, reference, agentId, agencyId, year, month, status, designatedPayerId, designatedPayerService, syncStatus, createdAt, updatedAt',
+      salaryClaims:
+        'id, reference, salaryId, periodKey, agentId, agencyId, status, syncStatus, createdAt, updatedAt',
+      salaryAdvances:
+        'id, reference, agentId, agencyId, status, dgDecision, designatedPayerId, designatedPayerService, syncStatus, createdAt, updatedAt',
+      clientOrders:
+        'id, reference, category, transactionType, authorUid, authorRole, agencyId, assignedAgentId, status, priority, syncStatus, createdAt, updatedAt',
     });
   }
 }

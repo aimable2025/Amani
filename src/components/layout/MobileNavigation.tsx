@@ -1,4 +1,5 @@
 import {
+  ClipboardList,
   Coins,
   FileText,
   LayoutGrid,
@@ -11,6 +12,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export type MobileNavigationItem =
   | 'dashboard'
+  | 'commandes'
   | 'operations'
   | 'chat'
   | 'reports'
@@ -41,7 +43,8 @@ const STAFF_NAV_ITEMS: NavButton[] = [
 ];
 
 const EXTERNAL_NAV_ITEMS: NavButton[] = [
-  { id: 'dashboard', label: 'Opérations', icon: LayoutGrid },
+  { id: 'dashboard', label: 'Accueil', icon: LayoutGrid },
+  { id: 'commandes', label: 'Commande', icon: ClipboardList },
   { id: 'billetage', label: 'Billetage', icon: Coins },
   { id: 'profile', label: 'Profil', icon: User },
   { id: 'menu', label: 'Menu', icon: Menu },
@@ -86,6 +89,13 @@ export default function MobileNavigation({
         activeItem === 'chat' ||
         activeItem === 'internal-chat' ||
         activeItem === 'messages'
+      );
+    }
+    if (id === 'commandes') {
+      return (
+        activeItem === 'commandes' ||
+        activeItem === 'orders' ||
+        activeItem === 'client-orders'
       );
     }
     if (id === 'reports') {

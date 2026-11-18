@@ -7,9 +7,10 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  where,
 } from 'firebase/firestore';
 import { db } from '../lib/db';
-import { firestore, isFirebaseConfigured } from '../lib/firebase';
+import { auth, firestore, isFirebaseConfigured } from '../lib/firebase';
 import type {
   SyncQueueItem,
   Billetage,
@@ -23,6 +24,8 @@ import type {
   LocalSalaryAdvance,
 } from '../lib/db';
 import type { Operation, OperationAssignment } from '../types/operation';
+import type { ClientOrder } from '../types/clientOrder';
+import type { AppUser } from '../types/auth';
 
 const SYNC_INTERVAL_MS = 10000;
 const MAX_ATTEMPTS = 5;
@@ -43,33 +46,90 @@ async function isPendingDelete(entity: string, entityId: string): Promise<boolea
   }
 }
 
+function getSessionUserContext(): { uid: string | null; role: string | null; agencyId: string | null } {
+  const fbUid = auth?.currentUser?.uid ?? null;
+  try {
+    const raw = localStorage.getItem('ets_amani_session_user');
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<AppUser>;
+      return {
+        uid: fbUid || parsed.uid || null,
+        role: parsed.role || null,
+        agencyId: parsed.agencyId || null,
+      };
+    }
+  } catch {
+    // ignore
+  }
+  return { uid: fbUid, role: null, agencyId: null };
+}
+
 async function pullRemoteDataToLocal(): Promise<void> {
   if (!isFirebaseConfigured || (typeof navigator !== 'undefined' && !navigator.onLine)) {
     return;
   }
 
-  // 1. Hydratation descendante des opérations
+  const sessionCtx = getSessionUserContext();
+  if (!sessionCtx.uid) {
+    return;
+  }
+  const isExternal = sessionCtx.role === 'client' || sessionCtx.role === 'abonne';
+  const isGlobalSupervisor =
+    sessionCtx.role === 'directeur_general' || sessionCtx.role === 'administrateur_systeme';
+
+  // 1. Hydratation descendante des opérations (filtrée par rôle pour éviter PERMISSION_DENIED)
   try {
-    const opsSnap = await getDocs(query(collection(firestore, 'operations'), limit(200)));
-    for (const docSnap of opsSnap.docs) {
-      const remoteData = docSnap.data() as Operation;
-      const id = remoteData.id || docSnap.id;
-      if (await isPendingDelete('operation', id)) continue;
+    const opsSnapshots = isExternal
+      ? await Promise.all([
+          getDocs(
+            query(
+              collection(firestore, 'operations'),
+              where('clientUid', '==', sessionCtx.uid),
+              limit(100)
+            )
+          ).catch(() => null),
+          getDocs(
+            query(
+              collection(firestore, 'operations'),
+              where('createdBy', '==', sessionCtx.uid),
+              limit(100)
+            )
+          ).catch(() => null),
+        ])
+      : !isGlobalSupervisor && sessionCtx.agencyId
+        ? [
+            await getDocs(
+              query(
+                collection(firestore, 'operations'),
+                where('agencyId', '==', sessionCtx.agencyId),
+                limit(200)
+              )
+            ),
+          ]
+        : [await getDocs(query(collection(firestore, 'operations'), limit(200)))];
 
-      const localExisting = await db.operations.get(id);
-      const remoteUpdatedAt = Number(remoteData.updatedAt || 0);
-      const localUpdatedAt = Number(localExisting?.updatedAt || 0);
+    for (const opsSnap of opsSnapshots) {
+      if (!opsSnap) continue;
+      for (const docSnap of opsSnap.docs) {
+        const remoteData = docSnap.data() as Operation;
+        const id = remoteData.id || docSnap.id;
+        if (await isPendingDelete('operation', id)) continue;
 
-      if (
-        !localExisting ||
-        localExisting.syncStatus !== 'pending' ||
-        remoteUpdatedAt > localUpdatedAt
-      ) {
-        await db.operations.put({
-          ...remoteData,
-          id,
-          syncStatus: 'synced',
-        });
+        const localExisting = await db.operations.get(id);
+        const remoteUpdatedAt = Number(remoteData.updatedAt || 0);
+        const localUpdatedAt = Number(localExisting?.updatedAt || 0);
+
+        if (
+          !localExisting ||
+          localExisting.syncStatus !== 'pending' ||
+          remoteUpdatedAt > localUpdatedAt
+        ) {
+          await db.operations.put({
+            ...remoteData,
+            id,
+            syncStatus: 'synced',
+          });
+        }
       }
     }
   } catch {
@@ -104,9 +164,25 @@ async function pullRemoteDataToLocal(): Promise<void> {
     // Silencieux
   }
 
-  // 3. Hydratation descendante des billetages d'agence
+  // 3. Hydratation descendante des billetages
   try {
-    const billSnap = await getDocs(query(collection(firestore, 'billetages'), limit(150)));
+    const billSnap = isExternal
+      ? await getDocs(
+          query(
+            collection(firestore, 'billetages'),
+            where('userId', '==', sessionCtx.uid),
+            limit(100)
+          )
+        )
+      : !isGlobalSupervisor && sessionCtx.agencyId
+        ? await getDocs(
+            query(
+              collection(firestore, 'billetages'),
+              where('agencyId', '==', sessionCtx.agencyId),
+              limit(150)
+            )
+          )
+        : await getDocs(query(collection(firestore, 'billetages'), limit(150)));
     for (const docSnap of billSnap.docs) {
       const raw = docSnap.data();
       const id = (raw.id as string) || docSnap.id;
@@ -364,6 +440,82 @@ async function pullRemoteDataToLocal(): Promise<void> {
     }
   } catch {
     // Silencieux
+  }
+
+  // 12. Hydratation descendante des commandes & réclamations clients/abonnés (clientOrders)
+  try {
+    const orderSnapshots = isExternal
+      ? [
+          await getDocs(
+            query(
+              collection(firestore, 'clientOrders'),
+              where('authorUid', '==', sessionCtx.uid),
+              limit(150)
+            )
+          ),
+        ]
+      : sessionCtx.role === 'agent'
+        ? await Promise.all([
+            getDocs(
+              query(
+                collection(firestore, 'clientOrders'),
+                where('assignedAgentId', '==', sessionCtx.uid),
+                limit(150)
+              )
+            ).catch(() => null),
+            ...(sessionCtx.agencyId
+              ? [
+                  getDocs(
+                    query(
+                      collection(firestore, 'clientOrders'),
+                      where('agencyId', '==', sessionCtx.agencyId),
+                      where('assignedAgentId', '==', null),
+                      limit(150)
+                    )
+                  ).catch(() => null),
+                ]
+              : []),
+          ])
+        : sessionCtx.role === 'administrateur_agence' && sessionCtx.agencyId
+          ? [
+              await getDocs(
+                query(
+                  collection(firestore, 'clientOrders'),
+                  where('agencyId', '==', sessionCtx.agencyId),
+                  limit(200)
+                )
+              ),
+            ]
+          : isGlobalSupervisor
+            ? [await getDocs(query(collection(firestore, 'clientOrders'), limit(250)))]
+            : [];
+
+    for (const orderSnap of orderSnapshots) {
+      if (!orderSnap) continue;
+      for (const docSnap of orderSnap.docs) {
+        const remoteData = docSnap.data() as ClientOrder;
+        const id = remoteData.id || docSnap.id;
+        const localExisting = await db.clientOrders.get(id);
+        const remoteUpdatedAt = Number(remoteData.updatedAt || 0);
+        const localUpdatedAt = Number(localExisting?.updatedAt || 0);
+
+        if (
+          !localExisting ||
+          localExisting.syncStatus !== 'pending' ||
+          remoteUpdatedAt > localUpdatedAt
+        ) {
+          await db.clientOrders.put({
+            ...remoteData,
+            id,
+            comments: Array.isArray(remoteData.comments) ? remoteData.comments : [],
+            history: Array.isArray(remoteData.history) ? remoteData.history : [],
+            syncStatus: 'synced',
+          });
+        }
+      }
+    }
+  } catch {
+    // Silencieux si hors-ligne ou règles restreintes
   }
 }
 
@@ -637,6 +789,29 @@ async function syncSingleItem(item: SyncQueueItem): Promise<void> {
         updatedAt: Date.now(),
       });
     }
+  } else if (entity === 'clientOrder') {
+    if (operation === 'delete') {
+      // Traçabilité immuable : la suppression distante des commandes/réclamations est interdite
+      return;
+    }
+    const order = await db.clientOrders.get(entityId);
+    if (!order) return;
+    const sanitizedOrder = Object.fromEntries(
+      Object.entries(order).filter(([, value]) => value !== undefined),
+    );
+    await setDoc(
+      doc(firestore, 'clientOrders', entityId),
+      {
+        ...sanitizedOrder,
+        syncedAt: serverTimestamp(),
+        syncStatus: 'synced',
+      },
+      { merge: true }
+    );
+    await db.clientOrders.update(entityId, {
+      syncStatus: 'synced',
+      updatedAt: Date.now(),
+    });
   }
 }
 

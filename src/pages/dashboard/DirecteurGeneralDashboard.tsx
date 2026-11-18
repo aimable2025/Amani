@@ -44,6 +44,7 @@ import ReportsModule from './components/ReportsModule';
 import ChatModule from './components/ChatModule';
 import TreasuryTransfersDebtsModule from './components/TreasuryTransfersDebtsModule';
 import SalaryModule from './components/SalaryModule';
+import CommandesClientsModule from './components/CommandesClientsModule';
 import { getDgFeatures } from '../../services/DgFeatureService';
 import { getAgencies, type Agency } from '../../services/AgencyService';
 import { getAllSystemUsers, type ManagedUser } from '../../services/SystemUserService';
@@ -123,6 +124,7 @@ export default function DirecteurGeneralDashboard() {
   const [totalBilletageUSD, setTotalBilletageUSD] = useState(0);
   const [totalBilletageCDF, setTotalBilletageCDF] = useState(0);
   const [pendingSalaryClaimsCount, setPendingSalaryClaimsCount] = useState(0);
+  const [pendingClientOrdersCount, setPendingClientOrdersCount] = useState(0);
 
   const loadDashboardStats = async () => {
     try {
@@ -135,6 +137,7 @@ export default function DirecteurGeneralDashboard() {
         reportsList,
         advancesList,
         claimsList,
+        clientOrdersList,
       ] = await Promise.all([
         getAgencies(),
         getAllSystemUsers(),
@@ -144,6 +147,7 @@ export default function DirecteurGeneralDashboard() {
         db.reports.toArray(),
         db.salaryAdvances.toArray(),
         db.salaryClaims.toArray(),
+        db.clientOrders.toArray(),
       ]);
 
       setAgencies(agenciesList);
@@ -169,6 +173,15 @@ export default function DirecteurGeneralDashboard() {
         (c) => c.status === 'reclamation_envoyee' || c.status === 'en_examen'
       ).length;
       setPendingSalaryClaimsCount(pendingAdv + pendingClm);
+
+      const pendingClientOrders = clientOrdersList.filter(
+        (o) =>
+          o.status === 'soumise' ||
+          o.status === 'prise_en_charge' ||
+          o.status === 'en_cours' ||
+          o.status === 'en_attente_info'
+      ).length;
+      setPendingClientOrdersCount(pendingClientOrders);
     } catch (err) {
       console.warn('[Ets AMANI] Chargement statistiques DG :', err);
     }
@@ -340,6 +353,9 @@ export default function DirecteurGeneralDashboard() {
       overview: null,
       operations: 'operations-management',
       transactions: 'operations-management',
+      commandes: 'client-orders',
+      orders: 'client-orders',
+      'client-orders': 'client-orders',
       treasury: 'billetage',
       billetage: 'billetage',
       agencies: 'agencies',
@@ -383,6 +399,9 @@ export default function DirecteurGeneralDashboard() {
     if (mod.id === 'operations-management' && metrics.activeOps > 0) {
       return `${metrics.activeOps}`;
     }
+    if (mod.id === 'client-orders' && pendingClientOrdersCount > 0) {
+      return `${pendingClientOrdersCount}`;
+    }
     return mod.badge;
   };
 
@@ -413,6 +432,7 @@ export default function DirecteurGeneralDashboard() {
     if (!activeModuleId) return 'dashboard';
     const reverseMap: Record<string, string> = {
       'operations-management': 'transactions',
+      'client-orders': 'commandes',
       billetage: 'treasury',
       agencies: 'agencies',
       'agency-admins-management': 'members',
@@ -436,6 +456,7 @@ export default function DirecteurGeneralDashboard() {
     metrics.pendingReports +
     metrics.pendingTransfers +
     pendingSalaryClaimsCount +
+    pendingClientOrdersCount +
     metrics.returnedReports;
 
   return (
@@ -486,6 +507,12 @@ export default function DirecteurGeneralDashboard() {
               )}
               {activeModuleId === 'operations-management' && (
                 <OperationModule onClose={() => setActiveModuleId(null)} />
+              )}
+              {activeModuleId === 'client-orders' && (
+                <CommandesClientsModule
+                  onClose={() => setActiveModuleId(null)}
+                  onOrdersUpdated={() => void loadDashboardStats()}
+                />
               )}
               {activeModuleId === 'internal-numbers' && (
                 <InternalNumbersModule onClose={() => setActiveModuleId(null)} />

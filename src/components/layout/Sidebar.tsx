@@ -2,6 +2,7 @@ import {
   ArrowLeftRight,
   Bell,
   Building2,
+  ClipboardList,
   Coins,
   FileText,
   Landmark,
@@ -68,16 +69,19 @@ export default function Sidebar({
 
   if (isExternal) {
     pilotageItems = [
-      { id: 'dashboard', label: 'Mes Opérations', icon: LayoutGrid },
+      { id: 'dashboard', label: 'Accueil & Opérations', icon: LayoutGrid },
+      { id: 'commandes', label: 'Commande', icon: ClipboardList },
       { id: 'billetage', label: 'Calculateur Billetage', icon: Coins },
     ];
     controleItems = [
+      { id: 'notifications', label: 'Notifications', icon: Bell },
       { id: 'profile', label: 'Mon profil', icon: User },
     ];
   } else if (isAgent) {
     pilotageItems = [
       { id: 'dashboard', label: 'Accueil & Missions', icon: LayoutGrid },
       { id: 'transactions', label: 'Missions & Opérations', icon: Share2 },
+      { id: 'commandes', label: 'Commandes Clients', icon: ClipboardList },
       { id: 'billetage', label: 'Billetage Caisse', icon: Coins },
       { id: 'salaries', label: 'Mon Salaire', icon: WalletCards },
       { id: 'transfers', label: 'Transferts', icon: ArrowLeftRight },
@@ -96,6 +100,7 @@ export default function Sidebar({
     pilotageItems = [
       { id: 'dashboard', label: 'Accueil Agence', icon: LayoutGrid },
       { id: 'transactions', label: 'Opérations', icon: Share2 },
+      { id: 'commandes', label: 'Commandes Clients', icon: ClipboardList },
       { id: 'treasury', label: 'Billetage & Caisse', icon: Coins },
       { id: 'salaries', label: 'Salaires & Paie', icon: WalletCards },
       { id: 'transfers', label: 'Transferts', icon: ArrowLeftRight },
@@ -117,6 +122,7 @@ export default function Sidebar({
     pilotageItems = [
       { id: 'dashboard', label: 'Vue Globale', icon: LayoutGrid },
       { id: 'transactions', label: 'Opérations Réseau', icon: Share2 },
+      { id: 'commandes', label: 'Commandes Clients', icon: ClipboardList },
       { id: 'treasury', label: 'Billetage & Caisse', icon: Landmark },
       { id: 'salaries', label: 'Salaires & Paie', icon: WalletCards },
       { id: 'transfers', label: 'Transferts Inter-Agences', icon: ArrowLeftRight },
@@ -150,6 +156,7 @@ export default function Sidebar({
     ];
     organisationItems = [
       { id: 'transactions', label: 'Opérations', icon: Share2 },
+      { id: 'commandes', label: 'Commandes Clients', icon: ClipboardList },
       { id: 'transfers', label: 'Transferts', icon: ArrowLeftRight },
       { id: 'internal_directory', label: 'Flotte & SMS', icon: Smartphone },
       { id: 'chat', label: 'Chat & Notes', icon: MessageSquare },
@@ -280,6 +287,7 @@ function NavigationGroup({
           const isActive =
             activeItem === item.id ||
             (item.id === 'dashboard' && (activeItem === 'overview' || activeItem === '')) ||
+            (item.id === 'commandes' && (activeItem === 'commandes' || activeItem === 'orders' || activeItem === 'client-orders')) ||
             (item.id === 'transactions' && (activeItem === 'operations' || activeItem === 'operations-management')) ||
             (item.id === 'chat' && (activeItem === 'internal-chat' || activeItem === 'messages')) ||
             (item.id === 'reports' && (activeItem === 'reports-center' || activeItem === 'reports_audit')) ||

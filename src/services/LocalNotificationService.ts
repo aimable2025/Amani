@@ -5,6 +5,12 @@
 
 import { db } from '../lib/db';
 import type { Operation } from '../types/operation';
+import {
+  CLIENT_ORDER_CATEGORY_LABELS,
+  CLIENT_ORDER_STATUS_LABELS,
+  type ClientOrder,
+} from '../types/clientOrder';
+import type { AppUser } from '../types/auth';
 
 export interface PushNotificationPayload {
   title: string;
@@ -17,8 +23,10 @@ export interface PushNotificationPayload {
 }
 
 const NOTIFIED_CACHE_KEY = 'ets_amani_notified_operations';
+const NOTIFIED_ORDERS_CACHE_KEY = 'ets_amani_notified_client_orders';
 let swRegistration: ServiceWorkerRegistration | null = null;
 let watcherIntervalId: ReturnType<typeof setInterval> | null = null;
+let orderWatcherIntervalId: ReturnType<typeof setInterval> | null = null;
 
 /**
  * Joue une sonnerie d'alerte urgente audible via Web Audio API
@@ -334,3 +342,158 @@ export async function triggerTestUrgentNotification(agentName?: string): Promise
 
   return success;
 }
+
+function getNotifiedOrderSignatures(uid: string): Set<string> {
+  try {
+    const raw = localStorage.getItem(`${NOTIFIED_ORDERS_CACHE_KEY}_${uid}`);
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) {
+        return new Set(arr);
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return new Set();
+}
+
+function saveNotifiedOrderSignature(uid: string, sig: string): void {
+  try {
+    const set = getNotifiedOrderSignatures(uid);
+    set.add(sig);
+    const arr = Array.from(set).slice(-300);
+    localStorage.setItem(`${NOTIFIED_ORDERS_CACHE_KEY}_${uid}`, JSON.stringify(arr));
+  } catch {
+    // ignore
+  }
+}
+
+export interface ClientOrderNotificationEvent {
+  order: ClientOrder;
+  title: string;
+  body: string;
+}
+
+/**
+ * Surveille les mises à jour des commandes et réclamations Clients/Abonnés
+ * - Pour Client / Abonné : alerte sur chaque changement de statut ou réponse staff sur ses propres demandes.
+ * - Pour Agent / Admin Agence / DG / SysAdmin : alerte sur les nouvelles demandes soumises dans son périmètre.
+ */
+export function startClientOrderNotificationWatcher(
+  user: AppUser | null,
+  onOrderEvent?: (event: ClientOrderNotificationEvent) => void,
+): () => void {
+  if (!user?.uid) return () => {};
+
+  const check = async () => {
+    try {
+      const allOrders = await db.clientOrders.toArray();
+      const seen = getNotifiedOrderSignatures(user.uid);
+      const isExternal = user.role === 'client' || user.role === 'abonne';
+
+      for (const order of allOrders) {
+        if (isExternal) {
+          if (order.authorUid !== user.uid) continue;
+          const lastComment = order.comments[order.comments.length - 1];
+          const lastCommentFromStaff =
+            lastComment && lastComment.authorUid !== user.uid ? order.comments.length : 0;
+          const sig = `${order.id}:${order.status}:${lastCommentFromStaff}`;
+          if (seen.has(sig)) continue;
+          saveNotifiedOrderSignature(user.uid, sig);
+
+          // Ne pas notifier la création initiale effectuée par l'utilisateur lui-même sauf si statut évolue
+          if (order.status === 'soumise' && lastCommentFromStaff === 0) continue;
+
+          const statusLabel = CLIENT_ORDER_STATUS_LABELS[order.status];
+          const title =
+            lastCommentFromStaff > 0 && lastComment
+              ? `Réponse sur ${order.reference}`
+              : `${order.reference} · ${statusLabel}`;
+          const body =
+            order.status === 'en_attente_info' && order.infoRequestedMessage
+              ? order.infoRequestedMessage
+              : order.status === 'rejetee' && order.rejectionReason
+                ? `Motif : ${order.rejectionReason}`
+                : order.status === 'traitee' && order.resolutionNote
+                  ? order.resolutionNote
+                  : lastCommentFromStaff > 0 && lastComment
+                    ? `${lastComment.authorName} : ${lastComment.message}`
+                    : `${CLIENT_ORDER_CATEGORY_LABELS[order.category]} mise à jour (${statusLabel}).`;
+
+          onOrderEvent?.({ order, title, body });
+          await sendLocalPushNotification({
+            title,
+            body,
+            priority: order.status === 'en_attente_info' || order.status === 'rejetee' ? 'urgent' : 'normal',
+            tag: `client-order-${order.id}-${order.status}`,
+            data: { url: `/dashboard/${user.role}`, orderId: order.id },
+          });
+        } else {
+          // Personnel habilité : surveiller uniquement les demandes du périmètre actif
+          const inScope =
+            user.role === 'administrateur_systeme' ||
+            user.role === 'directeur_general' ||
+            (user.role === 'administrateur_agence' &&
+              Boolean(user.agencyId && order.agencyId === user.agencyId)) ||
+            (user.role === 'agent' &&
+              (order.assignedAgentId === user.uid ||
+                order.targetAgentId === user.uid ||
+                (!order.assignedAgentId && Boolean(user.agencyId && order.agencyId === user.agencyId))));
+
+          if (!inScope) continue;
+          const isActionable =
+            order.status === 'soumise' ||
+            (order.status === 'en_cours' &&
+              order.comments[order.comments.length - 1]?.authorUid === order.authorUid);
+
+          if (!isActionable) continue;
+          const sig = `staff:${order.id}:${order.status}:${order.comments.length}`;
+          if (seen.has(sig)) continue;
+          saveNotifiedOrderSignature(user.uid, sig);
+
+          const title =
+            order.status === 'soumise'
+              ? `Nouvelle ${CLIENT_ORDER_CATEGORY_LABELS[order.category]} (${order.reference})`
+              : `Réponse client sur ${order.reference}`;
+          const body = `${order.authorName} · ${order.agencyName}${order.amount ? ` · ${order.amount} ${order.currency}` : ''}`;
+
+          onOrderEvent?.({ order, title, body });
+          await sendLocalPushNotification({
+            title,
+            body,
+            priority: order.priority === 'urgente' ? 'urgent' : 'normal',
+            tag: `staff-order-${order.id}-${order.status}`,
+            data: { url: `/dashboard/${user.role}`, orderId: order.id },
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('[Ets AMANI] Erreur watcher clientOrders :', err);
+    }
+  };
+
+  void check();
+  if (orderWatcherIntervalId) {
+    clearInterval(orderWatcherIntervalId);
+  }
+  orderWatcherIntervalId = setInterval(() => {
+    void check();
+  }, 9000);
+
+  const handleVisibility = () => {
+    if (document.visibilityState === 'visible') {
+      void check();
+    }
+  };
+  document.addEventListener('visibilitychange', handleVisibility);
+
+  return () => {
+    if (orderWatcherIntervalId) {
+      clearInterval(orderWatcherIntervalId);
+      orderWatcherIntervalId = null;
+    }
+    document.removeEventListener('visibilitychange', handleVisibility);
+  };
+}
+
