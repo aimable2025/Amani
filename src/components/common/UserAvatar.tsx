@@ -170,7 +170,7 @@ export default function UserAvatar({
         className={[
           'relative flex shrink-0 items-center justify-center overflow-hidden rounded-full',
           colorClass,
-          'ring-2 ring-white/90 shadow-sm select-none',
+          'ring-2 ring-white/90 dark:ring-slate-800 shadow-sm select-none',
           styles.container,
           className,
         ]
@@ -198,7 +198,7 @@ export default function UserAvatar({
       {resolvedStatusDot && (
         <span
           className={[
-            'absolute -bottom-0.5 -right-0.5 rounded-full border-white',
+            'absolute -bottom-0.5 -right-0.5 rounded-full border-white dark:border-slate-900',
             styles.dot,
             dotColorMap[resolvedStatusDot],
           ].join(' ')}
@@ -217,7 +217,7 @@ export default function UserAvatar({
       <div className="min-w-0 flex-1">
         <div
           className={[
-            'truncate font-semibold text-slate-900',
+            'truncate font-semibold text-slate-900 dark:text-slate-100',
             styles.name,
             nameClassName,
           ]
@@ -229,7 +229,7 @@ export default function UserAvatar({
         {subtitle && (
           <div
             className={[
-              'truncate text-slate-500',
+              'truncate text-slate-500 dark:text-slate-400',
               styles.subtitle,
               subtitleClassName,
             ]

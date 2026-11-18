@@ -1,16 +1,21 @@
 import {
+  Coins,
   FileText,
   LayoutGrid,
   Menu,
   MessageSquare,
   Share2,
+  User,
 } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
 export type MobileNavigationItem =
   | 'dashboard'
   | 'operations'
   | 'chat'
   | 'reports'
+  | 'billetage'
+  | 'profile'
   | 'menu';
 
 interface MobileNavigationProps {
@@ -27,32 +32,19 @@ interface NavButton {
   icon: typeof LayoutGrid;
 }
 
-const NAV_ITEMS: NavButton[] = [
-  {
-    id: 'dashboard',
-    label: 'Accueil',
-    icon: LayoutGrid,
-  },
-  {
-    id: 'operations',
-    label: 'Opération',
-    icon: Share2,
-  },
-  {
-    id: 'chat',
-    label: 'Chat',
-    icon: MessageSquare,
-  },
-  {
-    id: 'reports',
-    label: 'Rapports',
-    icon: FileText,
-  },
-  {
-    id: 'menu',
-    label: 'Menu',
-    icon: Menu,
-  },
+const STAFF_NAV_ITEMS: NavButton[] = [
+  { id: 'dashboard', label: 'Accueil', icon: LayoutGrid },
+  { id: 'operations', label: 'Opérations', icon: Share2 },
+  { id: 'chat', label: 'Chat', icon: MessageSquare },
+  { id: 'reports', label: 'Rapports', icon: FileText },
+  { id: 'menu', label: 'Menu', icon: Menu },
+];
+
+const EXTERNAL_NAV_ITEMS: NavButton[] = [
+  { id: 'dashboard', label: 'Opérations', icon: LayoutGrid },
+  { id: 'billetage', label: 'Billetage', icon: Coins },
+  { id: 'profile', label: 'Profil', icon: User },
+  { id: 'menu', label: 'Menu', icon: Menu },
 ];
 
 export default function MobileNavigation({
@@ -62,6 +54,10 @@ export default function MobileNavigation({
   onNavigate,
   onMenuClick,
 }: MobileNavigationProps) {
+  const { role } = useAuth();
+  const isExternal = role === 'client' || role === 'abonne';
+  const navItems = isExternal ? EXTERNAL_NAV_ITEMS : STAFF_NAV_ITEMS;
+
   const handleItemClick = (id: MobileNavigationItem) => {
     if (id === 'menu') {
       if (onMenuClick) {
@@ -76,11 +72,7 @@ export default function MobileNavigation({
 
   const isItemActive = (id: MobileNavigationItem) => {
     if (id === 'dashboard') {
-      return (
-        activeItem === 'dashboard' ||
-        activeItem === 'overview' ||
-        activeItem === ''
-      );
+      return activeItem === 'dashboard' || activeItem === 'overview' || activeItem === '';
     }
     if (id === 'operations') {
       return (
@@ -97,10 +89,13 @@ export default function MobileNavigation({
       );
     }
     if (id === 'reports') {
-      return (
-        activeItem === 'reports' ||
-        activeItem === 'reports-center'
-      );
+      return activeItem === 'reports' || activeItem === 'reports-center';
+    }
+    if (id === 'billetage') {
+      return activeItem === 'billetage';
+    }
+    if (id === 'profile') {
+      return activeItem === 'profile';
     }
     return false;
   };
@@ -108,13 +103,13 @@ export default function MobileNavigation({
   return (
     <nav
       aria-label="Navigation principale mobile"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200/90 bg-white/95 pb-[max(0.35rem,env(safe-area-inset-bottom))] pt-1.5 px-2 shadow-[0_-4px_24px_rgba(11,25,44,0.08)] backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/95"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200/90 bg-white/95 pb-[max(0.25rem,env(safe-area-inset-bottom))] pt-1 px-1.5 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/95"
     >
-      <div className="mx-auto flex max-w-lg items-center justify-around">
-        {NAV_ITEMS.map((item) => {
+      <div className="mx-auto flex max-w-lg items-center justify-around h-12">
+        {navItems.map((item) => {
           const Icon = item.icon;
           const active = isItemActive(item.id);
-          const showDot =
+          const showBadge =
             (item.id === 'chat' && unreadChatCount > 0) ||
             (item.id === 'menu' && unreadNotificationsCount > 0);
 
@@ -124,25 +119,19 @@ export default function MobileNavigation({
               type="button"
               onClick={() => handleItemClick(item.id)}
               className={[
-                'flex flex-1 flex-col items-center justify-center py-1 gap-1 transition-all relative rounded-xl active:scale-95',
+                'flex flex-1 flex-col items-center justify-center py-1 gap-0.5 transition-colors relative rounded-lg active:scale-95',
                 active
                   ? 'text-[#C58B39] font-bold'
-                  : 'text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 font-medium',
+                  : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 font-medium',
               ].join(' ')}
             >
               <div className="relative">
-                <Icon
-                  size={19}
-                  strokeWidth={active ? 2.4 : 1.8}
-                />
-                {showDot && (
-                  <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-[#C58B39] ring-2 ring-white dark:ring-slate-900 animate-pulse" />
+                <Icon size={18} strokeWidth={active ? 2.3 : 1.8} />
+                {showBadge && (
+                  <span className="absolute -top-0.5 -right-1 h-2 w-2 rounded-full bg-[#C58B39] ring-2 ring-white dark:ring-slate-900" />
                 )}
               </div>
-              <span className="text-[10px] tracking-tight">{item.label}</span>
-              {active && (
-                <span className="absolute bottom-0 h-0.5 w-6 rounded-full bg-[#C58B39]" />
-              )}
+              <span className="text-[10px] leading-none tracking-tight">{item.label}</span>
             </button>
           );
         })}

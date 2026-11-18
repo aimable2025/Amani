@@ -751,12 +751,12 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {canPerformReportAction('reports.create', user) && (
             <button
               type="button"
               onClick={showEditor ? () => setShowEditor(false) : handleOpenNewReport}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#0B192C] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#13233D] transition active:scale-95"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B192C] dark:bg-slate-100 px-4 py-2 text-xs font-bold text-white dark:text-slate-950 shadow-xs hover:bg-[#13233D] dark:hover:bg-white transition active:scale-95"
             >
               {showEditor ? <X size={14} /> : <Plus size={14} />}
               <span>{showEditor ? 'Fermer le formulaire' : 'Nouveau rapport'}</span>
@@ -770,9 +770,9 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 setConsolidationTitle(`Synthèse Agence ${user?.agencyId} — ${new Date().toLocaleDateString('fr-FR')}`);
                 setShowConsolidateModal(true);
               }}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 transition"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
             >
-              <Layers size={14} className="text-blue-600" />
+              <Layers size={14} className="text-blue-600 dark:text-blue-400" />
               <span className="hidden sm:inline">Synthèse</span>
             </button>
           )}
@@ -781,17 +781,17 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
             type="button"
             onClick={() => exportReportsToExcel(filteredReports, user!, `Onglet ${activeTab}`)}
             disabled={filteredReports.length === 0}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 disabled:opacity-50 transition"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 transition"
             title="Exporter au format Excel CSV"
           >
-            <FileSpreadsheet size={14} className="text-emerald-600" />
+            <FileSpreadsheet size={14} className="text-emerald-600 dark:text-emerald-400" />
             <span className="hidden sm:inline">Export</span>
           </button>
 
           <button
             type="button"
             onClick={loadData}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-2.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-2.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
             title="Actualiser les données locales"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
@@ -801,7 +801,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
             <button
               type="button"
               onClick={onClose}
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-500 hover:bg-slate-50"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
               aria-label="Fermer"
             >
               <X size={14} />
@@ -812,9 +812,9 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
         {/* Notifications / Feedback */}
         {feedback && (
-          <div className="mt-4 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-900 animate-in fade-in duration-200">
+          <div className="mt-4 flex items-center justify-between rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/50 px-4 py-3 text-xs font-semibold text-emerald-900 dark:text-emerald-200 animate-in fade-in duration-200">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
               <span>{feedback}</span>
             </div>
             <button type="button" onClick={() => setFeedback(null)}>
@@ -824,9 +824,9 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
         )}
 
         {errorMsg && (
-          <div className="mt-4 flex items-center justify-between rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-800 animate-in fade-in duration-200">
+          <div className="mt-4 flex items-center justify-between rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/50 px-4 py-3 text-xs font-semibold text-red-800 dark:text-red-200 animate-in fade-in duration-200">
             <div className="flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-red-600 shrink-0" />
+              <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400 shrink-0" />
               <span>{errorMsg}</span>
             </div>
             <button type="button" onClick={() => setErrorMsg(null)}>
@@ -837,16 +837,16 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
         {/* Alerte si des rapports sont retournés pour correction */}
         {returnedCount > 0 && !showEditor && (
-          <div className="mt-4 flex items-center justify-between rounded-2xl border border-amber-300 bg-amber-50 p-4 text-xs font-bold text-amber-900 animate-in fade-in duration-200">
+          <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-amber-300 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/40 p-4 text-xs font-bold text-amber-900 dark:text-amber-200 animate-in fade-in duration-200">
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-200 text-amber-800">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-200 dark:bg-amber-900/70 text-amber-800 dark:text-amber-200">
                 <RotateCcw className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-sm font-black">
+                <p className="text-sm font-black tabular-nums">
                   {returnedCount} rapport(s) retourné(s) pour correction
                 </p>
-                <p className="font-normal text-amber-700">
+                <p className="font-normal text-amber-700 dark:text-amber-300/90">
                   La Direction ou l'Administrateur a émis des demandes d'ajustement. Cliquez sur l'onglet pour corriger et resoumettre.
                 </p>
               </div>
@@ -854,7 +854,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
             <button
               type="button"
               onClick={() => setActiveTab('returned')}
-              className="rounded-xl bg-amber-900 px-3 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-amber-800"
+              className="rounded-lg bg-amber-900 dark:bg-amber-700 px-3 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-amber-800 dark:hover:bg-amber-600 shrink-0"
             >
               Voir les retours
             </button>
@@ -862,23 +862,23 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
         )}
 
         {/* Barre d'onglets de navigation métier */}
-        <div className="mt-5 border-t border-slate-100 pt-4">
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+        <div className="mt-5 border-t border-slate-100 dark:border-slate-800 pt-4">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
             <button
               type="button"
               onClick={() => {
                 setActiveTab('all');
                 setShowEditor(false);
               }}
-              className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-bold transition shrink-0 ${
+              className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 py-2 text-xs font-bold transition shrink-0 ${
                 activeTab === 'all' && !showEditor
-                  ? 'bg-slate-950 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-slate-950 dark:bg-white text-white dark:text-slate-950 shadow-xs'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               <FileText className="h-3.5 w-3.5" />
               <span>Tous les rapports</span>
-              <span className="ml-1 rounded-full bg-slate-200/50 px-1.5 py-0.2 text-[10px]">
+              <span className="ml-1 rounded-md bg-slate-200/60 dark:bg-slate-700/70 px-1.5 py-0.5 text-[10px] tabular-nums">
                 {reports.length}
               </span>
             </button>
@@ -889,16 +889,16 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 setActiveTab('drafts');
                 setShowEditor(false);
               }}
-              className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-bold transition shrink-0 ${
+              className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 py-2 text-xs font-bold transition shrink-0 ${
                 activeTab === 'drafts' && !showEditor
-                  ? 'bg-slate-950 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-slate-950 dark:bg-white text-white dark:text-slate-950 shadow-xs'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               <FileEdit className="h-3.5 w-3.5 text-amber-500" />
               <span>Brouillons</span>
               {draftCount > 0 && (
-                <span className="ml-1 rounded-full bg-amber-500/20 px-1.5 py-0.2 text-[10px] text-amber-900 font-black">
+                <span className="ml-1 rounded-md bg-amber-500/20 px-1.5 py-0.5 text-[10px] text-amber-900 dark:text-amber-300 font-black tabular-nums">
                   {draftCount}
                 </span>
               )}
@@ -910,16 +910,16 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 setActiveTab('submitted');
                 setShowEditor(false);
               }}
-              className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-bold transition shrink-0 ${
+              className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 py-2 text-xs font-bold transition shrink-0 ${
                 activeTab === 'submitted' && !showEditor
-                  ? 'bg-slate-950 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-slate-950 dark:bg-white text-white dark:text-slate-950 shadow-xs'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               <Clock className="h-3.5 w-3.5 text-blue-500" />
               <span>Soumis / En examen</span>
               {submittedCount > 0 && (
-                <span className="ml-1 rounded-full bg-blue-500/20 px-1.5 py-0.2 text-[10px] text-blue-900 font-black">
+                <span className="ml-1 rounded-md bg-blue-500/20 px-1.5 py-0.5 text-[10px] text-blue-900 dark:text-blue-300 font-black tabular-nums">
                   {submittedCount}
                 </span>
               )}
@@ -931,16 +931,16 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 setActiveTab('returned');
                 setShowEditor(false);
               }}
-              className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-bold transition shrink-0 ${
+              className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 py-2 text-xs font-bold transition shrink-0 ${
                 activeTab === 'returned' && !showEditor
                   ? 'bg-amber-600 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               <RotateCcw className="h-3.5 w-3.5 text-amber-500" />
               <span>Retournés pour correction</span>
               {returnedCount > 0 && (
-                <span className="ml-1 rounded-full bg-amber-200 px-1.5 py-0.2 text-[10px] text-amber-900 font-black">
+                <span className="ml-1 rounded-md bg-amber-200 dark:bg-amber-900/70 px-1.5 py-0.5 text-[10px] text-amber-900 dark:text-amber-200 font-black tabular-nums">
                   {returnedCount}
                 </span>
               )}
@@ -952,16 +952,16 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 setActiveTab('processed');
                 setShowEditor(false);
               }}
-              className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-bold transition shrink-0 ${
+              className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 py-2 text-xs font-bold transition shrink-0 ${
                 activeTab === 'processed' && !showEditor
-                  ? 'bg-slate-950 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-slate-950 dark:bg-white text-white dark:text-slate-950 shadow-xs'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               <FileCheck className="h-3.5 w-3.5 text-emerald-500" />
               <span>Traités & Validés</span>
               {processedCount > 0 && (
-                <span className="ml-1 rounded-full bg-emerald-500/20 px-1.5 py-0.2 text-[10px] text-emerald-900">
+                <span className="ml-1 rounded-md bg-emerald-500/20 px-1.5 py-0.5 text-[10px] text-emerald-900 dark:text-emerald-300 tabular-nums">
                   {processedCount}
                 </span>
               )}
@@ -974,14 +974,14 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                   setActiveTab('tracking');
                   setShowEditor(false);
                 }}
-                className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-bold transition shrink-0 ${
+                className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 py-2 text-xs font-bold transition shrink-0 ${
                   activeTab === 'tracking' && !showEditor
-                    ? 'bg-purple-900 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-purple-900 dark:bg-purple-700 text-white shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 <Users className="h-3.5 w-3.5 text-purple-400" />
-                <span>Suivi des Agents ({agencyUsers.length})</span>
+                <span className="tabular-nums">Suivi des Agents ({agencyUsers.length})</span>
               </button>
             )}
 
@@ -992,10 +992,10 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                   setActiveTab('consolidation');
                   setShowEditor(false);
                 }}
-                className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-bold transition shrink-0 ${
+                className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 py-2 text-xs font-bold transition shrink-0 ${
                   activeTab === 'consolidation' && !showEditor
-                    ? 'bg-blue-900 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-blue-900 dark:bg-blue-700 text-white shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 <Layers className="h-3.5 w-3.5 text-blue-400" />
@@ -1007,24 +1007,24 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
       {/* FORMULAIRE D'ÉDITION ADAPTATIF PROFESSIONNEL */}
       {showEditor && (
-        <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-8 shadow-md space-y-6 animate-in fade-in duration-200">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-4">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs space-y-5 animate-in fade-in duration-200">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-lg bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-800">
+                <span className="rounded-md bg-emerald-100 dark:bg-emerald-950/60 px-2.5 py-1 text-xs font-bold text-emerald-800 dark:text-emerald-300">
                   {editingReportId ? 'Modification de rapport' : 'Création de rapport professionnel'}
                 </span>
                 <span
-                  className={`inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold border ${currentFormConfig.badge.bgColor} ${currentFormConfig.badge.textColor} ${currentFormConfig.badge.borderColor}`}
+                  className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-bold border ${currentFormConfig.badge.bgColor} ${currentFormConfig.badge.textColor} ${currentFormConfig.badge.borderColor}`}
                 >
                   {currentFormConfig.badge.text}
                 </span>
-                <div className="flex items-center gap-1.5 text-xs text-slate-600">
-                  <span className="font-semibold text-slate-500">Profil appliqué :</span>
+                <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
+                  <span className="font-semibold text-slate-500 dark:text-slate-400">Profil appliqué :</span>
                   <select
                     value={currentFormConfig.profile}
                     onChange={(e) => handleSelectProfile(e.target.value as ReportUserProfile)}
-                    className="rounded-lg border border-slate-300 bg-white px-2 py-0.5 text-xs font-bold text-slate-800 outline-none focus:ring-1 focus:ring-emerald-500"
+                    className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-0.5 text-xs font-bold text-slate-800 dark:text-slate-100 outline-none focus:ring-1 focus:ring-emerald-500"
                   >
                     {Object.values(REPORT_FORM_CONFIGURATIONS).map((cfg) => (
                       <option key={cfg.profile} value={cfg.profile}>
@@ -1034,15 +1034,15 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                   </select>
                 </div>
                 {lastSavedTime && (
-                  <span className="text-[11px] text-slate-400">
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
                     Dernière sauvegarde : {lastSavedTime}
                   </span>
                 )}
               </div>
-              <h3 className="mt-2 text-lg sm:text-xl font-black text-slate-900">
+              <h3 className="mt-2 text-lg sm:text-xl font-black text-slate-900 dark:text-white">
                 Formulaire Adaptatif — {currentFormConfig.label}
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 {currentFormConfig.description}
               </p>
             </div>
@@ -1051,14 +1051,14 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               <button
                 type="button"
                 onClick={() => setFormMode(formMode === 'guide' ? 'personnalise' : 'guide')}
-                className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 {formMode === 'guide' ? 'Mode Personnalisé' : 'Mode Guidé Standard'}
               </button>
               <button
                 type="button"
                 onClick={() => setShowEditor(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-100"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                 title="Fermer"
               >
                 <X className="h-4 w-4" />
@@ -1067,14 +1067,14 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
           </div>
 
           {/* Section 1 : Informations Générales & Période */}
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-4">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-4 space-y-4">
             <button
               type="button"
               onClick={() => toggleSection('general')}
-              className="flex w-full items-center justify-between font-bold text-slate-900 text-sm"
+              className="flex w-full items-center justify-between font-bold text-slate-900 dark:text-white text-sm"
             >
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-emerald-600" />
+                <Calendar className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 <span>1. Informations Générales & Identification</span>
               </div>
               {collapsedSections.general ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
@@ -1083,7 +1083,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
             {!collapsedSections.general && (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 pt-2">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Intitulé / Objet du rapport *
                   </label>
                   <input
@@ -1091,18 +1091,18 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                     value={formTitle}
                     onChange={(e) => setFormTitle(e.target.value)}
                     placeholder={currentFormConfig.titlePlaceholder}
-                    className="w-full rounded-xl border border-slate-300 bg-white p-2.5 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-2.5 text-xs font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Type de rapport
                   </label>
                   <select
                     value={formType}
                     onChange={(e) => setFormType(e.target.value as ReportType)}
-                    className="w-full rounded-xl border border-slate-300 bg-white p-2.5 text-xs font-semibold text-slate-900 outline-none"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-2.5 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none"
                   >
                     <optgroup label="Recommandés pour votre profil">
                       {currentFormConfig.allowedReportTypes.map((t) => (
@@ -1124,13 +1124,13 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Période d'activité
                   </label>
                   <select
                     value={formPeriod}
                     onChange={(e) => setFormPeriod(e.target.value as LocalReport['period'])}
-                    className="w-full rounded-xl border border-slate-300 bg-white p-2.5 text-xs font-semibold text-slate-900 outline-none"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-2.5 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none"
                   >
                     <option value="aujourd_hui">Aujourd'hui</option>
                     <option value="7_jours">7 derniers jours</option>
@@ -1142,38 +1142,38 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 {formPeriod === 'personnalise' && (
                   <>
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                         Date de début
                       </label>
                       <input
                         type="date"
                         value={customStart}
                         onChange={(e) => setCustomStart(e.target.value)}
-                        className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs"
+                        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-xs text-slate-900 dark:text-slate-100 tabular-nums"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                         Date de fin
                       </label>
                       <input
                         type="date"
                         value={customEnd}
                         onChange={(e) => setCustomEnd(e.target.value)}
-                        className="w-full rounded-xl border border-slate-300 bg-white p-2 text-xs"
+                        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 text-xs text-slate-900 dark:text-slate-100 tabular-nums"
                       />
                     </div>
                   </>
                 )}
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Niveau de priorité
                   </label>
                   <select
                     value={formPriority}
                     onChange={(e) => setFormPriority(e.target.value as ReportPriority)}
-                    className="w-full rounded-xl border border-slate-300 bg-white p-2.5 text-xs font-semibold text-slate-900 outline-none"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-2.5 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none"
                   >
                     <option value="normal">Normal</option>
                     <option value="urgent">Urgent</option>
@@ -1182,8 +1182,8 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 </div>
 
                 {/* Données d'auteur authentifié vérifiées (lecture seule) */}
-                <div className="rounded-xl bg-slate-100 p-2.5 text-xs text-slate-600">
-                  <span className="font-bold text-slate-800">Auteur certifié : </span>
+                <div className="rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 p-2.5 text-xs text-slate-600 dark:text-slate-300">
+                  <span className="font-bold text-slate-800 dark:text-white">Auteur certifié : </span>
                   <span>{user?.displayName} ({user?.agencyId || 'Centrale'})</span>
                 </div>
               </div>
@@ -1192,14 +1192,14 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
           {/* Section 2 : Résumé Exécutif */}
           {isSectionVisible(currentFormConfig, 'summary', formMode) && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-3">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-4 space-y-3">
               <button
                 type="button"
                 onClick={() => toggleSection('summary')}
-                className="flex w-full items-center justify-between font-bold text-slate-900 text-sm"
+                className="flex w-full items-center justify-between font-bold text-slate-900 dark:text-white text-sm"
               >
                 <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-blue-600" />
+                  <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   <span>2. Résumé Exécutif & Synthèse globale</span>
                 </div>
                 {collapsedSections.summary ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
@@ -1213,11 +1213,11 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                     value={formExecutiveSummary}
                     onChange={(e) => setFormExecutiveSummary(e.target.value)}
                     placeholder={currentFormConfig.summaryPlaceholder}
-                    className="w-full rounded-xl border border-slate-300 bg-white p-3 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
-                  <div className="flex justify-between text-[11px] text-slate-400">
+                  <div className="flex justify-between text-[11px] text-slate-400 dark:text-slate-500">
                     <span>{currentFormConfig.summaryHelperText}</span>
-                    <span>{formExecutiveSummary.length} / 500 caractères</span>
+                    <span className="tabular-nums">{formExecutiveSummary.length} / 500 caractères</span>
                   </div>
                 </div>
               )}
@@ -1226,16 +1226,16 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
           {/* Section 3 : Métriques opérationnelles réelles (Dexie Offline-First) */}
           {isSectionVisible(currentFormConfig, 'metrics', formMode) && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-3">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
+                <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm">
                   <Sparkles className="h-4 w-4 text-amber-500" />
                   <span>3. Données Opérationnelles Vérifiées (Calcul Automatique)</span>
                 </div>
                 <button
                   type="button"
                   onClick={refreshMetrics}
-                  className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:underline"
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline"
                 >
                   <RefreshCw className="h-3 w-3" />
                   <span>Recalculer</span>
@@ -1244,33 +1244,33 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
               {personalMetrics && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 pt-1">
-                  <div className="rounded-xl border border-slate-200 bg-white p-3">
-                    <span className="text-[11px] text-slate-500">Missions exécutées</span>
-                    <p className="mt-0.5 text-base font-black text-slate-900">
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Missions exécutées</span>
+                    <p className="mt-0.5 text-base font-black text-slate-900 dark:text-white tabular-nums">
                       {personalMetrics.operationsCompleted} / {personalMetrics.operationsTotal}
                     </p>
-                    <p className="text-[10px] text-slate-400">Taux : {personalMetrics.operationsTotal > 0 ? Math.round((personalMetrics.operationsCompleted / personalMetrics.operationsTotal) * 100) : 100}%</p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums">Taux : {personalMetrics.operationsTotal > 0 ? Math.round((personalMetrics.operationsCompleted / personalMetrics.operationsTotal) * 100) : 100}%</p>
                   </div>
-                  <div className="rounded-xl border border-slate-200 bg-white p-3">
-                    <span className="text-[11px] text-slate-500">Flux Traités (USD)</span>
-                    <p className="mt-0.5 text-base font-black text-emerald-700">
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Flux Traités (USD)</span>
+                    <p className="mt-0.5 text-base font-black text-emerald-700 dark:text-emerald-400 tabular-nums">
                       ${personalMetrics.amountUSD.toLocaleString('fr-FR')}
                     </p>
-                    <p className="text-[10px] text-slate-400">Devise USD</p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500">Devise USD</p>
                   </div>
-                  <div className="rounded-xl border border-slate-200 bg-white p-3">
-                    <span className="text-[11px] text-slate-500">Flux Traités (CDF)</span>
-                    <p className="mt-0.5 text-base font-black text-blue-700">
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Flux Traités (CDF)</span>
+                    <p className="mt-0.5 text-base font-black text-blue-700 dark:text-blue-400 tabular-nums">
                       {personalMetrics.amountCDF.toLocaleString('fr-FR')} CDF
                     </p>
-                    <p className="text-[10px] text-slate-400">Devise CDF</p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500">Devise CDF</p>
                   </div>
-                  <div className="rounded-xl border border-slate-200 bg-white p-3">
-                    <span className="text-[11px] text-slate-500">Écart Caisse</span>
-                    <p className={`mt-0.5 text-base font-black ${personalMetrics.discrepancyUSD !== 0 ? 'text-red-600' : 'text-slate-900'}`}>
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Écart Caisse</span>
+                    <p className={`mt-0.5 text-base font-black tabular-nums ${personalMetrics.discrepancyUSD !== 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-900 dark:text-white'}`}>
                       ${personalMetrics.discrepancyUSD} / {personalMetrics.discrepancyCDF} CDF
                     </p>
-                    <p className="text-[10px] text-slate-400">{personalMetrics.discrepancyUSD === 0 && personalMetrics.discrepancyCDF === 0 ? 'Caisse équilibrée' : 'Écart constaté'}</p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500">{personalMetrics.discrepancyUSD === 0 && personalMetrics.discrepancyCDF === 0 ? 'Caisse équilibrée' : 'Écart constaté'}</p>
                   </div>
                 </div>
               )}
@@ -1279,14 +1279,14 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
           {/* Section 4 : Volet Adaptatif & Spécifique au Métier */}
           {isSectionVisible(currentFormConfig, 'category', formMode) && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-3">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-4 space-y-3">
               <button
                 type="button"
                 onClick={() => toggleSection('category')}
-                className="flex w-full items-center justify-between font-bold text-slate-900 text-sm"
+                className="flex w-full items-center justify-between font-bold text-slate-900 dark:text-white text-sm"
               >
                 <div className="flex items-center gap-2">
-                  <Briefcase className="h-4 w-4 text-emerald-600" />
+                  <Briefcase className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   <span>4. Déclarations Spécifiques & Volet Métier Adaptatif</span>
                 </div>
                 {collapsedSections.category ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
@@ -1309,15 +1309,15 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
           {/* Section 5 : Activités Réalisées */}
           {isSectionVisible(currentFormConfig, 'activities', formMode) && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-3">
-              <div className="flex items-center justify-between">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-4 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={() => toggleSection('activities')}
-                  className="flex items-center gap-2 font-bold text-slate-900 text-sm"
+                  className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm"
                 >
-                  <Check className="h-4 w-4 text-emerald-600" />
-                  <span>5. Activités Réalisées ({activities.length})</span>
+                  <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <span className="tabular-nums">5. Activités Réalisées ({activities.length})</span>
                   {collapsedSections.activities ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
 
@@ -1338,7 +1338,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                       },
                     ])
                   }
-                  className="inline-flex items-center gap-1 rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800"
+                  className="inline-flex items-center gap-1 rounded-lg bg-slate-900 dark:bg-slate-100 px-3 py-1.5 text-xs font-bold text-white dark:text-slate-950 hover:bg-slate-800 dark:hover:bg-white"
                 >
                   <Plus className="h-3 w-3" />
                   <span>Ajouter une activité</span>
@@ -1348,18 +1348,18 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               {!collapsedSections.activities && (
                 <div className="space-y-3 pt-2">
                   {activities.length === 0 ? (
-                    <p className="py-3 text-center text-xs text-slate-400">
+                    <p className="py-3 text-center text-xs text-slate-400 dark:text-slate-500">
                       Aucune activité ajoutée. Cliquez sur « Ajouter une activité » pour détailler vos tâches.
                     </p>
                   ) : (
                     activities.map((act, idx) => (
-                      <div key={act.id} className="rounded-xl border border-slate-200 bg-white p-3 space-y-2">
+                      <div key={act.id} className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-slate-700">Activité #{idx + 1}</span>
+                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300 tabular-nums">Activité #{idx + 1}</span>
                           <button
                             type="button"
                             onClick={() => setActivities((cur) => cur.filter((a) => a.id !== act.id))}
-                            className="text-slate-400 hover:text-red-600"
+                            className="text-slate-400 hover:text-red-600 dark:hover:text-red-400"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
@@ -1373,7 +1373,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                               setActivities((cur) => cur.map((a) => (a.id === act.id ? { ...a, title: val } : a)));
                             }}
                             placeholder="Intitulé de l'activité (ex: Accueil client & opérations de versement)"
-                            className="rounded-lg border border-slate-200 p-2 text-xs"
+                            className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
                           />
                           <select
                             value={act.status}
@@ -1381,7 +1381,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                               const val = e.target.value as ActivityStatus;
                               setActivities((cur) => cur.map((a) => (a.id === act.id ? { ...a, status: val } : a)));
                             }}
-                            className="rounded-lg border border-slate-200 p-2 text-xs font-semibold"
+                            className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none"
                           >
                             <option value="realisee">Réalisée</option>
                             <option value="partiellement_realisee">Partiellement réalisée</option>
@@ -1397,7 +1397,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                             setActivities((cur) => cur.map((a) => (a.id === act.id ? { ...a, description: val } : a)));
                           }}
                           placeholder="Description des tâches accomplies, résultat obtenu..."
-                          className="w-full rounded-lg border border-slate-200 p-2 text-xs"
+                          className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
                         />
                       </div>
                     ))
@@ -1409,15 +1409,15 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
           {/* Section 6 : Résultats Obtenus & Taux de Réalisation */}
           {isSectionVisible(currentFormConfig, 'results', formMode) && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-3">
-              <div className="flex items-center justify-between">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-4 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={() => toggleSection('results')}
-                  className="flex items-center gap-2 font-bold text-slate-900 text-sm"
+                  className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm"
                 >
-                  <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                  <span>6. Résultats Obtenus & Objectifs ({results.length})</span>
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <span className="tabular-nums">6. Résultats Obtenus & Objectifs ({results.length})</span>
                   {collapsedSections.results ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
 
@@ -1436,7 +1436,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                       },
                     ])
                   }
-                  className="inline-flex items-center gap-1 rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800"
+                  className="inline-flex items-center gap-1 rounded-lg bg-slate-900 dark:bg-slate-100 px-3 py-1.5 text-xs font-bold text-white dark:text-slate-950 hover:bg-slate-800 dark:hover:bg-white"
                 >
                   <Plus className="h-3 w-3" />
                   <span>Ajouter un objectif</span>
@@ -1446,12 +1446,12 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               {!collapsedSections.results && (
                 <div className="space-y-3 pt-2">
                   {results.length === 0 ? (
-                    <p className="py-2 text-center text-xs text-slate-400">
+                    <p className="py-2 text-center text-xs text-slate-400 dark:text-slate-500">
                       Optionnel : ajoutez des objectifs chiffrés pour calculer automatiquement votre taux d'accomplissement.
                     </p>
                   ) : (
                     results.map((res) => (
-                      <div key={res.id} className="rounded-xl border border-slate-200 bg-white p-3 grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
+                      <div key={res.id} className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
                         <input
                           type="text"
                           value={res.objective}
@@ -1460,7 +1460,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                             setResults((cur) => cur.map((r) => (r.id === res.id ? { ...r, objective: val } : r)));
                           }}
                           placeholder="Objectif (ex: Servir 30 clients)"
-                          className="rounded-lg border border-slate-200 p-2 text-xs sm:col-span-2"
+                          className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none sm:col-span-2"
                         />
                         <div className="flex items-center gap-2">
                           <input
@@ -1472,7 +1472,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                               setResults((cur) => cur.map((r) => (r.id === res.id ? { ...r, targetValue: val, rate } : r)));
                             }}
                             placeholder="Prévu"
-                            className="w-1/2 rounded-lg border border-slate-200 p-2 text-xs"
+                            className="w-1/2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 tabular-nums outline-none"
                           />
                           <input
                             type="number"
@@ -1483,17 +1483,17 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                               setResults((cur) => cur.map((r) => (r.id === res.id ? { ...r, achievedValue: val, rate } : r)));
                             }}
                             placeholder="Réalisé"
-                            className="w-1/2 rounded-lg border border-slate-200 p-2 text-xs font-bold"
+                            className="w-1/2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs font-bold text-slate-900 dark:text-slate-100 tabular-nums outline-none"
                           />
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-800">
+                          <span className="rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-900/60 px-2.5 py-1 text-xs font-bold text-emerald-800 dark:text-emerald-300 tabular-nums">
                             Taux : {res.rate}%
                           </span>
                           <button
                             type="button"
                             onClick={() => setResults((cur) => cur.filter((r) => r.id !== res.id))}
-                            className="text-slate-400 hover:text-red-600"
+                            className="text-slate-400 hover:text-red-600 dark:hover:text-red-400"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
@@ -1508,15 +1508,15 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
           {/* Section 7 : Difficultés & Incidents */}
           {isSectionVisible(currentFormConfig, 'difficulties', formMode) && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-3">
-              <div className="flex items-center justify-between">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-4 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={() => toggleSection('difficulties')}
-                  className="flex items-center gap-2 font-bold text-slate-900 text-sm"
+                  className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm"
                 >
-                  <AlertTriangle className="h-4 w-4 text-amber-600" />
-                  <span>7. Difficultés & Incidents Rencontrés ({difficulties.length + incidents.length})</span>
+                  <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  <span className="tabular-nums">7. Difficultés & Incidents Rencontrés ({difficulties.length + incidents.length})</span>
                   {collapsedSections.difficulties ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
 
@@ -1536,7 +1536,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                       },
                     ])
                   }
-                  className="inline-flex items-center gap-1 rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800"
+                  className="inline-flex items-center gap-1 rounded-lg bg-slate-900 dark:bg-slate-100 px-3 py-1.5 text-xs font-bold text-white dark:text-slate-950 hover:bg-slate-800 dark:hover:bg-white"
                 >
                   <Plus className="h-3 w-3" />
                   <span>Signaler une difficulté</span>
@@ -1546,12 +1546,12 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               {!collapsedSections.difficulties && (
                 <div className="space-y-3 pt-2">
                   {difficulties.length === 0 ? (
-                    <p className="py-2 text-center text-xs text-slate-400">
+                    <p className="py-2 text-center text-xs text-slate-400 dark:text-slate-500">
                       Aucune difficulté ni incident signalé.
                     </p>
                   ) : (
                     difficulties.map((diff) => (
-                      <div key={diff.id} className="rounded-xl border border-slate-200 bg-white p-3 space-y-2">
+                      <div key={diff.id} className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 space-y-2">
                         <div className="flex items-center justify-between">
                           <select
                             value={diff.severity}
@@ -1559,7 +1559,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                               const val = e.target.value as DifficultySeverity;
                               setDifficulties((cur) => cur.map((d) => (d.id === diff.id ? { ...d, severity: val } : d)));
                             }}
-                            className="rounded-lg border border-slate-200 p-1.5 text-xs font-bold"
+                            className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1.5 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none"
                           >
                             <option value="faible">Gravité Faible</option>
                             <option value="moyenne">Gravité Moyenne</option>
@@ -1569,7 +1569,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                           <button
                             type="button"
                             onClick={() => setDifficulties((cur) => cur.filter((d) => d.id !== diff.id))}
-                            className="text-slate-400 hover:text-red-600"
+                            className="text-slate-400 hover:text-red-600 dark:hover:text-red-400"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
@@ -1582,7 +1582,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                             setDifficulties((cur) => cur.map((d) => (d.id === diff.id ? { ...d, issue: val } : d)));
                           }}
                           placeholder="Description du problème (ex: coupure réseau, manque de liquidités USD...)"
-                          className="w-full rounded-lg border border-slate-200 p-2 text-xs"
+                          className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
                         />
                         <input
                           type="text"
@@ -1592,7 +1592,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                             setDifficulties((cur) => cur.map((d) => (d.id === diff.id ? { ...d, actionTaken: val } : d)));
                           }}
                           placeholder="Action corrective entreprise..."
-                          className="w-full rounded-lg border border-slate-200 p-2 text-xs text-slate-600"
+                          className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-600 dark:text-slate-300 placeholder:text-slate-400 outline-none"
                         />
                       </div>
                     ))
@@ -1604,15 +1604,15 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
           {/* Section 8 : Recommandations & Décisions demandées */}
           {isSectionVisible(currentFormConfig, 'recom', formMode) && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-3">
-              <div className="flex items-center justify-between">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-4 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={() => toggleSection('recom')}
-                  className="flex items-center gap-2 font-bold text-slate-900 text-sm"
+                  className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm"
                 >
-                  <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                  <span>8. Recommandations & Décisions Demandées ({recommendations.length})</span>
+                  <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <span className="tabular-nums">8. Recommandations & Décisions Demandées ({recommendations.length})</span>
                   {collapsedSections.recom ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
 
@@ -1632,7 +1632,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                       },
                     ])
                   }
-                  className="inline-flex items-center gap-1 rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800"
+                  className="inline-flex items-center gap-1 rounded-lg bg-slate-900 dark:bg-slate-100 px-3 py-1.5 text-xs font-bold text-white dark:text-slate-950 hover:bg-slate-800 dark:hover:bg-white"
                 >
                   <Plus className="h-3 w-3" />
                   <span>Ajouter recommandation</span>
@@ -1642,12 +1642,12 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               {!collapsedSections.recom && (
                 <div className="space-y-3 pt-2">
                   {recommendations.length === 0 ? (
-                    <p className="py-2 text-center text-xs text-slate-400">
+                    <p className="py-2 text-center text-xs text-slate-400 dark:text-slate-500">
                       Optionnel : formulez des suggestions d'amélioration ou besoins matériels.
                     </p>
                   ) : (
                     recommendations.map((rec) => (
-                      <div key={rec.id} className="rounded-xl border border-slate-200 bg-white p-3 space-y-2">
+                      <div key={rec.id} className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 space-y-2">
                         <div className="flex items-center justify-between">
                           <input
                             type="text"
@@ -1657,12 +1657,12 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                               setRecommendations((cur) => cur.map((r) => (r.id === rec.id ? { ...r, recommendation: val } : r)));
                             }}
                             placeholder="Recommandation / proposition..."
-                            className="w-full rounded-lg border border-slate-200 p-2 text-xs font-medium"
+                            className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
                           />
                           <button
                             type="button"
                             onClick={() => setRecommendations((cur) => cur.filter((r) => r.id !== rec.id))}
-                            className="ml-2 text-slate-400 hover:text-red-600"
+                            className="ml-2 text-slate-400 hover:text-red-600 dark:hover:text-red-400"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
@@ -1677,17 +1677,17 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
           {/* Section 9 : Raccordement au Billetage Officiel */}
           {isSectionVisible(currentFormConfig, 'billetage', formMode) && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
-                  <Coins className="h-4 w-4 text-amber-600" />
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-4 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm">
+                  <Coins className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                   <span>9. Raccordement au Billetage de Caisse</span>
                 </div>
                 {onOpenBilletage && (
                   <button
                     type="button"
                     onClick={onOpenBilletage}
-                    className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100"
+                    className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
                     <Coins className="h-3.5 w-3.5 text-amber-500" />
                     <span>Ouvrir le Billetage</span>
@@ -1696,13 +1696,13 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               </div>
 
               <div className="pt-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Associer un enregistrement de billetage existant (Optionnel)
                 </label>
                 <select
                   value={linkedBilletageId}
                   onChange={(e) => setLinkedBilletageId(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-white p-2.5 text-xs font-medium text-slate-900"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-2.5 text-xs font-medium text-slate-900 dark:text-slate-100 outline-none"
                 >
                   <option value="">Aucun billetage directement lié</option>
                   {billetages.map((b) => (
@@ -1711,7 +1711,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                     </option>
                   ))}
                 </select>
-                <p className="mt-1 text-[11px] text-slate-500">
+                <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
                   Lier un billetage conserve la référence officielle dans le rapport sans modifier l'opération de caisse d'origine.
                 </p>
               </div>
@@ -1719,7 +1719,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
           )}
 
           {/* Section 10 : Attestation d'exactitude & Certification */}
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4 space-y-3">
+          <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/40 p-4 space-y-3">
             <div className="flex items-start gap-3">
               <input
                 id="cert-check"
@@ -1728,21 +1728,21 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 onChange={(e) => setCertifiedAccepted(e.target.checked)}
                 className="mt-0.5 h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500"
               />
-              <label htmlFor="cert-check" className="text-xs text-emerald-950 font-medium">
+              <label htmlFor="cert-check" className="text-xs text-emerald-950 dark:text-emerald-200 font-medium">
                 <strong>Attestation sur l'honneur :</strong> « Je certifie que les informations contenues dans ce rapport sont exactes selon les informations dont je dispose. »
               </label>
             </div>
-            <p className="text-[10px] text-emerald-800/80">
+            <p className="text-[10px] text-emerald-800/80 dark:text-emerald-300/80">
               Conformément à la politique d'audit Ets AMANI, votre identité authentifiée ({user?.displayName || user?.email}), l'horodatage et l'adresse réseau sont consignés dans les journaux d'audit officiels.
             </p>
           </div>
 
           {/* Actions de sauvegarde & soumission */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-slate-200 pt-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-slate-200 dark:border-slate-800 pt-4">
             <button
               type="button"
               onClick={() => setShowEditor(false)}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
             >
               Annuler
             </button>
@@ -1752,7 +1752,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 type="button"
                 disabled={isSaving}
                 onClick={() => handleSaveReport(false)}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-bold text-slate-800 shadow-xs hover:bg-slate-50 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 text-xs font-bold text-slate-800 dark:text-slate-100 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50"
               >
                 <FileEdit className="h-4 w-4 text-amber-500" />
                 <span>{isSaving ? 'Enregistrement...' : 'Enregistrer le brouillon'}</span>
@@ -1762,9 +1762,9 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 type="button"
                 disabled={isSaving}
                 onClick={() => handleSaveReport(true)}
-                className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-slate-800 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-slate-800 dark:hover:bg-emerald-500 disabled:opacity-50"
               >
-                <Send className="h-4 w-4 text-emerald-400" />
+                <Send className="h-4 w-4 text-emerald-400 dark:text-white" />
                 <span>{isSaving ? 'Transmission...' : 'Soumettre officiellement'}</span>
               </button>
             </div>
@@ -1774,23 +1774,23 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
       {/* RECHERCHE & FILTRES */}
       {!showEditor && (
-        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-xs space-y-3">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs space-y-3">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Rechercher par référence, titre, auteur..."
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-3 text-xs text-slate-900 focus:bg-white focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 py-2 pl-10 pr-3 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:bg-white dark:focus:bg-slate-900 focus:outline-none"
               />
             </div>
 
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 outline-none"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none"
             >
               <option value="all">Tous les types de rapports</option>
               {Object.entries(REPORT_TYPE_LABELS).map(([k, label]) => (
@@ -1803,7 +1803,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 outline-none"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none"
             >
               <option value="all">Tous les statuts</option>
               {Object.entries(REPORT_STATUS_LABELS).map(([k, label]) => (
@@ -1816,7 +1816,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
             <select
               value={syncFilter}
               onChange={(e) => setSyncFilter(e.target.value as 'all' | 'pending' | 'synced')}
-              className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 outline-none"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none"
             >
               <option value="all">Tous statuts de sync</option>
               <option value="pending">En attente de sync (Local)</option>
@@ -1827,7 +1827,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               <select
                 value={agencyFilter}
                 onChange={(e) => setAgencyFilter(e.target.value)}
-                className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 outline-none"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none"
               >
                 <option value="all">Toutes les agences</option>
                 {agencies.map((ag) => (
@@ -1837,8 +1837,8 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 ))}
               </select>
             ) : (
-              <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
-                <Building2 className="h-4 w-4 text-slate-500" />
+              <div className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <Building2 className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                 <span className="truncate">{user?.agencyId || 'Agence Locale'}</span>
               </div>
             )}
@@ -1848,16 +1848,16 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
       {/* TABLEAU DE SUIVI DES AGENTS & RAPPORTS ATTENDUS (POUR ADMIN AGENCE ET DG) */}
       {!showEditor && activeTab === 'tracking' && (
-        <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-4">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-purple-600" />
-                <h3 className="text-base font-bold text-slate-900">
+                <Users className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
                   Tableau de Bord : Rapports Attendus & Reçus par Agent
                 </h3>
               </div>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 Suivi nominatif de la conformité des déclarations, rapports soumis, validés ou retournés de l'agence.
               </p>
             </div>
@@ -1869,7 +1869,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                   setConsolidationTitle(`Synthèse Agence ${user?.agencyId} — ${new Date().toLocaleDateString('fr-FR')}`);
                   setShowConsolidateModal(true);
                 }}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-blue-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-blue-800 transition shadow-xs"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-900 dark:bg-blue-700 px-4 py-2.5 text-xs font-bold text-white hover:bg-blue-800 dark:hover:bg-blue-600 transition shadow-xs"
               >
                 <Layers className="h-4 w-4 text-blue-300" />
                 <span>Générer Synthèse Consolidée</span>
@@ -1879,43 +1879,43 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
           {/* Synthèse des compteurs d'agence */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
-              <span className="text-[11px] font-semibold text-slate-500">Agents inscrits</span>
-              <p className="mt-1 text-xl font-black text-slate-900">{agencyUsers.length}</p>
-              <p className="text-[10px] text-slate-400">Effectif opérationnel</p>
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 p-3.5">
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Agents inscrits</span>
+              <p className="mt-1 text-xl font-black text-slate-900 dark:text-white tabular-nums">{agencyUsers.length}</p>
+              <p className="text-[10px] text-slate-400 dark:text-slate-500">Effectif opérationnel</p>
             </div>
-            <div className="rounded-2xl border border-blue-200 bg-blue-50/60 p-3.5">
-              <span className="text-[11px] font-semibold text-blue-700">Rapports Soumis</span>
-              <p className="mt-1 text-xl font-black text-blue-950">
+            <div className="rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/60 dark:bg-blue-950/40 p-3.5">
+              <span className="text-[11px] font-semibold text-blue-700 dark:text-blue-400">Rapports Soumis</span>
+              <p className="mt-1 text-xl font-black text-blue-950 dark:text-blue-200 tabular-nums">
                 {reports.filter((r) => r.status === 'soumis' || r.status === 'recu' || r.status === 'en_examen').length}
               </p>
-              <p className="text-[10px] text-blue-600">En attente d'examen</p>
+              <p className="text-[10px] text-blue-600 dark:text-blue-400/80">En attente d'examen</p>
             </div>
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-3.5">
-              <span className="text-[11px] font-semibold text-emerald-700">Rapports Validés</span>
-              <p className="mt-1 text-xl font-black text-emerald-950">
+            <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/40 p-3.5">
+              <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">Rapports Validés</span>
+              <p className="mt-1 text-xl font-black text-emerald-950 dark:text-emerald-200 tabular-nums">
                 {reports.filter((r) => r.status === 'traite' || r.status === 'valide').length}
               </p>
-              <p className="text-[10px] text-emerald-600">Certifiés conformes</p>
+              <p className="text-[10px] text-emerald-600 dark:text-emerald-400/80">Certifiés conformes</p>
             </div>
-            <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-3.5">
-              <span className="text-[11px] font-semibold text-amber-700">Retournés / À corriger</span>
-              <p className="mt-1 text-xl font-black text-amber-950">
+            <div className="rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/60 dark:bg-amber-950/40 p-3.5">
+              <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400">Retournés / À corriger</span>
+              <p className="mt-1 text-xl font-black text-amber-950 dark:text-amber-200 tabular-nums">
                 {reports.filter((r) => r.status === 'retourne').length}
               </p>
-              <p className="text-[10px] text-amber-600">En cours d'ajustement</p>
+              <p className="text-[10px] text-amber-600 dark:text-amber-400/80">En cours d'ajustement</p>
             </div>
           </div>
 
           {/* Liste nominative des agents */}
           {agencyUsers.length === 0 ? (
-            <div className="py-8 text-center text-xs text-slate-400">
+            <div className="py-8 text-center text-xs text-slate-400 dark:text-slate-500">
               Aucun agent opérationnel répertorié pour cette agence dans le cache local.
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-2xl border border-slate-200">
+            <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-100 text-[11px] font-bold text-slate-600 border-b border-slate-200 uppercase">
+                <thead className="bg-slate-100 dark:bg-slate-800/80 text-[11px] font-bold text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 uppercase">
                   <tr>
                     <th className="p-3">Agent</th>
                     <th className="p-3">Fonction</th>
@@ -1924,60 +1924,60 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                     <th className="p-3 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {agencyUsers.map((ag) => {
                     const agentReps = reports.filter((r) => r.createdBy === ag.uid);
                     const latest = agentReps.length > 0 ? agentReps[0] : null;
 
                     return (
-                      <tr key={ag.uid} className="hover:bg-slate-50/70 transition">
-                        <td className="p-3 font-bold text-slate-900">
+                      <tr key={ag.uid} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition">
+                        <td className="p-3 font-bold text-slate-900 dark:text-white">
                           <div className="flex items-center gap-2">
-                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-[11px] font-black text-white">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 dark:bg-slate-700 text-[11px] font-black text-white shrink-0">
                               {ag.displayName.charAt(0).toUpperCase()}
                             </div>
                             <div>
                               <span>{ag.displayName}</span>
-                              {ag.email && <p className="text-[10px] text-slate-400 font-normal">{ag.email}</p>}
+                              {ag.email && <p className="text-[10px] text-slate-400 dark:text-slate-500 font-normal">{ag.email}</p>}
                             </div>
                           </div>
                         </td>
-                        <td className="p-3 text-slate-600">
-                          <span className="rounded bg-slate-100 px-2 py-0.5 font-semibold text-[11px]">
+                        <td className="p-3 text-slate-600 dark:text-slate-300">
+                          <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 font-semibold text-[11px]">
                             {FUNCTION_DISPLAY_LABELS[ag.function as UserFunction] || ag.function || 'Agent'}
                           </span>
                         </td>
                         <td className="p-3">
                           {latest ? (
                             <span
-                              className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
+                              className={`rounded-md px-2.5 py-0.5 text-[11px] font-bold ${
                                 latest.status === 'traite' || latest.status === 'valide'
-                                  ? 'bg-emerald-100 text-emerald-800'
+                                  ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                                   : latest.status === 'retourne'
-                                    ? 'bg-amber-100 text-amber-900 font-black'
+                                    ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-black'
                                     : latest.status === 'soumis' || latest.status === 'recu'
-                                      ? 'bg-blue-100 text-blue-800'
-                                      : 'bg-slate-100 text-slate-700'
+                                      ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300'
+                                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                               }`}
                             >
                               {REPORT_STATUS_LABELS[latest.status] || latest.status}
                             </span>
                           ) : (
-                            <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-[11px] font-bold text-rose-800">
+                            <span className="rounded-md bg-rose-100 dark:bg-rose-950/60 px-2.5 py-0.5 text-[11px] font-bold text-rose-800 dark:text-rose-300">
                               Rapport Manquant
                             </span>
                           )}
                         </td>
-                        <td className="p-3 font-mono text-[11px]">
+                        <td className="p-3 font-mono text-[11px] tabular-nums">
                           {latest ? (
                             <div>
-                              <span className="font-bold text-blue-700">{latest.reference}</span>
-                              <span className="text-slate-400 text-[10px] block">
+                              <span className="font-bold text-blue-700 dark:text-blue-400">{latest.reference}</span>
+                              <span className="text-slate-400 dark:text-slate-500 text-[10px] block">
                                 {new Date(latest.createdAt).toLocaleDateString('fr-FR')}
                               </span>
                             </div>
                           ) : (
-                            <span className="text-slate-400 italic">Aucun rapport soumis</span>
+                            <span className="text-slate-400 dark:text-slate-500 italic">Aucun rapport soumis</span>
                           )}
                         </td>
                         <td className="p-3 text-right">
@@ -1986,7 +1986,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                               <button
                                 type="button"
                                 onClick={() => setSelectedReport(latest)}
-                                className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-bold text-slate-700 hover:bg-slate-100"
+                                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
                               >
                                 Consulter
                               </button>
@@ -2023,9 +2023,9 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
       {/* LISTE DES RAPPORTS */}
       {!showEditor && activeTab !== 'tracking' && (
-        <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h3 className="text-sm font-bold text-slate-900">
+        <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white tabular-nums">
               {activeTab === 'drafts'
                 ? `Mes Brouillons en cours (${filteredReports.length})`
                 : activeTab === 'returned'
@@ -2036,14 +2036,14 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                       ? `Rapports traités & validés (${filteredReports.length})`
                       : `Tous les rapports (${filteredReports.length})`}
             </h3>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">
               {filteredReports.length} élément(s) affiché(s)
             </span>
           </div>
 
           {filteredReports.length === 0 ? (
-            <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-12 text-center shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 mb-3">
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-10 text-center shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 mb-3">
                 <FileText size={22} strokeWidth={1.7} />
               </div>
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -2054,7 +2054,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {filteredReports.map((rep) => {
                 const isMine = rep.createdBy === user?.uid;
                 const canEdit = canPerformReportAction('reports.edit_own', user, rep);
@@ -2063,43 +2063,43 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 return (
                   <div
                     key={rep.id}
-                    className="py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs hover:bg-slate-50/50 p-2 rounded-xl transition"
+                    className="py-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs hover:bg-slate-50/70 dark:hover:bg-slate-800/40 px-2.5 rounded-xl transition"
                   >
                     <div className="space-y-1.5 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="font-mono font-bold tabular-nums text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md">
                           {rep.reference}
                         </span>
                         <span
-                          className={`rounded-full px-2.5 py-0.5 font-bold ${
+                          className={`rounded-md px-2 py-0.5 font-bold ${
                             rep.status === 'traite' || rep.status === 'valide'
-                              ? 'bg-emerald-100 text-emerald-800'
+                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
                               : rep.status === 'retourne'
-                                ? 'bg-amber-200 text-amber-900 font-black'
+                                ? 'bg-amber-200 text-amber-900 dark:bg-amber-950/70 dark:text-amber-200 font-black'
                                 : rep.status === 'soumis' || rep.status === 'recu'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : 'bg-slate-100 text-slate-700'
+                                  ? 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300'
+                                  : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
                           }`}
                         >
                           {REPORT_STATUS_LABELS[rep.status] || rep.status}
                         </span>
                         {rep.priority === 'critique' && (
-                          <span className="rounded-full bg-red-100 px-2 py-0.5 font-black text-red-800">
+                          <span className="rounded-md bg-red-100 dark:bg-red-950/60 px-2 py-0.5 font-black text-red-800 dark:text-red-300">
                             Critique
                           </span>
                         )}
-                        <span className="rounded bg-slate-100 px-2 py-0.5 text-slate-600">
+                        <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-slate-600 dark:text-slate-300">
                           {REPORT_TYPE_LABELS[rep.type] || rep.type}
                         </span>
                       </div>
 
-                      <p className="font-bold text-sm text-slate-900 truncate">{rep.title}</p>
-                      <p className="text-slate-500 text-xs line-clamp-1">{rep.summary}</p>
+                      <p className="font-bold text-sm text-slate-900 dark:text-white truncate">{rep.title}</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-xs line-clamp-1">{rep.summary}</p>
 
-                      <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400">
-                        <span>Auteur : <strong>{rep.createdByName}</strong> ({rep.authorFunction || rep.createdByRole})</span>
+                      <div className="flex flex-wrap items-center gap-2.5 text-[11px] text-slate-400 dark:text-slate-400 tabular-nums">
+                        <span>Auteur : <strong className="text-slate-600 dark:text-slate-300">{rep.createdByName}</strong> ({rep.authorFunction || rep.createdByRole})</span>
                         <span>•</span>
-                        <span>Agence : <strong>{rep.agencyName}</strong></span>
+                        <span>Agence : <strong className="text-slate-600 dark:text-slate-300">{rep.agencyName}</strong></span>
                         <span>•</span>
                         <span>Date : {new Date(rep.createdAt).toLocaleDateString('fr-FR')}</span>
                         {rep.activities && rep.activities.length > 0 && (
@@ -2112,7 +2112,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
                       {/* Motif de retour si le rapport a été renvoyé */}
                       {rep.status === 'retourne' && rep.returnHistory && rep.returnHistory.length > 0 && (
-                        <div className="rounded-lg bg-amber-50 p-2 text-xs text-amber-900 border border-amber-200">
+                        <div className="rounded-lg bg-amber-50 dark:bg-amber-950/40 p-2 text-xs text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-900/60">
                           <span className="font-bold">Instructions du responsable ({rep.returnHistory[rep.returnHistory.length - 1].returnedByName}) : </span>
                           <span>{rep.returnHistory[rep.returnHistory.length - 1].reason}</span>
                         </div>
@@ -2123,7 +2123,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                       <button
                         type="button"
                         onClick={() => setSelectedReport(rep)}
-                        className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition"
+                        className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
                       >
                         Consulter
                       </button>
@@ -2132,7 +2132,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                         <button
                           type="button"
                           onClick={() => handleEditReport(rep)}
-                          className="rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800 transition"
+                          className="rounded-lg bg-slate-900 dark:bg-white px-3 py-1.5 text-xs font-bold text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 transition"
                         >
                           {rep.status === 'retourne' ? 'Corriger' : 'Modifier'}
                         </button>
@@ -2143,14 +2143,14 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                           <button
                             type="button"
                             onClick={() => handleApprove(rep)}
-                            className="rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-500 transition"
+                            className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-500 transition"
                           >
                             Valider
                           </button>
                           <button
                             type="button"
                             onClick={() => handleOpenReturnModal(rep)}
-                            className="rounded-xl bg-amber-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-amber-500 transition"
+                            className="rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-amber-500 transition"
                           >
                             Retourner
                           </button>
@@ -2161,7 +2161,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                         <button
                           type="button"
                           onClick={() => handleDeleteDraft(rep)}
-                          className="rounded-xl border border-red-200 p-1.5 text-red-600 hover:bg-red-50 transition"
+                          className="rounded-lg border border-red-200 dark:border-red-900/60 p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition"
                           title="Supprimer ce brouillon"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
@@ -2178,12 +2178,12 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
       {/* VUE DÉTAILLÉE & IMPRESSION PDF OFFICIELLE DU RAPPORT */}
       {selectedReport && !showEditor && (
-        <div className="rounded-3xl border border-slate-300 bg-white p-6 sm:p-8 shadow-lg space-y-6">
-          <div className="no-print flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-4">
+        <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 sm:p-7 shadow-lg space-y-6">
+          <div className="no-print flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
             <button
               type="button"
               onClick={() => setSelectedReport(null)}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-slate-950"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white"
             >
               <ArrowLeft className="h-4 w-4" />
               <span>Retour à la liste des rapports</span>
@@ -2193,7 +2193,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               <button
                 type="button"
                 onClick={() => auditPdfExport(selectedReport, user!)}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 dark:bg-white px-4 py-2 text-xs font-bold text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 transition"
               >
                 <Printer className="h-4 w-4" />
                 <span>Imprimer / PDF Officiel</span>
@@ -2203,7 +2203,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 <button
                   type="button"
                   onClick={() => handleEditReport(selectedReport)}
-                  className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-50 transition"
+                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
                 >
                   Modifier ce rapport
                 </button>
@@ -2212,28 +2212,28 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
           </div>
 
           {/* En-tête officiel du document */}
-          <div className="border-b-2 border-slate-900 pb-4 space-y-2">
-            <div className="flex items-center justify-between">
+          <div className="border-b-2 border-slate-900 dark:border-slate-700 pb-4 space-y-2">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex items-center gap-3">
                 <img
                   src="/logo.png"
                   alt="Ets AMANI"
-                  className="h-12 w-12 object-contain rounded-xl bg-white p-1 border border-slate-200 shadow-xs"
+                  className="h-12 w-12 object-contain rounded-xl bg-white p-1 border border-slate-200 dark:border-slate-700 shadow-xs"
                 />
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                     ETS AMANI — RAPPORT OFFICIEL
                   </h1>
-                  <p className="text-xs text-slate-500 font-medium">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                     Système Intégré de Supervision Financière & Opérationnelle
                   </p>
                 </div>
               </div>
-              <div className="text-right">
-                <span className="font-mono text-sm font-black text-blue-700 bg-blue-50 px-3 py-1 rounded-lg">
+              <div className="sm:text-right">
+                <span className="font-mono text-sm font-black tabular-nums text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 px-3 py-1 rounded-lg">
                   {selectedReport.reference}
                 </span>
-                <p className="mt-1 text-[11px] text-slate-400">
+                <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-400">
                   Statut : {REPORT_STATUS_LABELS[selectedReport.status]}
                 </p>
               </div>
@@ -2241,42 +2241,42 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
           </div>
 
           {/* Fiche signalétique du rapport */}
-          <div className="grid grid-cols-2 gap-4 rounded-2xl bg-slate-50 p-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/50 border border-slate-200/80 dark:border-slate-800 p-4 text-xs">
             <div>
-              <span className="text-slate-400">Intitulé : </span>
-              <span className="font-bold text-slate-900">{selectedReport.title}</span>
+              <span className="text-slate-400 dark:text-slate-500">Intitulé : </span>
+              <span className="font-bold text-slate-900 dark:text-white">{selectedReport.title}</span>
             </div>
             <div>
-              <span className="text-slate-400">Type de rapport : </span>
-              <span className="font-bold text-slate-900">{REPORT_TYPE_LABELS[selectedReport.type]}</span>
+              <span className="text-slate-400 dark:text-slate-500">Type de rapport : </span>
+              <span className="font-bold text-slate-900 dark:text-white">{REPORT_TYPE_LABELS[selectedReport.type]}</span>
             </div>
             <div>
-              <span className="text-slate-400">Agence de rattachement : </span>
-              <span className="font-bold text-slate-900">{selectedReport.agencyName}</span>
+              <span className="text-slate-400 dark:text-slate-500">Agence de rattachement : </span>
+              <span className="font-bold text-slate-900 dark:text-white">{selectedReport.agencyName}</span>
             </div>
             <div>
-              <span className="text-slate-400">Période concernée : </span>
-              <span className="font-bold text-slate-900">
+              <span className="text-slate-400 dark:text-slate-500">Période concernée : </span>
+              <span className="font-bold text-slate-900 dark:text-white tabular-nums">
                 Du {new Date(selectedReport.startDate).toLocaleDateString('fr-FR')} au {new Date(selectedReport.endDate).toLocaleDateString('fr-FR')}
               </span>
             </div>
             <div>
-              <span className="text-slate-400">Auteur certifié : </span>
-              <span className="font-bold text-slate-900">
+              <span className="text-slate-400 dark:text-slate-500">Auteur certifié : </span>
+              <span className="font-bold text-slate-900 dark:text-white">
                 {selectedReport.createdByName} ({selectedReport.authorFunction || selectedReport.createdByRole})
               </span>
             </div>
             <div>
-              <span className="text-slate-400">Horodatage de création : </span>
-              <span className="font-bold text-slate-900">{new Date(selectedReport.createdAt).toLocaleString('fr-FR')}</span>
+              <span className="text-slate-400 dark:text-slate-500">Horodatage de création : </span>
+              <span className="font-bold text-slate-900 dark:text-white tabular-nums">{new Date(selectedReport.createdAt).toLocaleString('fr-FR')}</span>
             </div>
           </div>
 
           {/* Résumé exécutif */}
           {selectedReport.executiveSummary && (
             <div className="space-y-1">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Résumé Exécutif</h4>
-              <p className="rounded-xl border border-slate-200 bg-white p-3 text-xs leading-relaxed text-slate-800">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Résumé Exécutif</h4>
+              <p className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/40 p-3 text-xs leading-relaxed text-slate-800 dark:text-slate-200">
                 {selectedReport.executiveSummary}
               </p>
             </div>
@@ -2290,18 +2290,18 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
           {/* Activités réalisées */}
           {selectedReport.activities && selectedReport.activities.length > 0 && (
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Activités Réalisées</h4>
-              <div className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Activités Réalisées</h4>
+              <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800">
                 {selectedReport.activities.map((act) => (
                   <div key={act.id} className="p-3 text-xs space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-900">{act.title}</span>
-                      <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-700">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-bold text-slate-900 dark:text-white">{act.title}</span>
+                      <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-bold text-slate-700 dark:text-slate-300 shrink-0">
                         {act.status}
                       </span>
                     </div>
-                    {act.description && <p className="text-slate-600">{act.description}</p>}
-                    {act.result && <p className="text-emerald-700 font-semibold">Résultat : {act.result}</p>}
+                    {act.description && <p className="text-slate-600 dark:text-slate-400">{act.description}</p>}
+                    {act.result && <p className="text-emerald-700 dark:text-emerald-400 font-semibold">Résultat : {act.result}</p>}
                   </div>
                 ))}
               </div>
@@ -2310,13 +2310,13 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
           {/* Données de Billetage lié */}
           {selectedReport.linkedBilletageRef && (
-            <div className="rounded-xl bg-amber-50 p-3 text-xs border border-amber-200 flex items-center justify-between">
+            <div className="rounded-xl bg-amber-50 dark:bg-amber-950/40 p-3 text-xs border border-amber-200 dark:border-amber-900/60 flex flex-wrap items-center justify-between gap-2">
               <div>
-                <span className="font-bold text-amber-950">Billetage de Caisse Certifié Associé : </span>
-                <span className="font-mono text-amber-900 font-bold">{selectedReport.linkedBilletageRef}</span>
+                <span className="font-bold text-amber-950 dark:text-amber-200">Billetage de Caisse Certifié Associé : </span>
+                <span className="font-mono text-amber-900 dark:text-amber-300 font-bold tabular-nums">{selectedReport.linkedBilletageRef}</span>
               </div>
               {selectedReport.linkedBilletageAmount !== undefined && (
-                <span className="font-bold text-emerald-800">
+                <span className="font-bold tabular-nums text-emerald-800 dark:text-emerald-300">
                   Montant : {selectedReport.linkedBilletageAmount?.toLocaleString('fr-FR')} {selectedReport.linkedBilletageCurrency}
                 </span>
               )}
@@ -2324,14 +2324,14 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
           )}
 
           {/* Attestation officielle */}
-          <div className="border-t border-slate-200 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs text-slate-500">
+          <div className="border-t border-slate-200 dark:border-slate-800 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs text-slate-500 dark:text-slate-400">
             <div>
-              <p className="font-semibold text-slate-800">Attestation d'exactitude :</p>
+              <p className="font-semibold text-slate-800 dark:text-slate-200">Attestation d'exactitude :</p>
               <p>« Je certifie que les informations contenues dans ce rapport sont exactes selon les informations dont je dispose. »</p>
             </div>
-            <div className="mt-2 sm:mt-0 text-right">
-              <span className="font-bold text-slate-900">{selectedReport.createdByName}</span>
-              <p className="text-[10px] text-slate-400">Signataire certifié localement</p>
+            <div className="mt-2 sm:mt-0 sm:text-right">
+              <span className="font-bold text-slate-900 dark:text-white">{selectedReport.createdByName}</span>
+              <p className="text-[10px] text-slate-400 dark:text-slate-500">Signataire certifié localement</p>
             </div>
           </div>
         </div>
@@ -2340,26 +2340,26 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
       {/* MODAL DE RETOUR POUR CORRECTION */}
       {showReturnModal && returnTargetReport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-3xl bg-white p-6 shadow-xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-base font-bold text-slate-900">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 Retourner le rapport pour correction
               </h3>
               <button
                 type="button"
                 onClick={() => setShowReturnModal(false)}
-                className="text-slate-400 hover:text-slate-600"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-500">
-              Rapport : <strong>{returnTargetReport.reference}</strong> (« {returnTargetReport.title} »)
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Rapport : <strong className="text-slate-800 dark:text-slate-200 tabular-nums">{returnTargetReport.reference}</strong> (« {returnTargetReport.title} »)
             </p>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Motif principal du retour *
               </label>
               <input
@@ -2367,12 +2367,12 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 value={returnReason}
                 onChange={(e) => setReturnReason(e.target.value)}
                 placeholder="Ex: Écart de caisse non justifié, pièces justificatives manquantes..."
-                className="w-full rounded-xl border border-slate-300 p-2.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Instructions détaillées et actions attendues
               </label>
               <textarea
@@ -2380,7 +2380,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 value={returnNotes}
                 onChange={(e) => setReturnNotes(e.target.value)}
                 placeholder="Indiquez clairement à l'agent les corrections requises avant la resoumission..."
-                className="w-full rounded-xl border border-slate-300 p-2.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
             </div>
 
@@ -2388,7 +2388,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               <button
                 type="button"
                 onClick={() => setShowReturnModal(false)}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-700"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Annuler
               </button>
@@ -2396,7 +2396,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 type="button"
                 disabled={isReturning}
                 onClick={handleConfirmReturn}
-                className="rounded-xl bg-amber-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-amber-500 disabled:opacity-50"
+                className="rounded-lg bg-amber-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-amber-500 disabled:opacity-50"
               >
                 {isReturning ? 'Transmission...' : 'Confirmer le retour à l\'agent'}
               </button>
@@ -2408,44 +2408,44 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
       {/* MODAL DE CONSOLIDATION D'AGENCE */}
       {showConsolidateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-3xl bg-white p-6 shadow-xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-base font-bold text-slate-900">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 Générer la Synthèse Consolidée de l'Agence
               </h3>
               <button
                 type="button"
                 onClick={() => setShowConsolidateModal(false)}
-                className="text-slate-400 hover:text-slate-600"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Agrège automatiquement l'ensemble des rapports individuels validés ou soumis de votre agence sans modifier les rapports sources.
             </p>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Titre officiel de la synthèse *
               </label>
               <input
                 type="text"
                 value={consolidationTitle}
                 onChange={(e) => setConsolidationTitle(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 p-2.5 text-xs"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Période de consolidation
               </label>
               <select
                 value={consolidationPeriod}
                 onChange={(e) => setConsolidationPeriod(e.target.value as 'aujourd_hui' | '7_jours' | '30_jours')}
-                className="w-full rounded-xl border border-slate-300 p-2.5 text-xs font-semibold"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="aujourd_hui">Aujourd'hui</option>
                 <option value="7_jours">7 derniers jours</option>
@@ -2457,7 +2457,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               <button
                 type="button"
                 onClick={() => setShowConsolidateModal(false)}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-700"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Annuler
               </button>
@@ -2465,7 +2465,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 type="button"
                 disabled={isConsolidating}
                 onClick={handleConsolidateAgency}
-                className="rounded-xl bg-blue-900 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-800 disabled:opacity-50"
+                className="rounded-lg bg-blue-900 dark:bg-blue-700 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-800 dark:hover:bg-blue-600 disabled:opacity-50"
               >
                 {isConsolidating ? 'Consolidation en cours...' : 'Générer la Synthèse d\'Agence'}
               </button>

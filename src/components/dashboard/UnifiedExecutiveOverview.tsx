@@ -1,12 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeftRight,
   Building2,
   Clock,
-  Coins,
   CreditCard,
   FileText,
-  Inbox,
   ShieldAlert,
   Users,
 } from 'lucide-react';
@@ -29,8 +27,8 @@ interface UnifiedExecutiveOverviewProps {
 }
 
 export default function UnifiedExecutiveOverview({
-  kicker = 'ADMINISTRATEUR SYSTÈME',
-  title = 'Bonjour, Aimable',
+  kicker = 'SUPERVISION INSTITUTIONNELLE',
+  title = 'Tableau de bord',
   subtitle = "Vue consolidée de l'ensemble des agences du réseau.",
   onNewTransfer,
   onNewOperation,
@@ -90,7 +88,6 @@ export default function UnifiedExecutiveOverview({
     };
   }, [agencyIdFilter]);
 
-  // Métriques KPI exactes
   const metrics = useMemo(() => {
     const activeAgencies = agencies.filter((a) => a.status === 'active' || !a.status);
     const agentsCount = users.filter((u) => u.role === 'agent').length;
@@ -115,11 +112,13 @@ export default function UnifiedExecutiveOverview({
       (r) => r.status === 'soumis' || r.status === 'en_examen'
     ).length;
 
-    const openIncidents = 0;
+    const returnedOrRejectedReports = reports.filter(
+      (r) => r.status === 'retourne' || r.status === 'rejete'
+    ).length;
 
     return {
-      activeAgenciesCount: activeAgencies.length || agencies.length,
-      totalUsersCount: users.length || 1,
+      activeAgenciesCount: activeAgencies.length,
+      totalUsersCount: users.length,
       agentsCount,
       abonnesCount,
       clientsCount,
@@ -129,11 +128,10 @@ export default function UnifiedExecutiveOverview({
       inProgressTransfers,
       executedTransfers,
       pendingReports,
-      openIncidents,
+      returnedOrRejectedReports,
     };
   }, [agencies, users, operations, transfers, reports]);
 
-  // Activité des 7 derniers jours (réelle avec dates exactes)
   const last7DaysData = useMemo(() => {
     const days: Array<{
       date: Date;
@@ -171,58 +169,44 @@ export default function UnifiedExecutiveOverview({
     return days;
   }, [operations, transfers]);
 
-  // Volumes par agence
+  // Volumes réels par agence (aucune donnée fictive si base vide)
   const agencyListWithVolumes = useMemo(() => {
-    if (agencies.length > 0) {
-      return agencies.map((ag) => {
-        const agTransfers = transfers.filter(
-          (t) => t.sourceAgencyId === ag.id || t.targetAgencyId === ag.id
-        );
-        const volumeUSD = agTransfers.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
-        return {
-          id: ag.id,
-          name: ag.name,
-          city: ag.city || 'RDC',
-          code: ag.code,
-          amountUSD: volumeUSD,
-        };
-      });
-    }
-
-    // Réseau de base ETS AMANI si base vide
-    return [
-      { id: '1', name: 'Beni', city: 'Beni', code: 'BENI-01', amountUSD: 10000 },
-      { id: '2', name: 'Agence Bukavu — Place Munzihirwa', city: 'Bukavu', code: 'BKV-04', amountUSD: 28900 },
-      { id: '3', name: 'Agence Goma — Centre Ville', city: 'Goma', code: 'GOM-02', amountUSD: 42100 },
-      { id: '4', name: 'Agence Kinshasa — Siège Principal', city: 'Kinshasa', code: 'KIN-01', amountUSD: 85400 },
-      { id: '5', name: 'Agence Kisangani — Boyoma', city: 'Kisangani', code: 'KIS-05', amountUSD: 21500 },
-    ];
+    return agencies.map((ag) => {
+      const agTransfers = transfers.filter(
+        (t) => t.sourceAgencyId === ag.id || t.targetAgencyId === ag.id
+      );
+      const volumeUSD = agTransfers.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+      return {
+        id: ag.id,
+        name: ag.name,
+        city: ag.city || 'RDC',
+        code: ag.code,
+        amountUSD: volumeUSD,
+      };
+    });
   }, [agencies, transfers]);
 
   return (
-    <div className="space-y-4 sm:space-y-5">
-      {/* 1. Kicker, Salutation & Actions Rapides Compactes */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div className="space-y-4">
+      {/* En-tête & Actions Rapides */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
         <div>
           <span className="text-[10px] font-extrabold tracking-widest text-[#C58B39] uppercase">
             {kicker}
           </span>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-0.5 tracking-tight">
+          <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
             {title}
-          </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            {subtitle}
-          </p>
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
         </div>
 
-        {/* Boutons d'action compacts */}
         {(onNewTransfer || onNewOperation) && (
           <div className="flex items-center gap-2 shrink-0">
             {onNewTransfer && (
               <button
                 type="button"
                 onClick={onNewTransfer}
-                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 transition active:scale-95"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition whitespace-nowrap"
               >
                 Nouveau transfert
               </button>
@@ -231,7 +215,7 @@ export default function UnifiedExecutiveOverview({
               <button
                 type="button"
                 onClick={onNewOperation}
-                className="rounded-xl bg-[#0B192C] px-3.5 py-2 text-xs font-bold text-white shadow-2xs hover:bg-[#13233D] transition active:scale-95"
+                className="rounded-lg bg-[#0B192C] dark:bg-[#C58B39] px-3 py-1.5 text-xs font-bold text-white dark:text-[#0B192C] hover:opacity-95 transition whitespace-nowrap"
               >
                 Nouvelle opération
               </button>
@@ -240,200 +224,179 @@ export default function UnifiedExecutiveOverview({
         )}
       </div>
 
-      {/* 2. Grille des 8 KPI Cards Compactes (2 colonnes mobile, 4 colonnes desktop) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
-        {/* KPI 1 : Agences Actives */}
-        <div
+      {/* 8 KPI Cards Compactes */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+        <button
+          type="button"
           onClick={onViewAgencies}
-          className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 transition"
+          className="text-left rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 hover:border-slate-300 dark:hover:border-slate-700 transition"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+            <span className="text-[10px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
               AGENCES
             </span>
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">
-              <Building2 size={13} />
-            </div>
+            <Building2 size={14} className="text-slate-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+          <div className="text-xl font-black tabular-nums text-slate-900 dark:text-white mt-1">
             {metrics.activeAgenciesCount}
           </div>
-          <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">
-            Réseau ETS AMANI
-          </div>
-        </div>
+          <div className="text-[10px] text-slate-400 mt-0.5 truncate">Réseau Ets AMANI</div>
+        </button>
 
-        {/* KPI 2 : Utilisateurs */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs">
+        <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+            <span className="text-[10px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
               UTILISATEURS
             </span>
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">
-              <Users size={13} />
-            </div>
+            <Users size={14} className="text-slate-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+          <div className="text-xl font-black tabular-nums text-slate-900 dark:text-white mt-1">
             {metrics.totalUsersCount}
           </div>
-          <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">
-            {metrics.agentsCount} agents actifs
+          <div className="text-[10px] text-slate-400 mt-0.5 truncate">
+            {metrics.agentsCount} agents enregistrés
           </div>
         </div>
 
-        {/* KPI 3 : Clients */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs">
+        <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+            <span className="text-[10px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
               CLIENTS
             </span>
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">
-              <CreditCard size={13} />
-            </div>
+            <CreditCard size={14} className="text-slate-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+          <div className="text-xl font-black tabular-nums text-slate-900 dark:text-white mt-1">
             {metrics.clientsCount}
           </div>
-          <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">
+          <div className="text-[10px] text-slate-400 mt-0.5 truncate">
             {metrics.abonnesCount} abonnés
           </div>
         </div>
 
-        {/* KPI 4 : Opérations */}
-        <div
+        <button
+          type="button"
           onClick={onViewOperations}
-          className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 transition"
+          className="text-left rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 hover:border-slate-300 dark:hover:border-slate-700 transition"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+            <span className="text-[10px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
               OPÉRATIONS
             </span>
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">
-              <ArrowLeftRight size={13} />
-            </div>
+            <ArrowLeftRight size={14} className="text-slate-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+          <div className="text-xl font-black tabular-nums text-slate-900 dark:text-white mt-1">
             {metrics.totalOperations}
           </div>
-          <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">
+          <div className="text-[10px] text-slate-400 mt-0.5 truncate">
             {metrics.executedOps} exécutées
           </div>
-        </div>
+        </button>
 
-        {/* KPI 5 : En Attente */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs">
+        <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+            <span className="text-[10px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
               EN ATTENTE
             </span>
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">
-              <Clock size={13} />
-            </div>
+            <Clock size={14} className="text-slate-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+          <div className="text-xl font-black tabular-nums text-slate-900 dark:text-white mt-1">
             {metrics.pendingOpsTotal}
           </div>
-          <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">
-            À valider / traiter
-          </div>
+          <div className="text-[10px] text-slate-400 mt-0.5 truncate">À valider / traiter</div>
         </div>
 
-        {/* KPI 6 : Transferts En Cours */}
-        <div
+        <button
+          type="button"
           onClick={onViewTransfers}
-          className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 transition"
+          className="text-left rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 hover:border-slate-300 dark:hover:border-slate-700 transition"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+            <span className="text-[10px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
               TRANSFERTS
             </span>
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">
-              <ArrowLeftRight size={13} />
-            </div>
+            <ArrowLeftRight size={14} className="text-slate-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+          <div className="text-xl font-black tabular-nums text-slate-900 dark:text-white mt-1">
             {metrics.inProgressTransfers}
           </div>
-          <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">
+          <div className="text-[10px] text-slate-400 mt-0.5 truncate">
             {metrics.executedTransfers} exécutés
           </div>
-        </div>
+        </button>
 
-        {/* KPI 7 : Rapports À Valider */}
-        <div
+        <button
+          type="button"
           onClick={onViewReports}
-          className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 transition"
+          className="text-left rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 hover:border-slate-300 dark:hover:border-slate-700 transition"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+            <span className="text-[10px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
               RAPPORTS
             </span>
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">
-              <FileText size={13} />
-            </div>
+            <FileText size={14} className="text-slate-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+          <div className="text-xl font-black tabular-nums text-slate-900 dark:text-white mt-1">
             {metrics.pendingReports}
           </div>
-          <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">
-            En attente d'examen
-          </div>
-        </div>
+          <div className="text-[10px] text-slate-400 mt-0.5 truncate">En attente d'examen</div>
+        </button>
 
-        {/* KPI 8 : Incidents */}
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs">
+        <button
+          type="button"
+          onClick={onViewReports}
+          className="text-left rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 hover:border-slate-300 dark:hover:border-slate-700 transition"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
-              INCIDENTS
+            <span className="text-[10px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
+              RETOURS / ALERTES
             </span>
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">
-              <ShieldAlert size={13} />
-            </div>
+            <ShieldAlert size={14} className="text-slate-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
-            {metrics.openIncidents}
+          <div className="text-xl font-black tabular-nums text-slate-900 dark:text-white mt-1">
+            {metrics.returnedOrRejectedReports}
           </div>
-          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5 truncate font-medium">
-            Réseau sous contrôle
+          <div
+            className={`text-[10px] mt-0.5 truncate font-medium ${
+              metrics.returnedOrRejectedReports > 0
+                ? 'text-amber-600 dark:text-amber-400'
+                : 'text-emerald-600 dark:text-emerald-400'
+            }`}
+          >
+            {metrics.returnedOrRejectedReports > 0
+              ? 'Rapports retournés/rejetés'
+              : 'Aucune alerte ouverte'}
           </div>
-        </div>
+        </button>
       </div>
 
-      {/* 3. Disposition Compacte en 2 Colonnes pour Réduire le Scroll */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-        {/* Colonne Gauche : Graphique 7 jours & Répartition des types */}
-        <div className="space-y-3 sm:space-y-4">
-          {/* Graphique compact */}
-          <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-2xs">
+      {/* Activité 7 jours & Réseau d'agences */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div className="space-y-3">
+          <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5">
             <div className="flex items-center justify-between gap-2">
               <div>
-                <h2 className="text-xs font-bold text-slate-900 dark:text-white">
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white">
                   Activité des 7 derniers jours
-                </h2>
-                <p className="text-[10px] text-slate-400 dark:text-slate-500">
-                  Enregistrements réels par jour
-                </p>
+                </h3>
+                <p className="text-[10px] text-slate-400">Enregistrements réels par jour</p>
               </div>
-
-              {/* Légende discrète */}
-              <div className="flex items-center gap-3 text-xs">
-                <div className="flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-[#0B192C] dark:bg-slate-300" />
-                  <span className="text-[10px] font-medium text-slate-500">Opérations</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-[#C58B39]" />
-                  <span className="text-[10px] font-medium text-slate-500">Transferts</span>
-                </div>
+              <div className="flex items-center gap-3 text-[10px] text-slate-500 dark:text-slate-400">
+                <span className="inline-flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-xs bg-[#0B192C] dark:bg-slate-300" />
+                  Opérations
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-xs bg-[#C58B39]" />
+                  Transferts
+                </span>
               </div>
             </div>
 
-            {/* Zone Graphique Compacte */}
-            <div className="mt-4 relative h-32 flex flex-col justify-between">
+            <div className="mt-3 relative h-28 flex flex-col justify-between">
               <div className="absolute inset-0 flex flex-col justify-between pointer-events-none text-[9px] text-slate-300 dark:text-slate-700">
                 {[4, 2, 0].map((val) => (
                   <div key={val} className="flex items-center w-full">
-                    <span className="w-3 shrink-0 text-slate-400">{val}</span>
+                    <span className="w-3 shrink-0 text-slate-400 tabular-nums">{val}</span>
                     <div className="flex-1 border-b border-dotted border-slate-200 dark:border-slate-800" />
                   </div>
                 ))}
@@ -441,7 +404,10 @@ export default function UnifiedExecutiveOverview({
 
               <div className="absolute inset-x-4 bottom-4 top-1 flex items-end justify-between">
                 {last7DaysData.map((d, index) => {
-                  const maxVal = Math.max(4, ...last7DaysData.map((x) => Math.max(x.opsCount, x.transfersCount)));
+                  const maxVal = Math.max(
+                    4,
+                    ...last7DaysData.map((x) => Math.max(x.opsCount, x.transfersCount))
+                  );
                   const opHeightPercent = Math.min(100, (d.opsCount / maxVal) * 100);
                   const trHeightPercent = Math.min(100, (d.transfersCount / maxVal) * 100);
 
@@ -470,15 +436,15 @@ export default function UnifiedExecutiveOverview({
               {hoveredDayIndex !== null && (
                 <div
                   style={{ left: `calc(${(hoveredDayIndex / 6) * 80 + 10}%)` }}
-                  className="absolute top-2 -translate-x-1/2 z-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 shadow-md text-xs pointer-events-none"
+                  className="absolute top-1 -translate-x-1/2 z-20 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 shadow-md text-xs pointer-events-none"
                 >
                   <div className="font-bold text-slate-900 dark:text-white capitalize">
                     {last7DaysData[hoveredDayIndex].label}
                   </div>
-                  <div className="text-[10px] text-slate-600 dark:text-slate-300">
+                  <div className="text-[10px] text-slate-600 dark:text-slate-300 tabular-nums">
                     Opérations : <strong>{last7DaysData[hoveredDayIndex].opsCount}</strong>
                   </div>
-                  <div className="text-[10px] text-[#C58B39]">
+                  <div className="text-[10px] text-[#C58B39] tabular-nums">
                     Transferts : <strong>{last7DaysData[hoveredDayIndex].transfersCount}</strong>
                   </div>
                 </div>
@@ -494,12 +460,11 @@ export default function UnifiedExecutiveOverview({
             </div>
           </div>
 
-          {/* Répartition des opérations (Grille 4 colonnes compacte) */}
-          <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 shadow-2xs">
-            <h2 className="text-xs font-bold text-slate-900 dark:text-white">
+          <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+            <h3 className="text-xs font-bold text-slate-900 dark:text-white">
               Répartition des opérations par type
-            </h2>
-            <div className="grid grid-cols-4 gap-2 mt-2.5">
+            </h3>
+            <div className="grid grid-cols-4 gap-2 mt-2">
               {[
                 { type: 'depot', label: 'Dépôts' },
                 { type: 'retrait', label: 'Retraits' },
@@ -510,12 +475,12 @@ export default function UnifiedExecutiveOverview({
                 return (
                   <div
                     key={type}
-                    className="rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 p-2 text-center"
+                    className="rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/40 p-2 text-center"
                   >
                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
                       {label}
                     </span>
-                    <span className="text-base font-black text-slate-900 dark:text-white mt-0.5 block">
+                    <span className="text-base font-black tabular-nums text-slate-900 dark:text-white mt-0.5 block">
                       {count}
                     </span>
                   </div>
@@ -525,14 +490,12 @@ export default function UnifiedExecutiveOverview({
           </div>
         </div>
 
-        {/* Colonne Droite : Comparaison des agences & Derniers transferts */}
-        <div className="space-y-3 sm:space-y-4">
-          {/* Comparaison des agences */}
-          <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-2xs">
+        <div className="space-y-3">
+          <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-              <h2 className="text-xs font-bold text-slate-900 dark:text-white">
+              <h3 className="text-xs font-bold text-slate-900 dark:text-white">
                 Réseau & Volumes par Agence
-              </h2>
+              </h3>
               {onViewAgencies && (
                 <button
                   type="button"
@@ -544,35 +507,41 @@ export default function UnifiedExecutiveOverview({
               )}
             </div>
 
-            <div className="divide-y divide-slate-100 dark:divide-slate-800/60 pt-1">
-              {agencyListWithVolumes.slice(0, 4).map((item) => (
-                <div
-                  key={item.id}
-                  onClick={onViewAgencies}
-                  className="py-2 flex items-center justify-between cursor-pointer hover:bg-slate-50/60 dark:hover:bg-slate-800/30 px-1 rounded-lg transition"
-                >
-                  <div className="min-w-0 pr-2">
-                    <div className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                      {item.name}
+            {agencyListWithVolumes.length === 0 ? (
+              <div className="py-5 text-center">
+                <p className="text-xs text-slate-400">Aucune agence enregistrée pour le moment</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-100 dark:divide-slate-800/60 pt-1">
+                {agencyListWithVolumes.slice(0, 4).map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={onViewAgencies}
+                    className="w-full py-2 flex items-center justify-between text-left hover:bg-slate-50/60 dark:hover:bg-slate-800/30 px-1 rounded-lg transition"
+                  >
+                    <div className="min-w-0 pr-2">
+                      <div className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                        {item.name}
+                      </div>
+                      <div className="text-[10px] text-slate-400">
+                        {item.city} • Code: {item.code}
+                      </div>
                     </div>
-                    <div className="text-[10px] text-slate-400">
-                      {item.city} • Code: {item.code}
+                    <div className="text-xs font-bold text-slate-900 dark:text-white tabular-nums shrink-0">
+                      ${item.amountUSD.toLocaleString('en-US')}
                     </div>
-                  </div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white tabular-nums shrink-0">
-                    ${item.amountUSD.toLocaleString('en-US')}
-                  </div>
-                </div>
-              ))}
-            </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Derniers transferts */}
-          <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-2xs">
+          <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-              <h2 className="text-xs font-bold text-slate-900 dark:text-white">
+              <h3 className="text-xs font-bold text-slate-900 dark:text-white">
                 Derniers transferts de fonds
-              </h2>
+              </h3>
               {onViewTransfers && (
                 <button
                   type="button"
@@ -585,18 +554,17 @@ export default function UnifiedExecutiveOverview({
             </div>
 
             {transfers.length === 0 ? (
-              <div className="py-4 text-center">
-                <p className="text-xs text-slate-400">
-                  Aucun transfert récent enregistré
-                </p>
+              <div className="py-5 text-center">
+                <p className="text-xs text-slate-400">Aucun transfert récent enregistré</p>
               </div>
             ) : (
               <div className="divide-y divide-slate-100 dark:divide-slate-800/60 pt-1">
                 {transfers.slice(0, 3).map((t) => (
-                  <div
+                  <button
                     key={t.id}
+                    type="button"
                     onClick={onViewTransfers}
-                    className="py-2 flex items-center justify-between cursor-pointer hover:bg-slate-50/60 dark:hover:bg-slate-800/30 px-1 rounded-lg transition"
+                    className="w-full py-2 flex items-center justify-between text-left hover:bg-slate-50/60 dark:hover:bg-slate-800/30 px-1 rounded-lg transition"
                   >
                     <div className="min-w-0 pr-2">
                       <div className="text-xs font-bold text-slate-900 dark:text-white truncate">
@@ -609,7 +577,7 @@ export default function UnifiedExecutiveOverview({
                     <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums shrink-0">
                       {t.amount.toLocaleString('fr-FR')} {t.currency}
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             )}

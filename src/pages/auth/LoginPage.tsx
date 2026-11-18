@@ -220,7 +220,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-slate-100">
+    <div className="flex min-h-full flex-1 flex-col bg-slate-100 dark:bg-slate-950">
       {/* En-tête dédié (Header avec Fond Thématique Sombre / Bleu Nuit) */}
       <header className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 px-6 pt-8 pb-14 text-center text-white shadow-lg">
         {/* Halos lumineux subtils pour la profondeur */}
@@ -250,7 +250,7 @@ export default function LoginPage() {
             Supervision Générale, Trésorerie & Gestion Opérationnelle
           </p>
 
-          <div className="mt-3.5 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold text-emerald-300 backdrop-blur-xs">
+          <div className="mt-3.5 inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold text-emerald-300 backdrop-blur-xs">
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
             <span>Portail d'accès sécurisé</span>
           </div>
@@ -259,15 +259,15 @@ export default function LoginPage() {
 
       {/* Conteneur principal du formulaire aligné et centré */}
       <main className="relative z-20 -mt-7 flex flex-1 flex-col justify-between px-4 pb-6 sm:px-6">
-        <div className="mx-auto w-full max-w-md rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xl shadow-slate-950/5">
+        <div className="mx-auto w-full max-w-md rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xl shadow-slate-950/5 dark:shadow-black/40">
           {viewMode === 'login' && (
             <>
               {/* En-tête du formulaire de connexion */}
               <div className="mb-5 text-center">
-                <h2 className="text-lg font-extrabold tracking-tight text-slate-900">
+                <h2 className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">
                   Connexion à votre espace
                 </h2>
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   {ENABLE_LOGIN_BIOMETRICS
                     ? 'Saisissez vos identifiants ou utilisez votre empreinte biométrique'
                     : 'Saisissez vos identifiants pour accéder à votre espace'}
@@ -276,7 +276,7 @@ export default function LoginPage() {
 
               {/* Module dédié : Authentification Biométrique Agent (Empreinte Digitale) - Désactivé temporairement pour la connexion */}
               {ENABLE_LOGIN_BIOMETRICS && (
-                <div className="mb-5 overflow-hidden rounded-2xl border border-cyan-500/30 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 p-4 text-white shadow-lg shadow-blue-950/15 ring-1 ring-cyan-500/20">
+                <div className="mb-5 overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 p-4 text-white shadow-lg shadow-blue-950/15 ring-1 ring-cyan-500/20">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/30 ring-1 ring-white/20">
@@ -287,7 +287,7 @@ export default function LoginPage() {
                           <h3 className="text-xs font-black tracking-tight text-white uppercase">
                             Sécurité Agent & Caisse
                           </h3>
-                          <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-300 ring-1 ring-emerald-500/40">
+                          <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-300 ring-1 ring-emerald-500/40">
                             Biométrie active
                           </span>
                         </div>
@@ -305,7 +305,7 @@ export default function LoginPage() {
                         setError(null);
                         setIsBiometricModalOpen(true);
                       }}
-                      className="group flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-cyan-500/25 transition-all hover:brightness-110 active:scale-[0.99]"
+                      className="group flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-cyan-500/25 transition-all hover:brightness-110 active:scale-[0.99]"
                     >
                       <Fingerprint className="h-4 w-4 text-cyan-100 transition-transform group-hover:scale-110" />
                       <span>Se connecter par empreinte digitale</span>
@@ -318,11 +318,11 @@ export default function LoginPage() {
               {/* Séparateur visuel pour le mode classique */}
               {ENABLE_LOGIN_BIOMETRICS && (
                 <div className="mb-5 flex items-center gap-3">
-                  <div className="h-px flex-1 bg-slate-200" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                     Ou identifiant / mot de passe
                   </span>
-                  <div className="h-px flex-1 bg-slate-200" />
+                  <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
                 </div>
               )}
 
@@ -330,9 +330,9 @@ export default function LoginPage() {
               {successMessage && (
                 <div
                   role="status"
-                  className="mb-5 flex items-start gap-2.5 rounded-2xl border border-emerald-200 bg-emerald-50/90 p-3.5 text-xs font-semibold text-emerald-800"
+                  className="mb-5 flex items-start gap-2.5 rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/90 dark:bg-emerald-950/40 p-3.5 text-xs font-semibold text-emerald-800 dark:text-emerald-200"
                 >
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 mt-0.5" />
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
                   <span>{successMessage}</span>
                 </div>
               )}
@@ -341,9 +341,9 @@ export default function LoginPage() {
               {error && (
                 <div
                   role="alert"
-                  className="mb-5 flex items-start gap-2.5 rounded-2xl border border-red-200 bg-red-50/90 p-3.5 text-xs font-semibold text-red-700"
+                  className="mb-5 flex items-start gap-2.5 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50/90 dark:bg-red-950/40 p-3.5 text-xs font-semibold text-red-700 dark:text-red-300"
                 >
-                  <AlertCircle className="h-4 w-4 shrink-0 text-red-600 mt-0.5" />
+                  <AlertCircle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400 mt-0.5" />
                   <span>{error}</span>
                 </div>
               )}
@@ -353,7 +353,7 @@ export default function LoginPage() {
                 <div>
                   <label
                     htmlFor="login-email"
-                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700"
+                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
                   >
                     Identifiant / Adresse Email
                   </label>
@@ -367,12 +367,12 @@ export default function LoginPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="nom@ets-amani.com"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
+                      className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-600/10"
                     />
                   </div>
                   {email.trim().toLowerCase() === 'etsamaniadmin@gmail.com' && (
-                    <div className="mt-2 flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-[11px] font-semibold text-emerald-800 border border-emerald-200">
-                      <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
+                    <div className="mt-2 flex items-center gap-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1.5 text-[11px] font-semibold text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/60">
+                      <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                       <span>Compte officiel de référence (Administrateur Système — Niveau 0)</span>
                     </div>
                   )}
@@ -382,14 +382,14 @@ export default function LoginPage() {
                   <div className="mb-1.5 flex items-center justify-between">
                     <label
                       htmlFor="login-password"
-                      className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+                      className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
                     >
                       Mot de passe
                     </label>
                     <button
                       type="button"
                       onClick={handleOpenForgotPassword}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 transition hover:text-blue-800 hover:underline focus:outline-none"
+                      className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 transition hover:text-blue-800 dark:hover:text-blue-300 hover:underline focus:outline-none"
                     >
                       <KeyRound className="h-3.5 w-3.5" />
                       <span>Mot de passe oublié ?</span>
@@ -405,7 +405,7 @@ export default function LoginPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3 pl-10 pr-12 text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
+                      className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 py-2.5 pl-10 pr-12 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-600/10"
                     />
                     <button
                       type="button"
@@ -420,10 +420,10 @@ export default function LoginPage() {
                           ? 'Masquer le mot de passe'
                           : 'Afficher le mot de passe'
                       }
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-200/70 hover:text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 transition hover:bg-slate-200/70 dark:hover:bg-slate-700 hover:text-slate-800 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                     >
                       {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-blue-600" />
+                        <EyeOff className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       ) : (
                         <Eye className="h-4 w-4" />
                       )}
@@ -436,7 +436,7 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-blue-950/20 transition-all hover:from-slate-900 hover:via-blue-900 hover:to-slate-800 focus:outline-none focus:ring-4 focus:ring-blue-900/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="group flex w-full items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 dark:from-blue-700 dark:via-blue-600 dark:to-indigo-700 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-blue-950/20 transition-all hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-blue-900/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {loading ? (
                       <>
@@ -456,21 +456,21 @@ export default function LoginPage() {
 
               {/* Séparateur visuel */}
               <div className="my-5 flex items-center gap-3">
-                <div className="h-px flex-1 bg-slate-200" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                   Nouveau compte
                 </span>
-                <div className="h-px flex-1 bg-slate-200" />
+                <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
               </div>
 
               {/* Bouton structuré d'inscription publique (Client / Abonné) */}
               <Link
                 to="/register"
-                className="group flex w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/90 py-3 px-4 text-xs font-bold text-slate-800 transition-all hover:border-blue-300 hover:bg-blue-50/60 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/10 active:scale-[0.99]"
+                className="group flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/90 dark:bg-slate-800/80 py-2.5 px-4 text-xs font-bold text-slate-800 dark:text-slate-200 transition-all hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50/60 dark:hover:bg-blue-950/40 hover:text-blue-700 dark:hover:text-blue-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 active:scale-[0.99]"
               >
-                <UserPlus className="h-4 w-4 text-blue-600 shrink-0" />
+                <UserPlus className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
                 <span>Créer un compte Client / Abonné</span>
-                <ArrowRight className="h-3.5 w-3.5 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-600" />
+                <ArrowRight className="h-3.5 w-3.5 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
               </Link>
             </>
           )}
@@ -481,7 +481,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={handleBackToLogin}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 transition hover:text-slate-900"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 transition hover:text-slate-900 dark:hover:text-white"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   <span>Retour à la connexion</span>
@@ -489,13 +489,13 @@ export default function LoginPage() {
               </div>
 
               <div className="mb-5 text-center">
-                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 ring-1 ring-blue-100 dark:ring-blue-900">
                   <KeyRound className="h-6 w-6" />
                 </div>
-                <h2 className="text-lg font-extrabold tracking-tight text-slate-900">
+                <h2 className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">
                   Mot de passe oublié ?
                 </h2>
-                <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                   Renseignez l'adresse email associée à votre compte Ets AMANI pour recevoir un lien sécurisé de modification de votre mot de passe.
                 </p>
               </div>
@@ -503,10 +503,10 @@ export default function LoginPage() {
               {successMessage && (
                 <div
                   role="status"
-                  className="mb-5 flex flex-col gap-2 rounded-2xl border border-emerald-200 bg-emerald-50/90 p-3.5 text-xs font-semibold text-emerald-800"
+                  className="mb-5 flex flex-col gap-2 rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/90 dark:bg-emerald-950/40 p-3.5 text-xs font-semibold text-emerald-800 dark:text-emerald-200"
                 >
                   <div className="flex items-start gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 mt-0.5" />
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
                     <span>{successMessage}</span>
                   </div>
                 </div>
@@ -515,9 +515,9 @@ export default function LoginPage() {
               {error && (
                 <div
                   role="alert"
-                  className="mb-5 flex items-start gap-2.5 rounded-2xl border border-red-200 bg-red-50/90 p-3.5 text-xs font-semibold text-red-700"
+                  className="mb-5 flex items-start gap-2.5 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50/90 dark:bg-red-950/40 p-3.5 text-xs font-semibold text-red-700 dark:text-red-300"
                 >
-                  <AlertCircle className="h-4 w-4 shrink-0 text-red-600 mt-0.5" />
+                  <AlertCircle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400 mt-0.5" />
                   <span>{error}</span>
                 </div>
               )}
@@ -526,7 +526,7 @@ export default function LoginPage() {
                 <div>
                   <label
                     htmlFor="reset-email"
-                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700"
+                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
                   >
                     Adresse Email du compte
                   </label>
@@ -540,7 +540,7 @@ export default function LoginPage() {
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
                       placeholder="nom@ets-amani.com"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
+                      className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-600/10"
                     />
                   </div>
                 </div>
@@ -548,7 +548,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-blue-950/20 transition-all hover:from-slate-900 hover:via-blue-900 hover:to-slate-800 focus:outline-none focus:ring-4 focus:ring-blue-900/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="group flex w-full items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 dark:from-blue-700 dark:via-blue-600 dark:to-indigo-700 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-blue-950/20 transition-all hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-blue-900/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loading ? (
                     <>
@@ -564,7 +564,7 @@ export default function LoginPage() {
                 </button>
               </form>
 
-              <div className="mt-4 pt-4 border-t border-slate-100 text-center">
+              <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
                 <button
                   type="button"
                   onClick={() => {
@@ -572,7 +572,7 @@ export default function LoginPage() {
                     setSuccessMessage(null);
                     setViewMode('forgot-confirm');
                   }}
-                  className="text-xs font-bold text-blue-600 transition hover:text-blue-800 hover:underline"
+                  className="text-xs font-bold text-blue-600 dark:text-blue-400 transition hover:text-blue-800 dark:hover:text-blue-300 hover:underline"
                 >
                   J'ai déjà un code de réinitialisation → Modifier mon mot de passe
                 </button>
@@ -590,7 +590,7 @@ export default function LoginPage() {
                     setSuccessMessage(null);
                     setViewMode('forgot-request');
                   }}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 transition hover:text-slate-900"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 transition hover:text-slate-900 dark:hover:text-white"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   <span>Retour</span>
@@ -598,20 +598,20 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={handleBackToLogin}
-                  className="text-xs font-semibold text-slate-500 hover:text-slate-900"
+                  className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 >
                   Connexion
                 </button>
               </div>
 
               <div className="mb-5 text-center">
-                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-100 dark:ring-emerald-900">
                   <Lock className="h-6 w-6" />
                 </div>
-                <h2 className="text-lg font-extrabold tracking-tight text-slate-900">
+                <h2 className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">
                   Nouveau mot de passe
                 </h2>
-                <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                   Saisissez votre code de réinitialisation et définissez votre nouveau mot de passe sécurisé.
                 </p>
               </div>
@@ -619,9 +619,9 @@ export default function LoginPage() {
               {error && (
                 <div
                   role="alert"
-                  className="mb-5 flex items-start gap-2.5 rounded-2xl border border-red-200 bg-red-50/90 p-3.5 text-xs font-semibold text-red-700"
+                  className="mb-5 flex items-start gap-2.5 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50/90 dark:bg-red-950/40 p-3.5 text-xs font-semibold text-red-700 dark:text-red-300"
                 >
-                  <AlertCircle className="h-4 w-4 shrink-0 text-red-600 mt-0.5" />
+                  <AlertCircle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400 mt-0.5" />
                   <span>{error}</span>
                 </div>
               )}
@@ -630,7 +630,7 @@ export default function LoginPage() {
                 <div>
                   <label
                     htmlFor="reset-oob-code"
-                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700"
+                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
                   >
                     Code de réinitialisation (reçu par email)
                   </label>
@@ -643,7 +643,7 @@ export default function LoginPage() {
                       value={oobCode}
                       onChange={(e) => setOobCode(e.target.value)}
                       placeholder="Collez le code reçu par email"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3 pl-10 pr-4 text-sm font-mono text-slate-900 placeholder:font-sans placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
+                      className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 py-2.5 pl-10 pr-4 text-sm font-mono tabular-nums text-slate-900 dark:text-white placeholder:font-sans placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-600/10"
                     />
                   </div>
                 </div>
@@ -651,7 +651,7 @@ export default function LoginPage() {
                 <div>
                   <label
                     htmlFor="reset-new-password"
-                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700"
+                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
                   >
                     Nouveau mot de passe
                   </label>
@@ -666,7 +666,7 @@ export default function LoginPage() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Minimum 6 caractères"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3 pl-10 pr-12 text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
+                      className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 py-2.5 pl-10 pr-12 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-600/10"
                     />
                     <button
                       type="button"
@@ -681,10 +681,10 @@ export default function LoginPage() {
                           ? 'Masquer le mot de passe'
                           : 'Afficher le mot de passe'
                       }
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-200/70 hover:text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 transition hover:bg-slate-200/70 dark:hover:bg-slate-700 hover:text-slate-800 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                     >
                       {showNewPassword ? (
-                        <EyeOff className="h-4 w-4 text-blue-600" />
+                        <EyeOff className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       ) : (
                         <Eye className="h-4 w-4" />
                       )}
@@ -695,7 +695,7 @@ export default function LoginPage() {
                 <div>
                   <label
                     htmlFor="reset-confirm-password"
-                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700"
+                    className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
                   >
                     Confirmer le nouveau mot de passe
                   </label>
@@ -710,7 +710,7 @@ export default function LoginPage() {
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
                       placeholder="Retapez le nouveau mot de passe"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-3 pl-10 pr-12 text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
+                      className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/80 py-2.5 pl-10 pr-12 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-600/10"
                     />
                     <button
                       type="button"
@@ -725,10 +725,10 @@ export default function LoginPage() {
                           ? 'Masquer le mot de passe'
                           : 'Afficher le mot de passe'
                       }
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-200/70 hover:text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 transition hover:bg-slate-200/70 dark:hover:bg-slate-700 hover:text-slate-800 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                     >
                       {showConfirmNewPassword ? (
-                        <EyeOff className="h-4 w-4 text-blue-600" />
+                        <EyeOff className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       ) : (
                         <Eye className="h-4 w-4" />
                       )}
@@ -739,7 +739,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-blue-950/20 transition-all hover:from-slate-900 hover:via-blue-900 hover:to-slate-800 focus:outline-none focus:ring-4 focus:ring-blue-900/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="group flex w-full items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 dark:from-blue-700 dark:via-blue-600 dark:to-indigo-700 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-blue-950/20 transition-all hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-blue-900/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loading ? (
                     <>
@@ -760,7 +760,7 @@ export default function LoginPage() {
 
         {/* Pied de page sobre */}
         <footer className="mt-5 text-center">
-          <p className="text-[11px] font-medium text-slate-500">
+          <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 tabular-nums">
             © {new Date().getFullYear()} Ets AMANI · Tous droits réservés
           </p>
         </footer>

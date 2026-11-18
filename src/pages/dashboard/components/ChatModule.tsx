@@ -1064,13 +1064,13 @@ export default function ChatModule({
   }, [broadcasts, user]);
 
   return (
-    <div className="flex flex-col h-[760px] max-h-[88vh] rounded-3xl border border-slate-200 bg-white shadow-xl overflow-hidden font-sans">
+    <div className="flex flex-col h-[760px] max-h-[88vh] rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111b21] shadow-sm overflow-hidden font-sans">
       {/* ========================================================================= */}
       {/* 1. BARRE SUPÉRIEURE PRINCIPALE (STYLE WHATSAPP ANDROID APP BAR)            */}
       {/* ========================================================================= */}
-      <div className="bg-[#008069] text-white px-4 py-3 shrink-0 shadow-md flex items-center justify-between select-none">
+      <div className="bg-[#008069] dark:bg-[#005c4b] text-white px-4 py-3 shrink-0 shadow-sm flex flex-wrap items-center justify-between gap-2 select-none">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/15 text-white shadow-inner">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/15 text-white shadow-inner">
             <MessageSquare className="h-5 w-5" />
           </div>
           <div>
@@ -1089,21 +1089,21 @@ export default function ChatModule({
         </div>
 
         {/* Onglets WhatsApp Android : Discussions vs Annonces Officielles */}
-        <div className="flex items-center gap-2">
-          <div className="flex rounded-xl bg-black/20 p-1">
+        <div className="flex items-center gap-2 max-w-full overflow-x-auto scrollbar-none">
+          <div className="flex rounded-lg bg-black/20 p-1 shrink-0">
             <button
               type="button"
               onClick={() => setActiveTab('chat')}
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+              className={`flex items-center gap-1.5 whitespace-nowrap shrink-0 rounded-md px-3 py-1.5 text-xs font-bold transition ${
                 activeTab === 'chat'
-                  ? 'bg-white text-[#008069] shadow-sm'
+                  ? 'bg-white dark:bg-slate-900 text-[#008069] dark:text-emerald-400 shadow-xs'
                   : 'text-white/80 hover:text-white'
               }`}
             >
               <MessageCircle className="h-3.5 w-3.5" />
               <span>Discussions</span>
               {unreadStats.total > 0 && (
-                <span className="rounded-full bg-emerald-500 px-1.5 py-0.2 text-[10px] font-black text-white">
+                <span className="rounded-md bg-emerald-500 px-1.5 py-0.5 text-[10px] font-black text-white tabular-nums">
                   {unreadStats.total}
                 </span>
               )}
@@ -1111,16 +1111,16 @@ export default function ChatModule({
             <button
               type="button"
               onClick={() => setActiveTab('broadcasts')}
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+              className={`flex items-center gap-1.5 whitespace-nowrap shrink-0 rounded-md px-3 py-1.5 text-xs font-bold transition ${
                 activeTab === 'broadcasts'
-                  ? 'bg-amber-400 text-slate-950 shadow-sm'
+                  ? 'bg-amber-400 text-slate-950 shadow-xs'
                   : 'text-white/80 hover:text-white'
               }`}
             >
               <Bell className="h-3.5 w-3.5" />
               <span>Notes & Annonces</span>
               {unacknowledgedCount > 0 && (
-                <span className="rounded-full bg-red-600 px-1.5 py-0.2 text-[10px] font-black text-white animate-pulse">
+                <span className="rounded-md bg-red-600 px-1.5 py-0.5 text-[10px] font-black text-white animate-pulse tabular-nums">
                   {unacknowledgedCount}
                 </span>
               )}
@@ -1131,7 +1131,7 @@ export default function ChatModule({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl bg-white/10 p-2 text-white hover:bg-white/20 transition"
+              className="rounded-lg bg-white/10 p-2 text-white hover:bg-white/20 transition shrink-0"
               title="Fermer le chat"
             >
               <X className="h-4 w-4" />
@@ -1142,15 +1142,15 @@ export default function ChatModule({
 
       {/* Toast de confirmation / notifications */}
       {feedbackToast && (
-        <div className="flex items-center justify-between bg-emerald-50 border-b border-emerald-200 px-4 py-2 text-xs font-bold text-emerald-900 shrink-0">
+        <div className="flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/60 border-b border-emerald-200 dark:border-emerald-900/60 px-4 py-2 text-xs font-bold text-emerald-900 dark:text-emerald-200 shrink-0">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>{feedbackToast}</span>
           </div>
           <button
             type="button"
             onClick={() => setFeedbackToast(null)}
-            className="text-emerald-700 hover:text-emerald-900"
+            className="text-emerald-700 dark:text-emerald-300 hover:text-emerald-900 dark:hover:text-white"
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -1166,27 +1166,27 @@ export default function ChatModule({
           {/* PANNEAU GAUCHE : LISTE DES CONVERSATIONS (STYLE WHATSAPP ANDROID)      */}
           {/* ===================================================================== */}
           <div
-            className={`w-full md:w-88 lg:w-96 border-r border-slate-200 bg-white flex flex-col shrink-0 ${
+            className={`w-full md:w-88 lg:w-96 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111b21] flex flex-col shrink-0 ${
               mobilePane === 'conversation' ? 'hidden md:flex' : 'flex'
             }`}
           >
             {/* Barre de recherche dans les conversations */}
-            <div className="p-3 border-b border-slate-100 bg-[#f0f2f5]/60 space-y-2">
+            <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-[#f0f2f5]/60 dark:bg-[#202c33]/70 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
-                  <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                  <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400 dark:text-slate-500" />
                   <input
                     type="text"
                     value={conversationSearchQuery}
                     onChange={(e) => setConversationSearchQuery(e.target.value)}
                     placeholder="Rechercher une discussion..."
-                    className="w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 outline-none focus:border-[#008069] focus:ring-1 focus:ring-[#008069]"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#202c33] pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-[#008069] dark:focus:border-[#00a884] focus:ring-1 focus:ring-[#008069]"
                   />
                   {conversationSearchQuery && (
                     <button
                       type="button"
                       onClick={() => setConversationSearchQuery('')}
-                      className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600"
+                      className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
@@ -1197,7 +1197,7 @@ export default function ChatModule({
                 <button
                   type="button"
                   onClick={() => setShowNewChatModal(true)}
-                  className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#008069] text-white hover:bg-[#006a57] transition shadow-xs"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#008069] dark:bg-[#00a884] text-white hover:bg-[#006a57] dark:hover:bg-[#008f72] transition shadow-xs"
                   title="Démarrer une discussion ou créer un groupe"
                 >
                   <Plus className="h-4 w-4" />
@@ -1222,15 +1222,15 @@ export default function ChatModule({
                       key={f.id}
                       type="button"
                       onClick={() => setListFilter(f.id)}
-                      className={`whitespace-nowrap rounded-full px-2.5 py-1 font-semibold transition ${
+                      className={`whitespace-nowrap shrink-0 rounded-md px-2.5 py-1 font-semibold transition ${
                         active
-                          ? 'bg-[#008069] text-white shadow-xs'
-                          : 'bg-slate-200/70 text-slate-700 hover:bg-slate-300/70'
+                          ? 'bg-[#008069] dark:bg-[#00a884] text-white shadow-xs'
+                          : 'bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300/70 dark:hover:bg-slate-700'
                       }`}
                     >
                       <span>{f.label}</span>
                       {'count' in f && Boolean(f.count) && (
-                        <span className="ml-1 rounded-full bg-white/20 px-1.5 py-0.2 text-[9px] font-black">
+                        <span className="ml-1 rounded-md bg-white/20 px-1.5 py-0.5 text-[9px] font-black tabular-nums">
                           {f.count}
                         </span>
                       )}
@@ -1241,12 +1241,12 @@ export default function ChatModule({
             </div>
 
             {/* Liste scrollable des conversations */}
-            <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
+            <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/70">
               {conversationListItems.length === 0 ? (
-                <div className="p-8 text-center text-slate-400">
-                  <MessageSquare className="h-8 w-8 mx-auto mb-2 text-slate-300" />
-                  <p className="text-xs font-bold text-slate-600">Aucune discussion trouvée</p>
-                  <p className="text-[11px] text-slate-400 mt-1">
+                <div className="p-8 text-center text-slate-400 dark:text-slate-500">
+                  <MessageSquare className="h-8 w-8 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
+                  <p className="text-xs font-bold text-slate-600 dark:text-slate-300">Aucune discussion trouvée</p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                     Modifiez vos filtres ou lancez une nouvelle conversation.
                   </p>
                 </div>
@@ -1264,8 +1264,8 @@ export default function ChatModule({
                       onClick={() => selectConversation(item)}
                       className={`flex w-full items-center gap-3 px-3.5 py-3 text-left transition select-none ${
                         isCurrent
-                          ? 'bg-[#f0f2f5] border-l-4 border-[#008069]'
-                          : 'hover:bg-slate-50'
+                          ? 'bg-[#f0f2f5] dark:bg-[#202c33] border-l-4 border-[#008069] dark:border-[#00a884]'
+                          : 'hover:bg-slate-50 dark:hover:bg-[#202c33]/60'
                       }`}
                     >
                       {/* Avatar circulaire WhatsApp */}
@@ -1276,8 +1276,8 @@ export default function ChatModule({
                           {initials}
                         </div>
                         {/* Indicateur de type (icône miniature) */}
-                        <span className="absolute -bottom-0.5 -right-0.5 rounded-full bg-white p-0.5 shadow-xs">
-                          <Icon className="h-3 w-3 text-slate-600" />
+                        <span className="absolute -bottom-0.5 -right-0.5 rounded-full bg-white dark:bg-slate-800 p-0.5 shadow-xs border border-slate-100 dark:border-slate-700">
+                          <Icon className="h-3 w-3 text-slate-600 dark:text-slate-300" />
                         </span>
                       </div>
 
@@ -1286,17 +1286,17 @@ export default function ChatModule({
                         <div className="flex items-center justify-between gap-1 mb-0.5">
                           <h4
                             className={`truncate text-xs font-bold ${
-                              isCurrent ? 'text-slate-900' : 'text-slate-800'
+                              isCurrent ? 'text-slate-900 dark:text-white' : 'text-slate-800 dark:text-slate-200'
                             }`}
                           >
                             {item.name}
                           </h4>
                           {item.timestamp > 0 && (
                             <span
-                              className={`text-[10px] shrink-0 ${
+                              className={`text-[10px] shrink-0 tabular-nums ${
                                 item.unread > 0
-                                  ? 'font-bold text-[#008069]'
-                                  : 'text-slate-400'
+                                  ? 'font-bold text-[#008069] dark:text-[#00a884]'
+                                  : 'text-slate-400 dark:text-slate-500'
                               }`}
                             >
                               {formatChatTime(item.timestamp)}
@@ -1305,7 +1305,7 @@ export default function ChatModule({
                         </div>
 
                         <div className="flex items-center justify-between gap-2">
-                          <p className="truncate text-[11px] text-slate-500 flex items-center gap-1">
+                          <p className="truncate text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
                             {item.lastMessage ? (
                               <>
                                 {item.lastMessage.senderId === user?.uid && (
@@ -1328,7 +1328,7 @@ export default function ChatModule({
                                       </span>
                                     ) : (
                                       <span title="Distribué" className="inline-flex shrink-0">
-                                        <CheckCheck className="h-3 w-3 text-slate-400 stroke-[2]" />
+                                        <CheckCheck className="h-3 w-3 text-slate-400 dark:text-slate-500 stroke-[2]" />
                                       </span>
                                     )}
                                   </>
@@ -1338,7 +1338,7 @@ export default function ChatModule({
                                 </span>
                               </>
                             ) : (
-                              <span className="italic text-slate-400">
+                              <span className="italic text-slate-400 dark:text-slate-500">
                                 {item.subtitle}
                               </span>
                             )}
@@ -1346,7 +1346,7 @@ export default function ChatModule({
 
                           {/* Badge de messages non-lus WhatsApp */}
                           {item.unread > 0 && (
-                            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#25d366] px-1 text-[10px] font-black text-white shadow-xs shrink-0">
+                            <span className="flex h-4 min-w-4 items-center justify-center rounded-md bg-[#25d366] px-1 text-[10px] font-black text-white shadow-xs shrink-0 tabular-nums">
                               {item.unread}
                             </span>
                           )}
@@ -1363,18 +1363,18 @@ export default function ChatModule({
           {/* PANNEAU DROIT : FENÊTRE DE DISCUSSION WHATSAPP                        */}
           {/* ===================================================================== */}
           <div
-            className={`flex-1 flex flex-col bg-[#efeae2] overflow-hidden ${
+            className={`flex-1 flex flex-col bg-[#efeae2] dark:bg-[#0b141a] overflow-hidden ${
               mobilePane === 'list' ? 'hidden md:flex' : 'flex'
             }`}
           >
             {/* En-tête de la discussion active (WhatsApp Chat Header) */}
-            <div className="bg-[#f0f2f5] border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shrink-0 shadow-xs">
+            <div className="bg-[#f0f2f5] dark:bg-[#202c33] border-b border-slate-200 dark:border-slate-800 px-4 py-2.5 flex items-center justify-between shrink-0 shadow-xs">
               <div className="flex items-center gap-3 min-w-0">
                 {/* Bouton retour sur mobile */}
                 <button
                   type="button"
                   onClick={() => setMobilePane('list')}
-                  className="md:hidden flex items-center justify-center rounded-full p-1.5 text-slate-600 hover:bg-slate-200 transition"
+                  className="md:hidden flex items-center justify-center rounded-lg p-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
                   title="Retour à la liste des discussions"
                 >
                   <ArrowLeft className="h-5 w-5" />
@@ -1389,10 +1389,10 @@ export default function ChatModule({
                 </div>
 
                 <div className="min-w-0">
-                  <h3 className="truncate text-xs font-black text-slate-900 leading-tight">
+                  <h3 className="truncate text-xs font-black text-slate-900 dark:text-white leading-tight">
                     {currentChannelName}
                   </h3>
-                  <p className="truncate text-[11px] text-slate-500 flex items-center gap-1.5">
+                  <p className="truncate text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                     <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
                     <span className="truncate">{currentChannelSubtitle}</span>
                   </p>
@@ -1404,10 +1404,10 @@ export default function ChatModule({
                 <button
                   type="button"
                   onClick={() => setShowSearchInChat((v) => !v)}
-                  className={`rounded-xl p-2 transition ${
+                  className={`rounded-lg p-2 transition ${
                     showSearchInChat
-                      ? 'bg-slate-200 text-slate-900'
-                      : 'text-slate-600 hover:bg-slate-200'
+                      ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
                   title="Rechercher dans cette discussion"
                 >
@@ -1418,7 +1418,7 @@ export default function ChatModule({
                 <button
                   type="button"
                   onClick={() => setShowNewChatModal(true)}
-                  className="rounded-xl p-2 text-slate-600 hover:bg-slate-200 transition"
+                  className="rounded-lg p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
                   title="Options de destinataires"
                 >
                   <UserCheck className="h-4 w-4" />
@@ -1428,21 +1428,21 @@ export default function ChatModule({
 
             {/* Barre déroulante de recherche dans les messages */}
             {showSearchInChat && (
-              <div className="bg-white border-b border-slate-200 px-4 py-2 flex items-center gap-2 text-xs shrink-0 shadow-inner">
-                <Search className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <div className="bg-white dark:bg-[#111b21] border-b border-slate-200 dark:border-slate-800 px-4 py-2 flex items-center gap-2 text-xs shrink-0 shadow-inner">
+                <Search className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
                 <input
                   type="text"
                   value={chatSearchQuery}
                   onChange={(e) => setChatSearchQuery(e.target.value)}
                   placeholder="Rechercher dans les messages..."
-                  className="flex-1 bg-transparent text-xs text-slate-900 outline-none"
+                  className="flex-1 bg-transparent text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none"
                   autoFocus
                 />
                 {chatSearchQuery && (
                   <button
                     type="button"
                     onClick={() => setChatSearchQuery('')}
-                    className="text-[10px] font-bold text-slate-500 hover:text-slate-800"
+                    className="text-[10px] font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 tabular-nums"
                   >
                     Effacer ({searchedChannelMessages.length})
                   </button>
@@ -1453,7 +1453,7 @@ export default function ChatModule({
                     setShowSearchInChat(false);
                     setChatSearchQuery('');
                   }}
-                  className="text-slate-400 hover:text-slate-600 p-1"
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -1463,15 +1463,15 @@ export default function ChatModule({
             {/* Fil des messages avec fond WhatsApp */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {searchedChannelMessages.length === 0 ? (
-                <div className="flex h-full flex-col items-center justify-center text-center p-6 text-slate-500">
-                  <div className="rounded-2xl bg-white/80 p-4 shadow-sm border border-slate-200 max-w-sm">
-                    <MessageSquare className="h-8 w-8 mx-auto mb-2 text-[#008069]" />
-                    <p className="text-xs font-bold text-slate-800">
+                <div className="flex h-full flex-col items-center justify-center text-center p-6 text-slate-500 dark:text-slate-400">
+                  <div className="rounded-xl bg-white/85 dark:bg-[#202c33]/90 p-4 shadow-sm border border-slate-200 dark:border-slate-700 max-w-sm">
+                    <MessageSquare className="h-8 w-8 mx-auto mb-2 text-[#008069] dark:text-[#00a884]" />
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-100">
                       {chatSearchQuery
                         ? 'Aucun résultat trouvé dans cette discussion'
                         : `Début de la conversation dans « ${currentChannelName} »`}
                     </p>
-                    <p className="text-[11px] text-slate-500 mt-1">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                       {chatSearchQuery
                         ? 'Essayez avec d’autres termes.'
                         : 'Les messages sont chiffrés en local et synchronisés automatiquement avec les agents et agences autorisés.'}
@@ -1503,10 +1503,10 @@ export default function ChatModule({
                     >
                       {/* Bulle WhatsApp */}
                       <div
-                        className={`group relative max-w-[90%] sm:max-w-[78%] rounded-2xl px-3.5 py-2.5 shadow-xs text-xs transition ${
+                        className={`group relative max-w-[90%] sm:max-w-[78%] rounded-xl px-3.5 py-2.5 shadow-xs text-xs transition ${
                           isMe
-                            ? 'bg-[#d9fdd3] text-slate-900 rounded-tr-xs border border-[#c1f5b8]/60'
-                            : 'bg-white text-slate-900 rounded-tl-xs border border-slate-200/90'
+                            ? 'bg-[#d9fdd3] dark:bg-[#005c4b] text-slate-900 dark:text-slate-100 rounded-tr-xs border border-[#c1f5b8]/60 dark:border-[#004a3d]'
+                            : 'bg-white dark:bg-[#202c33] text-slate-900 dark:text-slate-100 rounded-tl-xs border border-slate-200/90 dark:border-slate-700/70'
                         }`}
                       >
                         {/* En-tête de message (Expéditeur et canal) */}
@@ -1514,7 +1514,7 @@ export default function ChatModule({
                           <div className="flex items-center gap-1.5">
                             <span
                               className={`font-black text-[11px] ${
-                                isMe ? 'text-emerald-900' : 'text-[#008069]'
+                                isMe ? 'text-emerald-900 dark:text-emerald-200' : 'text-[#008069] dark:text-[#00a884]'
                               }`}
                             >
                               {isMe ? 'Moi' : msg.senderName}
@@ -1525,7 +1525,7 @@ export default function ChatModule({
                               </span>
                             )}
                             {msg.recipientName && (
-                              <span className="rounded-full bg-blue-100/70 text-blue-800 px-1.5 py-0.2 text-[9px] font-semibold">
+                              <span className="rounded-md bg-blue-100/70 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 px-1.5 py-0.5 text-[9px] font-semibold">
                                 → {msg.recipientName}
                               </span>
                             )}
@@ -1541,8 +1541,8 @@ export default function ChatModule({
 
                         {/* Citation du message en réponse (Bannière WhatsApp) */}
                         {msg.replyToExcerpt && (
-                          <div className="mb-1.5 rounded-lg border-l-4 border-[#008069] bg-black/5 p-2 text-[10px] text-slate-700">
-                            <p className="font-bold text-[#008069]">
+                          <div className="mb-1.5 rounded-lg border-l-4 border-[#008069] dark:border-[#00a884] bg-black/5 dark:bg-black/25 p-2 text-[10px] text-slate-700 dark:text-slate-300">
+                            <p className="font-bold text-[#008069] dark:text-[#00a884]">
                               {msg.replyToSenderName || 'Collaborateur'}
                             </p>
                             <p className="truncate italic">« {msg.replyToExcerpt} »</p>
@@ -1556,20 +1556,20 @@ export default function ChatModule({
                               rows={2}
                               value={editingMessageText}
                               onChange={(e) => setEditingMessageText(e.target.value)}
-                              className="w-full rounded-xl border border-[#008069] bg-white p-2 text-xs text-slate-900 outline-none"
+                              className="w-full rounded-lg border border-[#008069] dark:border-[#00a884] bg-white dark:bg-[#111b21] p-2 text-xs text-slate-900 dark:text-slate-100 outline-none"
                             />
                             <div className="flex justify-end gap-1.5">
                               <button
                                 type="button"
                                 onClick={handleCancelEdit}
-                                className="rounded-lg bg-slate-200 px-2 py-1 text-[10px] font-semibold text-slate-700"
+                                className="rounded-lg bg-slate-200 dark:bg-slate-700 px-2 py-1 text-[10px] font-semibold text-slate-700 dark:text-slate-200"
                               >
                                 Annuler
                               </button>
                               <button
                                 type="button"
                                 onClick={() => void handleConfirmEdit(msg.id)}
-                                className="rounded-lg bg-[#008069] px-2.5 py-1 text-[10px] font-bold text-white"
+                                className="rounded-lg bg-[#008069] dark:bg-[#00a884] px-2.5 py-1 text-[10px] font-bold text-white"
                               >
                                 Enregistrer
                               </button>
@@ -1590,7 +1590,7 @@ export default function ChatModule({
 
                         {/* Pièce jointe Image */}
                         {msg.attachmentType === 'image' && msg.attachmentDataUrl && (
-                          <div className="mt-2 overflow-hidden rounded-xl border border-black/10 bg-black/5 max-w-xs">
+                          <div className="mt-2 overflow-hidden rounded-lg border border-black/10 dark:border-white/10 bg-black/5 dark:bg-black/25 max-w-xs">
                             <img
                               src={msg.attachmentDataUrl}
                               alt={msg.attachmentName || 'Image jointe'}
@@ -1598,12 +1598,12 @@ export default function ChatModule({
                               onClick={() => setPreviewImageUrl(msg.attachmentDataUrl || null)}
                             />
                             {msg.attachmentName && (
-                              <div className="flex items-center justify-between p-1.5 text-[10px] bg-black/10 text-slate-700">
+                              <div className="flex items-center justify-between p-1.5 text-[10px] bg-black/10 dark:bg-black/30 text-slate-700 dark:text-slate-200">
                                 <span className="truncate">{msg.attachmentName}</span>
                                 <a
                                   href={msg.attachmentDataUrl}
                                   download={msg.attachmentName}
-                                  className="ml-2 hover:underline inline-flex items-center gap-0.5 text-blue-600 font-bold"
+                                  className="ml-2 hover:underline inline-flex items-center gap-0.5 text-blue-600 dark:text-sky-400 font-bold"
                                 >
                                   <Download className="h-3 w-3" />
                                 </a>
@@ -1614,8 +1614,8 @@ export default function ChatModule({
 
                         {/* Pièce jointe Document */}
                         {msg.attachmentType === 'document' && (
-                          <div className="mt-2 inline-flex items-center gap-2 rounded-xl bg-black/5 p-2 text-[11px] font-semibold border border-black/10">
-                            <FileText className="h-4 w-4 shrink-0 text-[#008069]" />
+                          <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-black/5 dark:bg-black/25 p-2 text-[11px] font-semibold border border-black/10 dark:border-white/10">
+                            <FileText className="h-4 w-4 shrink-0 text-[#008069] dark:text-[#00a884]" />
                             <span className="truncate max-w-[190px]">
                               {msg.attachmentName || 'Document joint'}
                             </span>
@@ -1623,7 +1623,7 @@ export default function ChatModule({
                               <a
                                 href={msg.attachmentDataUrl}
                                 download={msg.attachmentName || 'document'}
-                                className="ml-1 rounded p-1 hover:bg-black/10 transition text-blue-600 font-bold"
+                                className="ml-1 rounded p-1 hover:bg-black/10 dark:hover:bg-white/10 transition text-blue-600 dark:text-sky-400 font-bold"
                                 title="Télécharger"
                               >
                                 <Download className="h-3.5 w-3.5" />
@@ -1642,10 +1642,10 @@ export default function ChatModule({
                                   key={emoji}
                                   type="button"
                                   onClick={() => handleToggleReaction(msg.id, emoji)}
-                                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold shadow-2xs transition ${
+                                  className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-bold shadow-2xs transition tabular-nums ${
                                     iReacted
-                                      ? 'bg-emerald-600 text-white ring-1 ring-emerald-300'
-                                      : 'bg-white text-slate-800 hover:bg-slate-100 border border-slate-200'
+                                      ? 'bg-emerald-600 text-white ring-1 ring-emerald-300 dark:ring-emerald-700'
+                                      : 'bg-white dark:bg-[#111b21] text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700'
                                   }`}
                                 >
                                   <span>{emoji}</span>
@@ -1657,8 +1657,8 @@ export default function ChatModule({
                         )}
 
                         {/* Pied de bulle : Heure et Accusés de distribution WhatsApp */}
-                        <div className="mt-1 flex items-center justify-end gap-1 text-[10px] text-slate-500 select-none">
-                          <span>
+                        <div className="mt-1 flex items-center justify-end gap-1 text-[10px] text-slate-500 dark:text-slate-400 select-none">
+                          <span className="tabular-nums">
                             {new Date(msg.createdAt).toLocaleTimeString('fr-FR', {
                               hour: '2-digit',
                               minute: '2-digit',
@@ -1669,7 +1669,7 @@ export default function ChatModule({
                             <>
                               {msg.syncStatus === 'pending' || msg.syncStatus === 'local' ? (
                                 <span
-                                  className="inline-flex items-center text-amber-600"
+                                  className="inline-flex items-center text-amber-600 dark:text-amber-400"
                                   title="En attente de synchronisation réseau"
                                 >
                                   <Clock className="h-3 w-3" />
@@ -1678,7 +1678,7 @@ export default function ChatModule({
                                 <button
                                   type="button"
                                   onClick={() => void handleRetryMessage(msg.id)}
-                                  className="inline-flex items-center gap-0.5 text-red-600 font-bold"
+                                  className="inline-flex items-center gap-0.5 text-red-600 dark:text-red-400 font-bold"
                                   title="Erreur d'envoi. Cliquer pour réessayer"
                                 >
                                   <AlertCircle className="h-3 w-3" />
@@ -1686,7 +1686,7 @@ export default function ChatModule({
                               ) : channelType === 'prive' ? (
                                 <span
                                   className={`inline-flex items-center transition-colors ${
-                                    isDirectRead ? 'text-[#53bdeb]' : 'text-slate-400'
+                                    isDirectRead ? 'text-[#53bdeb]' : 'text-slate-400 dark:text-slate-500'
                                   }`}
                                   title={
                                     isDirectRead
@@ -1698,7 +1698,7 @@ export default function ChatModule({
                                     className={`h-3.5 w-3.5 ${
                                       isDirectRead
                                         ? 'stroke-[2.5] text-[#53bdeb] drop-shadow-[0_0_2px_rgba(83,189,235,0.4)]'
-                                        : 'stroke-[2] text-slate-400'
+                                        : 'stroke-[2] text-slate-400 dark:text-slate-500'
                                     }`}
                                   />
                                 </span>
@@ -1707,7 +1707,7 @@ export default function ChatModule({
                                   className={`inline-flex items-center ${
                                     msg.readBy && msg.readBy.length > 1
                                       ? 'text-sky-500'
-                                      : 'text-slate-400'
+                                      : 'text-slate-400 dark:text-slate-500'
                                   }`}
                                   title={
                                     msg.readBy && msg.readBy.length > 1
@@ -1721,14 +1721,14 @@ export default function ChatModule({
                             </>
                           )}
                           {msg.readBy && msg.readBy.length > 0 && channelType !== 'prive' && (
-                            <span className="text-[9px] text-slate-400">
+                            <span className="text-[9px] text-slate-400 tabular-nums">
                               ({msg.readBy.length})
                             </span>
                           )}
                         </div>
 
                         {/* Barre d'action rapide au survol/clic */}
-                        <div className="mt-1.5 pt-1.5 border-t border-black/5 flex flex-wrap items-center justify-between gap-1 text-[10px]">
+                        <div className="mt-1.5 pt-1.5 border-t border-black/5 dark:border-white/10 flex flex-wrap items-center justify-between gap-1 text-[10px]">
                           <div className="flex items-center gap-1">
                             {/* Réagir */}
                             <div className="relative">
@@ -1739,19 +1739,19 @@ export default function ChatModule({
                                     cur === msg.id ? null : msg.id
                                   )
                                 }
-                                className="rounded p-1 text-slate-500 hover:text-slate-800 hover:bg-black/5"
+                                className="rounded p-1 text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10"
                                 title="Réagir"
                               >
                                 <Smile className="h-3.5 w-3.5" />
                               </button>
                               {openReactionPickerMsgId === msg.id && (
-                                <div className="absolute bottom-full left-0 z-20 mb-1 flex items-center gap-1 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl">
+                                <div className="absolute bottom-full left-0 z-20 mb-1 flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#202c33] p-1.5 shadow-xl">
                                   {QUICK_REACTIONS.map((emoji) => (
                                     <button
                                       key={emoji}
                                       type="button"
                                       onClick={() => handleToggleReaction(msg.id, emoji)}
-                                      className="rounded-xl p-1 text-sm hover:bg-slate-100 transition transform hover:scale-125"
+                                      className="rounded-lg p-1 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition transform hover:scale-125"
                                     >
                                       {emoji}
                                     </button>
@@ -1764,7 +1764,7 @@ export default function ChatModule({
                             <button
                               type="button"
                               onClick={() => handleReplyToMessage(msg)}
-                              className="rounded p-1 text-slate-500 hover:text-slate-800 hover:bg-black/5"
+                              className="rounded p-1 text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10"
                               title="Répondre"
                             >
                               <Reply className="h-3.5 w-3.5" />
@@ -1777,7 +1777,7 @@ export default function ChatModule({
                                 setSharingMessage(msg);
                                 setShareNote('');
                               }}
-                              className="rounded p-1 text-slate-500 hover:text-slate-800 hover:bg-black/5"
+                              className="rounded p-1 text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10"
                               title="Transférer"
                             >
                               <Share2 className="h-3.5 w-3.5" />
@@ -1792,12 +1792,12 @@ export default function ChatModule({
                                   [msg.id]: !prev[msg.id],
                                 }))
                               }
-                              className="rounded p-1 text-slate-500 hover:text-slate-800 hover:bg-black/5"
+                              className="rounded p-1 text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10"
                               title="Commenter"
                             >
                               <MessageCircle className="h-3.5 w-3.5" />
                               {commentsList.length > 0 && (
-                                <span className="ml-0.5 font-bold">
+                                <span className="ml-0.5 font-bold tabular-nums">
                                   {commentsList.length}
                                 </span>
                               )}
@@ -1807,7 +1807,7 @@ export default function ChatModule({
                             <button
                               type="button"
                               onClick={() => handleCopyMessage(msg)}
-                              className="rounded p-1 text-slate-500 hover:text-slate-800 hover:bg-black/5"
+                              className="rounded p-1 text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10"
                               title="Copier"
                             >
                               <Copy className="h-3 w-3" />
@@ -1818,7 +1818,7 @@ export default function ChatModule({
                               <button
                                 type="button"
                                 onClick={() => handleStartEdit(msg)}
-                                className="rounded p-1 text-slate-500 hover:text-slate-800 hover:bg-black/5"
+                                className="rounded p-1 text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10"
                                 title="Modifier mon message"
                               >
                                 <Edit2 className="h-3 w-3" />
@@ -1850,7 +1850,7 @@ export default function ChatModule({
                                   <button
                                     type="button"
                                     onClick={() => setDeletingMessageId(msg.id)}
-                                    className="rounded p-1 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                    className="rounded p-1 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/40"
                                     title="Supprimer"
                                   >
                                     <Trash2 className="h-3 w-3" />
@@ -1863,22 +1863,22 @@ export default function ChatModule({
 
                         {/* Thread des commentaires sous la bulle */}
                         {(isCommentsOpen || commentsList.length > 0) && (
-                          <div className="mt-2 rounded-xl bg-black/5 p-2 space-y-1.5">
+                          <div className="mt-2 rounded-lg bg-black/5 dark:bg-black/25 p-2 space-y-1.5">
                             {commentsList.map((cmt) => (
                               <div
                                 key={cmt.id}
-                                className="rounded-lg bg-white p-2 text-[10px] border border-slate-200/80 shadow-2xs"
+                                className="rounded-lg bg-white dark:bg-[#111b21] p-2 text-[10px] border border-slate-200/80 dark:border-slate-700 shadow-2xs"
                               >
-                                <div className="flex justify-between font-bold text-slate-800">
+                                <div className="flex justify-between font-bold text-slate-800 dark:text-slate-200">
                                   <span>{cmt.authorName}</span>
-                                  <span className="text-[9px] font-normal text-slate-400">
+                                  <span className="text-[9px] font-normal text-slate-400 tabular-nums">
                                     {new Date(cmt.createdAt).toLocaleTimeString('fr-FR', {
                                       hour: '2-digit',
                                       minute: '2-digit',
                                     })}
                                   </span>
                                 </div>
-                                <p className="text-slate-600 mt-0.5">{cmt.content}</p>
+                                <p className="text-slate-600 dark:text-slate-300 mt-0.5">{cmt.content}</p>
                               </div>
                             ))}
 
@@ -1900,12 +1900,12 @@ export default function ChatModule({
                                     }
                                   }}
                                   placeholder="Écrire un commentaire..."
-                                  className="flex-1 rounded-lg border border-slate-300 bg-white px-2 py-1 text-[11px] outline-none"
+                                  className="flex-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#202c33] px-2 py-1 text-[11px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
                                 />
                                 <button
                                   type="button"
                                   onClick={() => void handleAddComment(msg.id)}
-                                  className="rounded-lg bg-[#008069] px-2 py-1 text-[10px] font-bold text-white"
+                                  className="rounded-lg bg-[#008069] dark:bg-[#00a884] px-2 py-1 text-[10px] font-bold text-white"
                                 >
                                   OK
                                 </button>
@@ -1926,24 +1926,24 @@ export default function ChatModule({
             {/* ===================================================================== */}
             <form
               onSubmit={handleSendMessage}
-              className="bg-[#f0f2f5] p-3 border-t border-slate-200 shrink-0 space-y-2"
+              className="bg-[#f0f2f5] dark:bg-[#202c33] p-3 border-t border-slate-200 dark:border-slate-800 shrink-0 space-y-2"
             >
               {/* Bannière de citation d'une réponse active */}
               {replyingTo && (
-                <div className="flex items-center justify-between rounded-xl border-l-4 border-[#008069] bg-white p-2.5 shadow-xs">
+                <div className="flex items-center justify-between rounded-lg border-l-4 border-[#008069] dark:border-[#00a884] bg-white dark:bg-[#111b21] p-2.5 shadow-xs">
                   <div className="min-w-0">
-                    <p className="text-[11px] font-bold text-[#008069] flex items-center gap-1">
+                    <p className="text-[11px] font-bold text-[#008069] dark:text-[#00a884] flex items-center gap-1">
                       <Reply className="h-3 w-3" />
                       Réponse à {replyingTo.senderName}
                     </p>
-                    <p className="truncate text-[11px] text-slate-600 italic">
+                    <p className="truncate text-[11px] text-slate-600 dark:text-slate-300 italic">
                       « {replyingTo.content} »
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setReplyingTo(null)}
-                    className="p-1 text-slate-400 hover:text-slate-600"
+                    className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -1952,12 +1952,12 @@ export default function ChatModule({
 
               {/* Prévisualisation de pièce jointe avant expédition */}
               {attachmentName && (
-                <div className="flex items-center justify-between rounded-xl bg-white border border-slate-200 px-3 py-1.5 text-xs">
+                <div className="flex items-center justify-between rounded-lg bg-white dark:bg-[#111b21] border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200">
                   <div className="flex items-center gap-2 min-w-0">
                     {attachmentType === 'image' ? (
-                      <ImageIcon className="h-4 w-4 text-[#008069] shrink-0" />
+                      <ImageIcon className="h-4 w-4 text-[#008069] dark:text-[#00a884] shrink-0" />
                     ) : (
-                      <FileText className="h-4 w-4 text-[#008069] shrink-0" />
+                      <FileText className="h-4 w-4 text-[#008069] dark:text-[#00a884] shrink-0" />
                     )}
                     <span className="font-semibold truncate">{attachmentName}</span>
                     {attachmentType === 'image' && attachmentDataUrl && (
@@ -1975,7 +1975,7 @@ export default function ChatModule({
                       setAttachmentType('none');
                       setAttachmentDataUrl(null);
                     }}
-                    className="text-slate-400 hover:text-slate-600"
+                    className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
@@ -1991,15 +1991,15 @@ export default function ChatModule({
                   onSelectEmoji={handleInsertEmoji}
                 />
 
-                <div className="flex flex-1 items-center gap-1.5 rounded-2xl bg-white px-2.5 py-1.5 shadow-xs border border-slate-200">
+                <div className="flex flex-1 items-center gap-1.5 rounded-xl bg-white dark:bg-[#2a3942] px-2.5 py-1.5 shadow-xs border border-slate-200 dark:border-slate-700">
                   {/* Bouton sélecteur d'émojis WhatsApp */}
                   <button
                     type="button"
                     onClick={() => setShowEmojiPicker((prev) => !prev)}
-                    className={`p-1 rounded-full transition ${
+                    className={`p-1 rounded-lg transition ${
                       showEmojiPicker
-                        ? 'text-[#008069] bg-emerald-50'
-                        : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                        ? 'text-[#008069] dark:text-[#00a884] bg-emerald-50 dark:bg-emerald-950/50'
+                        : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }`}
                     title="Insérer un émoji"
                   >
@@ -2012,12 +2012,12 @@ export default function ChatModule({
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
                     placeholder={`Message pour ${currentChannelName}...`}
-                    className="flex-1 bg-transparent text-xs text-slate-900 placeholder:text-slate-400 outline-none py-1"
+                    className="flex-1 bg-transparent text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-400 outline-none py-1"
                   />
 
                   {/* Trombone de pièce jointe */}
                   <label
-                    className="cursor-pointer text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition p-1 rounded-full"
+                    className="cursor-pointer text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition p-1 rounded-lg"
                     title="Joindre une photo ou un document"
                   >
                     <Paperclip className="h-4 w-4" />
@@ -2034,7 +2034,7 @@ export default function ChatModule({
                 <button
                   type="submit"
                   disabled={sending || (!messageText.trim() && !attachmentDataUrl)}
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#008069] text-white shadow-md hover:bg-[#006a57] disabled:opacity-40 transition"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#008069] dark:bg-[#00a884] text-white shadow-sm hover:bg-[#006a57] dark:hover:bg-[#008f72] disabled:opacity-40 transition"
                   title="Envoyer le message"
                 >
                   <Send className="h-4 w-4" />
@@ -2049,21 +2049,21 @@ export default function ChatModule({
       {/* 3. MODAL NOUVELLE DISCUSSION / RECHERCHE CONTACTS & GROUPES                */}
       {/* ========================================================================= */}
       {showNewChatModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
-          <div className="w-full max-w-lg rounded-3xl bg-white p-5 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
-                <h3 className="text-sm font-black text-slate-900">
+                <h3 className="text-sm font-black text-slate-900 dark:text-white">
                   Nouvelle discussion Ets AMANI
                 </h3>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Choisissez un collaborateur, un service ou créez un groupe
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowNewChatModal(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -2076,7 +2076,7 @@ export default function ChatModule({
                   setShowCreateGroupModal(true);
                   setShowNewChatModal(false);
                 }}
-                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-emerald-50 text-[#008069] border border-emerald-200 py-2.5 text-xs font-bold hover:bg-emerald-100 transition"
+                className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#008069] dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/60 py-2.5 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition"
               >
                 <Users className="h-4 w-4" />
                 + Créer un nouveau groupe
@@ -2085,7 +2085,7 @@ export default function ChatModule({
 
             <div className="flex-1 overflow-y-auto space-y-3">
               {/* Liste des utilisateurs */}
-              <p className="text-xs font-bold uppercase text-slate-400">
+              <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500 tabular-nums">
                 Collaborateurs ({usersList.length})
               </p>
               <div className="space-y-1">
@@ -2099,7 +2099,7 @@ export default function ChatModule({
                       setShowNewChatModal(false);
                       setMobilePane('conversation');
                     }}
-                    className="flex w-full items-center gap-3 rounded-xl p-2.5 hover:bg-slate-50 text-left transition"
+                    className="flex w-full items-center gap-3 rounded-lg p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition"
                   >
                     <div
                       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white font-bold text-xs ${getAvatarBgColor(
@@ -2109,14 +2109,14 @@ export default function ChatModule({
                       {getInitials(u.displayName || 'U')}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-slate-900 truncate">
+                      <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
                         {u.displayName}
                       </p>
-                      <p className="text-[10px] text-slate-500 truncate">
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
                         {u.function || u.role} • {u.agencyId || 'Centrale'}
                       </p>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-slate-300" />
+                    <ChevronRight className="h-4 w-4 text-slate-300 dark:text-slate-600" />
                   </button>
                 ))}
               </div>
@@ -2129,26 +2129,26 @@ export default function ChatModule({
       {/* 4. MODAL CRÉATION DE GROUPE                                               */}
       {/* ========================================================================= */}
       {showCreateGroupModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
           <form
             onSubmit={handleCreateCustomGroup}
-            className="w-full max-w-md rounded-3xl bg-white p-5 shadow-2xl space-y-4"
+            className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl space-y-4"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-black text-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-sm font-black text-slate-900 dark:text-white">
                 Nouveau groupe de discussion
               </h3>
               <button
                 type="button"
                 onClick={() => setShowCreateGroupModal(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-700">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
                 Nom du groupe :
               </label>
               <input
@@ -2157,21 +2157,21 @@ export default function ChatModule({
                 value={newGroupName}
                 onChange={(e) => setNewGroupName(e.target.value)}
                 placeholder="Ex: Commission Change & Audit"
-                className="w-full rounded-xl border border-slate-300 p-2 text-xs outline-none focus:border-[#008069]"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none focus:border-[#008069] dark:focus:border-[#00a884]"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-700">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 tabular-nums">
                 Sélectionner les participants ({newGroupMemberIds.length}) :
               </label>
-              <div className="max-h-48 overflow-y-auto space-y-1 border border-slate-200 rounded-xl p-2">
+              <div className="max-h-48 overflow-y-auto space-y-1 border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-950/40 rounded-lg p-2">
                 {usersList.map((u) => {
                   const checked = newGroupMemberIds.includes(u.uid);
                   return (
                     <label
                       key={u.uid}
-                      className="flex items-center gap-2 p-1.5 hover:bg-slate-50 rounded-lg cursor-pointer text-xs"
+                      className="flex items-center gap-2 p-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg cursor-pointer text-xs"
                     >
                       <input
                         type="checkbox"
@@ -2186,7 +2186,7 @@ export default function ChatModule({
                           }
                         }}
                       />
-                      <span className="font-semibold text-slate-800 truncate">
+                      <span className="font-semibold text-slate-800 dark:text-slate-200 truncate">
                         {u.displayName} ({u.function || u.role})
                       </span>
                     </label>
@@ -2195,17 +2195,17 @@ export default function ChatModule({
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setShowCreateGroupModal(false)}
-                className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
               >
                 Annuler
               </button>
               <button
                 type="submit"
-                className="rounded-xl bg-[#008069] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#006a57]"
+                className="rounded-lg bg-[#008069] dark:bg-[#00a884] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#006a57] dark:hover:bg-[#008f72]"
               >
                 Créer le groupe
               </button>
@@ -2218,37 +2218,37 @@ export default function ChatModule({
       {/* 5. MODAL TRANSFERT DE MESSAGE                                             */}
       {/* ========================================================================= */}
       {sharingMessage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
           <form
             onSubmit={handleConfirmForwardMessage}
-            className="w-full max-w-md rounded-3xl bg-white p-5 shadow-2xl space-y-4"
+            className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl space-y-4"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                <Share2 className="h-4 w-4 text-[#008069]" />
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
+                <Share2 className="h-4 w-4 text-[#008069] dark:text-[#00a884]" />
                 Transférer ce message
               </h3>
               <button
                 type="button"
                 onClick={() => setSharingMessage(null)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="rounded-xl bg-slate-50 p-3 text-xs border border-slate-200">
-              <p className="font-bold text-slate-700 mb-0.5">
+            <div className="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-3 text-xs border border-slate-200 dark:border-slate-700">
+              <p className="font-bold text-slate-700 dark:text-slate-200 mb-0.5">
                 De {sharingMessage.senderName} :
               </p>
-              <p className="text-slate-600 line-clamp-3 italic">
+              <p className="text-slate-600 dark:text-slate-300 line-clamp-3 italic">
                 « {sharingMessage.content} »
               </p>
             </div>
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Destinataire du transfert :
                 </label>
                 <select
@@ -2258,7 +2258,7 @@ export default function ChatModule({
                       e.target.value as LocalChatMessage['channelType']
                     )
                   }
-                  className="w-full rounded-xl border border-slate-300 bg-white p-2 font-semibold"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 font-semibold text-slate-900 dark:text-slate-100 outline-none"
                 >
                   <option value="prive">Collaborateur (Message Privé)</option>
                   <option value="groupe">Groupe de travail</option>
@@ -2270,14 +2270,14 @@ export default function ChatModule({
 
               {shareTargetType === 'prive' && (
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Choisir le collaborateur :
                   </label>
                   <select
                     required
                     value={shareRecipientId}
                     onChange={(e) => setShareRecipientId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white p-2 font-semibold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 font-semibold text-slate-900 dark:text-slate-100 outline-none"
                   >
                     <option value="">-- Sélectionner un collègue --</option>
                     {usersList.map((u) => (
@@ -2291,13 +2291,13 @@ export default function ChatModule({
 
               {shareTargetType === 'groupe' && (
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Choisir le groupe :
                   </label>
                   <select
                     value={shareGroupId}
                     onChange={(e) => setShareGroupId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white p-2 font-semibold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 font-semibold text-slate-900 dark:text-slate-100 outline-none"
                   >
                     {groups.map((g) => (
                       <option key={g.id} value={g.id}>
@@ -2310,13 +2310,13 @@ export default function ChatModule({
 
               {shareTargetType === 'service' && (
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Choisir le service :
                   </label>
                   <select
                     value={shareServiceTag}
                     onChange={(e) => setShareServiceTag(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white p-2 font-semibold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 font-semibold text-slate-900 dark:text-slate-100 outline-none"
                   >
                     {ETS_SERVICES.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -2328,7 +2328,7 @@ export default function ChatModule({
               )}
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Note d'accompagnement :
                 </label>
                 <input
@@ -2336,22 +2336,22 @@ export default function ChatModule({
                   value={shareNote}
                   onChange={(e) => setShareNote(e.target.value)}
                   placeholder="Ex: Pour suivi..."
-                  className="w-full rounded-xl border border-slate-300 p-2"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setSharingMessage(null)}
-                className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs text-slate-600 font-semibold"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-xs text-slate-600 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800"
               >
                 Annuler
               </button>
               <button
                 type="submit"
-                className="rounded-xl bg-[#008069] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#006a57]"
+                className="rounded-lg bg-[#008069] dark:bg-[#00a884] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#006a57] dark:hover:bg-[#008f72]"
               >
                 Transférer
               </button>
@@ -2364,13 +2364,13 @@ export default function ChatModule({
       {/* 6. ONGLET 2 : DIFFUSIONS ET ANNONCES OFFICIELLES                          */}
       {/* ========================================================================= */}
       {activeTab === 'broadcasts' && (
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-3">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-[#0b141a]">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
             <div>
-              <h3 className="text-sm font-black text-slate-900">
+              <h3 className="text-sm font-black text-slate-900 dark:text-white">
                 Notes de Service & Annonces Officielles
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Communications officielles de la Direction Générale et des Administrateurs
               </p>
             </div>
@@ -2379,7 +2379,7 @@ export default function ChatModule({
               <button
                 type="button"
                 onClick={() => setShowBroadcastForm((v) => !v)}
-                className="rounded-xl bg-[#008069] px-4 py-2 text-xs font-bold text-white hover:bg-[#006a57] transition shadow-xs"
+                className="rounded-lg bg-[#008069] dark:bg-[#00a884] px-4 py-2 text-xs font-bold text-white hover:bg-[#006a57] dark:hover:bg-[#008f72] transition shadow-xs"
               >
                 {showBroadcastForm ? 'Fermer le formulaire' : '+ Nouvelle Diffusion Officielle'}
               </button>
@@ -2389,9 +2389,9 @@ export default function ChatModule({
           {showBroadcastForm && canBroadcast && (
             <form
               onSubmit={handleCreateBroadcast}
-              className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm space-y-3"
+              className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-white dark:bg-slate-900 p-4 shadow-sm space-y-3"
             >
-              <h4 className="text-xs font-bold text-slate-900">
+              <h4 className="text-xs font-bold text-slate-900 dark:text-white">
                 Publier une annonce officielle
               </h4>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -2401,12 +2401,12 @@ export default function ChatModule({
                   value={bcTitle}
                   onChange={(e) => setBcTitle(e.target.value)}
                   placeholder="Titre de la note de service"
-                  className="rounded-xl border border-slate-300 p-2 text-xs"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
                 />
                 <select
                   value={bcSeverity}
                   onChange={(e) => setBcSeverity(e.target.value as LocalBroadcast['severity'])}
-                  className="rounded-xl border border-slate-300 p-2 text-xs font-semibold"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none"
                 >
                   <option value="info">Information Standard</option>
                   <option value="important">Important</option>
@@ -2416,7 +2416,7 @@ export default function ChatModule({
                   <select
                     value={bcScope}
                     onChange={(e) => setBcScope(e.target.value as LocalBroadcast['scope'])}
-                    className="rounded-xl border border-slate-300 p-2 text-xs font-semibold"
+                    className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none"
                   >
                     <option value="global">Tout le Réseau Ets AMANI</option>
                     <option value="agence">Agence Spécifique</option>
@@ -2426,7 +2426,7 @@ export default function ChatModule({
                     type="text"
                     disabled
                     value={`Agence : ${user?.agencyId || 'Locale'}`}
-                    className="rounded-xl border border-slate-200 bg-slate-100 p-2 text-xs"
+                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/60 p-2 text-xs text-slate-600 dark:text-slate-400"
                   />
                 )}
               </div>
@@ -2435,7 +2435,7 @@ export default function ChatModule({
                 <select
                   value={bcAgencyId}
                   onChange={(e) => setBcAgencyId(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 p-2 text-xs"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 outline-none"
                 >
                   <option value="">Sélectionner l'agence concernée</option>
                   {agencies.map((a) => (
@@ -2452,11 +2452,11 @@ export default function ChatModule({
                 value={bcMessage}
                 onChange={(e) => setBcMessage(e.target.value)}
                 placeholder="Texte détaillé de l'instruction ou annonce..."
-                className="w-full rounded-xl border border-slate-300 p-2 text-xs"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
               />
 
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
                   <input
                     type="checkbox"
                     checked={bcRequiresAck}
@@ -2466,7 +2466,7 @@ export default function ChatModule({
                 </label>
                 <button
                   type="submit"
-                  className="rounded-xl bg-[#008069] px-4 py-2 text-xs font-bold text-white hover:bg-[#006a57]"
+                  className="rounded-lg bg-[#008069] dark:bg-[#00a884] px-4 py-2 text-xs font-bold text-white hover:bg-[#006a57] dark:hover:bg-[#008f72]"
                 >
                   Diffuser
                 </button>
@@ -2477,9 +2477,9 @@ export default function ChatModule({
           {/* Liste des annonces officielles */}
           <div className="space-y-3">
             {broadcasts.length === 0 ? (
-              <div className="p-8 text-center text-slate-400">
-                <Bell className="h-8 w-8 mx-auto mb-2 text-slate-300" />
-                <p className="text-xs font-bold text-slate-600">Aucune annonce officielle</p>
+              <div className="p-8 text-center text-slate-400 dark:text-slate-500">
+                <Bell className="h-8 w-8 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
+                <p className="text-xs font-bold text-slate-600 dark:text-slate-300">Aucune annonce officielle</p>
               </div>
             ) : (
               broadcasts.map((bc) => {
@@ -2487,29 +2487,29 @@ export default function ChatModule({
                 return (
                   <div
                     key={bc.id}
-                    className={`rounded-2xl border p-4 text-xs shadow-xs ${
+                    className={`rounded-xl border p-4 text-xs shadow-xs ${
                       bc.severity === 'critique'
-                        ? 'border-red-300 bg-red-50/70'
+                        ? 'border-red-300 dark:border-red-900/60 bg-red-50/70 dark:bg-red-950/40'
                         : bc.severity === 'important'
-                          ? 'border-amber-300 bg-amber-50/60'
-                          : 'border-slate-200 bg-white'
+                          ? 'border-amber-300 dark:border-amber-900/60 bg-amber-50/60 dark:bg-amber-950/40'
+                          : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900'
                     }`}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
-                          <span className="font-black text-sm text-slate-900">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                          <span className="font-black text-sm text-slate-900 dark:text-white">
                             {bc.title}
                           </span>
-                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase text-slate-700">
+                          <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-bold uppercase text-slate-700 dark:text-slate-300">
                             {bc.severity} • {bc.agencyName || 'Global'}
                           </span>
                         </div>
-                        <p className="text-slate-700 whitespace-pre-line leading-relaxed">
+                        <p className="text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">
                           {bc.message}
                         </p>
-                        <p className="text-[11px] text-slate-400">
+                        <p className="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
                           Par {bc.authorName} • {new Date(bc.createdAt).toLocaleString('fr-FR')} •{' '}
                           {bc.acknowledgedBy?.length || 0} confirmation(s) de lecture
                         </p>
@@ -2518,7 +2518,7 @@ export default function ChatModule({
                       {bc.requiresAck && (
                         <div className="shrink-0">
                           {acked ? (
-                            <span className="inline-flex items-center gap-1 rounded-xl bg-emerald-100 px-3 py-1.5 font-bold text-emerald-800">
+                            <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-900/60 px-3 py-1.5 font-bold text-emerald-800 dark:text-emerald-300">
                               <CheckCircle2 className="h-3.5 w-3.5" />
                               Lecture confirmée
                             </span>
@@ -2526,7 +2526,7 @@ export default function ChatModule({
                             <button
                               type="button"
                               onClick={() => handleAckBroadcast(bc.id)}
-                              className="rounded-xl bg-[#008069] px-3.5 py-2 font-bold text-white hover:bg-[#006a57] transition shadow-xs"
+                              className="rounded-lg bg-[#008069] dark:bg-[#00a884] px-3.5 py-2 font-bold text-white hover:bg-[#006a57] dark:hover:bg-[#008f72] transition shadow-xs"
                             >
                               Accuser réception
                             </button>
@@ -2547,21 +2547,21 @@ export default function ChatModule({
       {/* ========================================================================= */}
       {previewImageUrl && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-xs p-4"
           onClick={() => setPreviewImageUrl(null)}
         >
           <div
-            className="relative max-w-3xl max-h-[90vh] bg-white rounded-3xl p-4 shadow-2xl overflow-hidden"
+            className="relative max-w-3xl max-h-[90vh] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <span className="text-xs font-bold text-slate-800">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+              <span className="text-xs font-bold text-slate-800 dark:text-white">
                 Aperçu de la pièce jointe
               </span>
               <button
                 type="button"
                 onClick={() => setPreviewImageUrl(null)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -2570,14 +2570,14 @@ export default function ChatModule({
               <img
                 src={previewImageUrl}
                 alt="Aperçu agrandi"
-                className="max-h-[65vh] w-auto rounded-2xl object-contain"
+                className="max-h-[65vh] w-auto rounded-xl object-contain"
               />
             </div>
-            <div className="flex justify-end pt-3 border-t border-slate-100">
+            <div className="flex justify-end pt-3 border-t border-slate-100 dark:border-slate-800">
               <a
                 href={previewImageUrl}
                 download="piece_jointe_ets_amani.png"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#008069] px-4 py-2 text-xs font-bold text-white hover:bg-[#006a57]"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-[#008069] dark:bg-[#00a884] px-4 py-2 text-xs font-bold text-white hover:bg-[#006a57] dark:hover:bg-[#008f72]"
               >
                 <Download className="h-3.5 w-3.5" />
                 Télécharger

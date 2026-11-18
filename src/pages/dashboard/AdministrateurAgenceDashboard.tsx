@@ -1,22 +1,11 @@
 import {
   Activity,
   ArrowLeftRight,
-  Building2,
-  CalendarCheck2,
-  CheckCircle2,
-  ClipboardCheck,
   Coins,
   FileText,
   History,
-  LayoutDashboard,
-  LogOut,
   MessageSquare,
-  RefreshCw,
   Scale,
-  Search,
-  Settings,
-  ShieldCheck,
-  TrendingUp,
   UserCheck,
   Users,
   WalletCards,
@@ -26,12 +15,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import AppLayout from '../../components/layout/AppLayout';
-import UserAvatar from '../../components/common/UserAvatar';
 import DashboardModuleCard from '../../components/dashboard/DashboardModuleCard';
 import DashboardModuleGrid from '../../components/dashboard/DashboardModuleGrid';
-import WorkspaceNavigationHeader, {
-  type WorkspaceTab,
-} from '../../components/dashboard/WorkspaceNavigationHeader';
+import WorkspaceNavigationHeader from '../../components/dashboard/WorkspaceNavigationHeader';
 import DashboardToolbar, {
   type DashboardViewMode,
 } from '../../components/dashboard/DashboardToolbar';
@@ -65,71 +51,82 @@ type ModuleId =
 
 const AGENCY_MODULES_META: Record<
   ModuleId,
-  { title: string; description: string; category: string; icon: typeof WalletCards }
+  { title: string; shortTitle: string; description: string; category: string; icon: typeof WalletCards }
 > = {
   billetage: {
     title: 'Billetage de Caisse & Coffre',
-    description: 'Comptage contradictoire quotidien des devises USD et Francs Congolais.',
+    shortTitle: 'Billetage',
+    description: 'Comptage contradictoire quotidien des devises USD et CDF.',
     category: 'Caisse & Finances',
     icon: WalletCards,
   },
   salaries: {
     title: 'Salaires & Guichet Payeur',
-    description: "Décaissement des salaires et avances autorisés par la Direction pour l'agence.",
+    shortTitle: 'Salaires',
+    description: "Décaissement des salaires et avances autorisés pour l'agence.",
     category: 'Caisse & Finances',
     icon: Coins,
   },
   operations: {
     title: 'Missions & Opérations Agence',
-    description: "Affectation des tâches opérationnelles aux agents et suivi de complétion.",
+    shortTitle: 'Missions',
+    description: 'Affectation des tâches opérationnelles aux agents et suivi.',
     category: 'Missions & Mouvements',
     icon: Activity,
   },
   reports: {
     title: "Rapports d'Agence & Exports",
-    description: "États financiers, opérationnels et clôtures de l'agence en PDF et Excel.",
+    shortTitle: 'Rapports',
+    description: "États financiers, opérationnels et clôtures de l'agence.",
     category: 'Rapports & Audit',
     icon: FileText,
   },
   transfers: {
     title: 'Transferts Inter-Agences',
-    description: 'Mouvements de fonds inter-succursales (argent physique, virtuel et ravitaillements).',
+    shortTitle: 'Transferts',
+    description: 'Mouvements de fonds inter-succursales et ravitaillements.',
     category: 'Missions & Mouvements',
     icon: ArrowLeftRight,
   },
   debts: {
     title: 'Suivi des Dettes & Créances',
-    description: 'Enregistrement des dettes clients, agents et entreprise, et suivi des remboursements.',
+    shortTitle: 'Dettes',
+    description: 'Enregistrement et suivi des dettes clients, agents et entreprise.',
     category: 'Caisse & Finances',
     icon: Scale,
   },
   chat: {
-    title: 'Chat Interne, Annonces & IA',
-    description: "Messagerie d'agence, notes de service officielles et assistant analytique.",
+    title: 'Chat Interne & Annonces',
+    shortTitle: 'Chat & Notes',
+    description: "Messagerie d'agence et notes de service officielles.",
     category: 'Personnel & Communication',
     icon: MessageSquare,
   },
   agents: {
     title: "Gestion des Agents de l'Agence",
-    description: 'Activer la polyvalence de guichet et affecter les services autorisés.',
+    shortTitle: 'Agents',
+    description: 'Polyvalence de guichet et affectation des services autorisés.',
     category: 'Personnel & Communication',
     icon: Users,
   },
   registrations: {
     title: 'Inscriptions Abonnés & Clients',
-    description: 'Examen des pièces justificatives et approbation des clients locaux.',
+    shortTitle: 'Inscriptions',
+    description: 'Examen et approbation des demandes de comptes locaux.',
     category: 'Personnel & Communication',
     icon: UserCheck,
   },
   connectivity: {
     title: 'Disponibilité & Synchronisation',
-    description: "Vérification du stockage local sécurisé et de la liaison avec le siège central.",
+    shortTitle: 'Synchro',
+    description: 'Stockage local sécurisé et liaison avec le siège central.',
     category: 'Rapports & Audit',
     icon: Wifi,
   },
   audit: {
     title: "Journal d'Activité & Audit",
-    description: "Traçabilité et historique horodaté des actions et mouvements de caisse de l'agence.",
+    shortTitle: 'Audit',
+    description: "Traçabilité horodatée des actions et mouvements de caisse.",
     category: 'Rapports & Audit',
     icon: History,
   },
@@ -139,6 +136,7 @@ const AGENCY_MODULE_CARDS: Array<{
   id: ModuleId;
   pole: string;
   title: string;
+  shortTitle: string;
   description: string;
   icon: typeof WalletCards;
   variant: 'default' | 'primary' | 'success' | 'warning' | 'danger';
@@ -148,7 +146,8 @@ const AGENCY_MODULE_CARDS: Array<{
     id: 'billetage',
     pole: '01. Caisse & Finances Locales',
     title: 'Billetage de Caisse & Coffre',
-    description: 'Comptage contradictoire quotidien des devises USD et Francs Congolais.',
+    shortTitle: 'Billetage',
+    description: 'Comptage contradictoire quotidien USD et CDF.',
     icon: WalletCards,
     variant: 'success',
   },
@@ -156,16 +155,18 @@ const AGENCY_MODULE_CARDS: Array<{
     id: 'salaries',
     pole: '01. Caisse & Finances Locales',
     title: 'Salaires & Guichet Payeur',
-    description: "Décaissement des salaires et avances autorisés par la Direction pour l'agence.",
+    shortTitle: 'Salaires',
+    description: "Décaissement des salaires et avances autorisés.",
     icon: Coins,
     variant: 'success',
-    badge: 'Paie Agence',
+    badge: 'Paie',
   },
   {
     id: 'debts',
     pole: '01. Caisse & Finances Locales',
     title: 'Suivi des Dettes & Créances',
-    description: 'Enregistrement des dettes clients, agents et entreprise, et suivi des remboursements.',
+    shortTitle: 'Dettes',
+    description: 'Dettes clients, agents et entreprise, et remboursements.',
     icon: Scale,
     variant: 'warning',
   },
@@ -173,7 +174,8 @@ const AGENCY_MODULE_CARDS: Array<{
     id: 'operations',
     pole: '02. Missions & Mouvements',
     title: 'Missions & Opérations',
-    description: 'Affectation des tâches opérationnelles aux agents et suivi de complétion.',
+    shortTitle: 'Missions',
+    description: 'Affectation des tâches aux agents et suivi.',
     icon: Activity,
     variant: 'primary',
   },
@@ -181,15 +183,17 @@ const AGENCY_MODULE_CARDS: Array<{
     id: 'transfers',
     pole: '02. Missions & Mouvements',
     title: 'Transferts Inter-Agences',
-    description: 'Mouvements de fonds inter-succursales (argent physique, virtuel et ravitaillements).',
+    shortTitle: 'Transferts',
+    description: 'Mouvements de fonds inter-succursales.',
     icon: ArrowLeftRight,
     variant: 'primary',
   },
   {
     id: 'chat',
     pole: '03. Personnel & Communication',
-    title: 'Chat Interne, Annonces & IA',
-    description: "Messagerie d'agence, notes de service officielles et assistant analytique.",
+    title: 'Chat Interne & Annonces',
+    shortTitle: 'Chat & Notes',
+    description: "Messagerie d'agence et notes de service.",
     icon: MessageSquare,
     variant: 'primary',
   },
@@ -197,7 +201,8 @@ const AGENCY_MODULE_CARDS: Array<{
     id: 'agents',
     pole: '03. Personnel & Communication',
     title: "Gestion des Agents de l'Agence",
-    description: 'Activer la polyvalence de guichet et affecter les services autorisés.',
+    shortTitle: 'Agents',
+    description: 'Polyvalence de guichet et services autorisés.',
     icon: Users,
     variant: 'warning',
   },
@@ -205,7 +210,8 @@ const AGENCY_MODULE_CARDS: Array<{
     id: 'registrations',
     pole: '03. Personnel & Communication',
     title: 'Inscriptions Abonnés & Clients',
-    description: 'Examen des pièces justificatives et approbation des clients locaux.',
+    shortTitle: 'Inscriptions',
+    description: 'Approbation des clients et abonnés locaux.',
     icon: UserCheck,
     variant: 'primary',
   },
@@ -213,16 +219,17 @@ const AGENCY_MODULE_CARDS: Array<{
     id: 'reports',
     pole: '04. Rapports & Infrastructure',
     title: "Rapports d'Agence & Exports",
-    description: "États financiers, opérationnels et clôtures de l'agence en PDF et Excel.",
+    shortTitle: 'Rapports',
+    description: "États financiers et clôtures PDF / Excel.",
     icon: FileText,
     variant: 'success',
-    badge: 'PDF / Excel',
   },
   {
     id: 'connectivity',
     pole: '04. Rapports & Infrastructure',
     title: 'Disponibilité & Synchronisation',
-    description: "Vérification du stockage local sécurisé et de la liaison avec le siège central.",
+    shortTitle: 'Synchro',
+    description: 'Stockage local et liaison serveur central.',
     icon: Wifi,
     variant: 'default',
   },
@@ -230,16 +237,16 @@ const AGENCY_MODULE_CARDS: Array<{
     id: 'audit',
     pole: '04. Rapports & Infrastructure',
     title: "Journal d'Activité & Audit",
-    description: "Traçabilité horodatée de l'ensemble des actions et opérations de l'agence.",
+    shortTitle: 'Audit',
+    description: "Traçabilité horodatée de l'agence.",
     icon: History,
     variant: 'danger',
-    badge: 'Traçabilité',
   },
 ];
 
 export default function AdministrateurAgenceDashboard() {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [activeModule, setActiveModule] = useState<ModuleId | null>(null);
   const [resolvedAgencyName, setResolvedAgencyName] = useState<string | null>(null);
 
@@ -317,10 +324,14 @@ export default function AdministrateurAgenceDashboard() {
     }
     const map: Record<string, ModuleId | null> = {
       dashboard: null,
+      overview: null,
       operations: 'operations',
       transactions: 'operations',
+      treasury: 'billetage',
       billetage: 'billetage',
       members: 'agents',
+      registrations: 'registrations',
+      regulations: 'registrations',
       reports: 'reports',
       transfers: 'transfers',
       debts: 'debts',
@@ -328,7 +339,8 @@ export default function AdministrateurAgenceDashboard() {
       salaries: 'salaries',
       chat: 'chat',
       audit: 'audit',
-      regulations: 'registrations',
+      incidents: 'audit',
+      connectivity: 'connectivity',
       settings: 'connectivity',
     };
     if (item in map) {
@@ -340,11 +352,11 @@ export default function AdministrateurAgenceDashboard() {
   const sidebarActiveItem = useMemo(() => {
     if (!activeModule) return 'dashboard';
     const reverseMap: Record<ModuleId, string> = {
-      billetage: 'billetage',
+      billetage: 'treasury',
       operations: 'transactions',
       agents: 'members',
-      registrations: 'regulations',
-      connectivity: 'settings',
+      registrations: 'registrations',
+      connectivity: 'connectivity',
       reports: 'reports',
       chat: 'chat',
       transfers: 'transfers',
@@ -366,7 +378,7 @@ export default function AdministrateurAgenceDashboard() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }}
     >
-      <div className="space-y-6">
+      <div className="space-y-4">
         {activeModule ? (
           <div className="space-y-4">
             <WorkspaceNavigationHeader
@@ -377,45 +389,33 @@ export default function AdministrateurAgenceDashboard() {
               backLabel="Accueil Agence"
               onBack={() => setActiveModule(null)}
               tabs={[
-                { id: 'billetage', label: 'Billetage Caisse', icon: WalletCards },
-                { id: 'salaries', label: 'Salaires & Paie', icon: Coins, badge: 'Paie' },
+                { id: 'billetage', label: 'Billetage', icon: WalletCards },
+                { id: 'salaries', label: 'Salaires', icon: Coins },
                 {
                   id: 'operations',
-                  label: 'Missions Agence',
+                  label: 'Missions',
                   icon: Activity,
                   badge: activeOperationsCount > 0 ? activeOperationsCount : undefined,
                 },
                 { id: 'transfers', label: 'Transferts', icon: ArrowLeftRight },
-                { id: 'debts', label: 'Suivi des Dettes', icon: Scale },
-                { id: 'chat', label: 'Chat & Annonces', icon: MessageSquare },
+                { id: 'debts', label: 'Dettes', icon: Scale },
+                { id: 'chat', label: 'Chat', icon: MessageSquare },
                 {
                   id: 'agents',
-                  label: 'Gestion Agents',
+                  label: 'Agents',
                   icon: Users,
                   badge: activeAgentsCount > 0 ? activeAgentsCount : undefined,
                 },
                 { id: 'registrations', label: 'Inscriptions', icon: UserCheck },
-                { id: 'reports', label: 'Rapports & Exports', icon: FileText },
-                { id: 'audit', label: "Journal d'audit", icon: History },
-                { id: 'connectivity', label: 'Disponibilité & Synchronisation', icon: Wifi },
+                { id: 'reports', label: 'Rapports', icon: FileText },
+                { id: 'audit', label: 'Audit', icon: History },
+                { id: 'connectivity', label: 'Synchro', icon: Wifi },
               ]}
               activeTabId={activeModule}
               onTabChange={(id) => {
                 setActiveModule(id as ModuleId);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              actions={
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => signOut()}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-100 transition"
-                  >
-                    <LogOut className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline">Déconnexion</span>
-                  </button>
-                </div>
-              }
             />
 
             <div className="relative">
@@ -468,7 +468,43 @@ export default function AdministrateurAgenceDashboard() {
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4">
+            {/* Bandeau Caisse Locale synthétique */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Caisse Agence USD
+                </span>
+                <p className="mt-1 text-lg font-black tabular-nums text-emerald-700 dark:text-emerald-400">
+                  ${totalUsd.toLocaleString('fr-FR')}
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Caisse Agence CDF
+                </span>
+                <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
+                  {totalCdf.toLocaleString('fr-FR')} CDF
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Agents Actifs
+                </span>
+                <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
+                  {activeAgentsCount}
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Missions en cours
+                </span>
+                <p className="mt-1 text-lg font-black tabular-nums text-amber-600 dark:text-amber-400">
+                  {activeOperationsCount}
+                </p>
+              </div>
+            </div>
+
             <UnifiedExecutiveOverview
               kicker="ADMINISTRATION D'AGENCE"
               title={`Bonjour, ${user?.displayName?.split(' ')[0] || 'Responsable'}`}
@@ -490,33 +526,45 @@ export default function AdministrateurAgenceDashboard() {
               searchPlaceholder="Rechercher un module d'agence..."
             />
 
-            <div className="space-y-8">
+            <div className="space-y-4">
               {Array.from(new Set(AGENCY_MODULE_CARDS.map((m) => m.pole))).map((pole) => {
                 const poleModules = AGENCY_MODULE_CARDS.filter(
                   (m) =>
                     m.pole === pole &&
                     (!search.trim() ||
                       m.title.toLowerCase().includes(search.toLowerCase()) ||
+                      m.shortTitle.toLowerCase().includes(search.toLowerCase()) ||
                       m.description.toLowerCase().includes(search.toLowerCase()))
                 );
                 if (poleModules.length === 0) return null;
 
                 return (
-                  <div key={pole} className="space-y-3.5">
-                    <div className="border-b border-slate-200 pb-2">
-                      <h2 className="text-sm font-bold tracking-tight text-slate-800">
+                  <div key={pole} className="space-y-2">
+                    <div className="border-b border-slate-200/80 dark:border-slate-800 pb-1.5">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                         {pole}
-                      </h2>
+                      </h3>
                     </div>
-                    <DashboardModuleGrid columns={3}>
+                    <DashboardModuleGrid
+                      columns={4}
+                      layout={viewMode === 'list' ? 'list' : 'grid'}
+                    >
                       {poleModules.map((item) => (
                         <DashboardModuleCard
                           key={item.id}
                           title={item.title}
+                          shortTitle={item.shortTitle}
                           description={item.description}
                           icon={item.icon}
                           variant={item.variant}
-                          badge={item.badge}
+                          badge={
+                            item.id === 'operations' && activeOperationsCount > 0
+                              ? `${activeOperationsCount}`
+                              : item.id === 'agents' && activeAgentsCount > 0
+                                ? `${activeAgentsCount}`
+                                : item.badge
+                          }
+                          layout={viewMode === 'list' ? 'list' : 'tile'}
                           onClick={() => {
                             setActiveModule(item.id);
                             window.scrollTo({ top: 0, behavior: 'smooth' });

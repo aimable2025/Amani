@@ -114,22 +114,22 @@ export default function SystemSecurityModule({ onClose }: SystemSecurityModulePr
   };
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm">
-              <ShieldCheck className="h-6 w-6" />
+    <div className="space-y-4">
+      <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-900 dark:bg-slate-800 text-white">
+              <ShieldCheck className="h-5 w-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-slate-900">Sécurité Globale & Gestion des Habilitations</h1>
-                <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-lg font-bold text-slate-900 dark:text-white">Sécurité Globale & Habilitations</h1>
+                <span className="rounded-md bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
                   Niveau Élevé ({securityScore}/100)
                 </span>
               </div>
-              <p className="mt-1 text-sm text-slate-500">
-                Paramètres d'authentification stricte, expiration des sessions, chiffrement et politique des mots de passe.
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                Paramètres d'authentification stricte, expiration des sessions et politique des accès.
               </p>
             </div>
           </div>
@@ -137,58 +137,58 @@ export default function SystemSecurityModule({ onClose }: SystemSecurityModulePr
             <button
               type="button"
               onClick={onClose}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               aria-label="Fermer"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4" />
             </button>
           )}
         </div>
 
         {feedback && (
-          <div className="mt-4 flex items-center gap-2 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800 border border-emerald-200">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          <div className="mt-3 flex items-center gap-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 p-2.5 text-xs text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/60">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <p>{feedback}</p>
           </div>
         )}
 
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-xs font-semibold text-slate-500 uppercase">Protection des sessions</p>
-            <p className="mt-1 text-lg font-bold text-slate-900">Déconnexion automatique</p>
-            <p className="mt-0.5 text-xs text-slate-500">Actif après {sessionTimeoutMin} minutes d inactivité.</p>
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3.5">
+            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Protection des sessions</p>
+            <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white">Déconnexion automatique</p>
+            <p className="mt-0.5 text-xs tabular-nums text-slate-500 dark:text-slate-400">Actif après {sessionTimeoutMin} minutes d'inactivité.</p>
           </div>
 
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-xs font-semibold text-slate-500 uppercase">Intégrité des opérations</p>
-            <p className="mt-1 text-lg font-bold text-slate-900">Empreinte locale vérifiée</p>
-            <p className="mt-0.5 text-xs text-slate-500">Stockage local sécurisé avec contrôle d'intégrité.</p>
+          <div className="rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3.5">
+            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Intégrité des opérations</p>
+            <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white">Empreinte locale vérifiée</p>
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Stockage local sécurisé avec contrôle d'intégrité.</p>
           </div>
 
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-xs font-semibold text-slate-500 uppercase">Contrôle des rôles</p>
-            <p className="mt-1 text-lg font-bold text-slate-900">Cloisonnement strict</p>
-            <p className="mt-0.5 text-xs text-slate-500">6 rôles hiérarchiques distincts.</p>
+          <div className="rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3.5">
+            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Contrôle des rôles</p>
+            <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white">Cloisonnement strict</p>
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">6 rôles hiérarchiques distincts.</p>
           </div>
         </div>
       </div>
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
-        <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-800">
-            <Lock className="h-5 w-5" />
+      <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-4">
+        <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
+            <Lock className="h-4 w-4" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-slate-900">Directives d'accès & Authentification</h2>
-            <p className="text-xs text-slate-500">Mesures coercitives pour la sécurité des fonds et données Ets AMANI</p>
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white">Directives d'accès & Authentification</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Mesures coercitives pour la sécurité des fonds et données Ets AMANI</p>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between rounded-2xl border border-slate-200 p-4">
+        <div className="space-y-3">
+          <label className="flex items-center justify-between gap-4 rounded-lg border border-slate-200 dark:border-slate-800 p-3.5 cursor-pointer hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
             <div>
-              <p className="text-sm font-semibold text-slate-900">Double facteur obligatoire (2FA / OTP)</p>
-              <p className="text-xs text-slate-500">
+              <p className="text-sm font-semibold text-slate-900 dark:text-white">Double facteur obligatoire (2FA / OTP)</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Impose la validation par code SMS / Email pour toute connexion en dehors des heures de bureau.
               </p>
             </div>
@@ -196,14 +196,14 @@ export default function SystemSecurityModule({ onClose }: SystemSecurityModulePr
               type="checkbox"
               checked={twoFactorEnforced}
               onChange={(e) => setTwoFactorEnforced(e.target.checked)}
-              className="h-5 w-5 rounded border-slate-300 text-slate-900 focus:ring-slate-900"
+              className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-slate-900 focus:ring-slate-900"
             />
-          </div>
+          </label>
 
-          <div className="flex items-center justify-between rounded-2xl border border-slate-200 p-4">
+          <label className="flex items-center justify-between gap-4 rounded-lg border border-slate-200 dark:border-slate-800 p-3.5 cursor-pointer hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
             <div>
-              <p className="text-sm font-semibold text-slate-900">Forcer la reconnexion de tous les utilisateurs</p>
-              <p className="text-xs text-slate-500">
+              <p className="text-sm font-semibold text-slate-900 dark:text-white">Forcer la reconnexion de tous les utilisateurs</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Invalide les jetons de session actifs de tous les agents lors du prochain rafraîchissement.
               </p>
             </div>
@@ -211,12 +211,12 @@ export default function SystemSecurityModule({ onClose }: SystemSecurityModulePr
               type="checkbox"
               checked={forceReauth}
               onChange={(e) => setForceReauth(e.target.checked)}
-              className="h-5 w-5 rounded border-slate-300 text-slate-900 focus:ring-slate-900"
+              className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-slate-900 focus:ring-slate-900"
             />
-          </div>
+          </label>
 
-          <div className="rounded-2xl border border-slate-200 p-4">
-            <label className="block text-sm font-semibold text-slate-900">
+          <div className="rounded-lg border border-slate-200 dark:border-slate-800 p-3.5">
+            <label className="block text-sm font-semibold text-slate-900 dark:text-white">
               Durée maximale de la session inactive (minutes)
             </label>
             <input
@@ -225,19 +225,19 @@ export default function SystemSecurityModule({ onClose }: SystemSecurityModulePr
               max="480"
               value={sessionTimeoutMin}
               onChange={(e) => setSessionTimeoutMin(Number(e.target.value))}
-              className="mt-2 w-full max-w-xs rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-sm outline-none focus:bg-white"
+              className="mt-2 w-full max-w-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-2 text-sm tabular-nums text-slate-900 dark:text-white outline-none focus:bg-white dark:focus:bg-slate-900"
             />
           </div>
         </div>
 
-        <div className="flex justify-end pt-4">
+        <div className="flex justify-end pt-2">
           <button
             type="button"
             onClick={handleApplySecurityPolicy}
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-emerald-600 px-5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:hover:bg-emerald-500 disabled:opacity-50"
           >
-            <Shield className="h-4 w-4" />
+            <Shield className="h-3.5 w-3.5" />
             Appliquer les directives de sécurité
           </button>
         </div>

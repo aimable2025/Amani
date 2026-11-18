@@ -253,6 +253,8 @@ export default function OperationModule({ onClose }: OperationModuleProps) {
     (agent) => !(agent.status === 'active' && agent.isApproved)
   );
 
+  const [activeTab, setActiveTab] = useState<'list' | 'create'>('list');
+  const [searchQuery, setSearchQuery] = useState('');
   const [busyAgentIds, setBusyAgentIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -409,6 +411,7 @@ export default function OperationModule({ onClose }: OperationModuleProps) {
       setComments('');
       setDueDate('');
       setSelectedAgentIds([]);
+      setActiveTab('list');
     } catch (error) {
       console.warn('Ets AMANI - création opération :', error);
       setErrorMessage('Impossible d enregistrer l opération localement.');
@@ -443,340 +446,425 @@ export default function OperationModule({ onClose }: OperationModuleProps) {
   }
 
   const filteredOperations = useMemo(() => {
-    if (statusFilter === 'all') return operations;
-    return operations.filter((op) => op.status === statusFilter);
-  }, [operations, statusFilter]);
+    const q = searchQuery.trim().toLowerCase();
+    return operations.filter((op) => {
+      if (statusFilter !== 'all' && op.status !== statusFilter) return false;
+      if (!q) return true;
+      return (
+        op.operationNumber.toLowerCase().includes(q) ||
+        op.title.toLowerCase().includes(q) ||
+        op.agencyName.toLowerCase().includes(q) ||
+        (op.assignedAgentNames || []).some((n) => n.toLowerCase().includes(q))
+      );
+    });
+  }, [operations, statusFilter, searchQuery]);
 
   return (
-    <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900 shadow-xl overflow-hidden">
-      <header className="sticky top-0 z-20 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur px-6 py-4 flex items-center justify-between">
+    <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+      <header className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3.5 sm:px-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-500">
-            PILOTAGE
+          <p className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+            PILOTAGE OPÉRATIONNEL
           </p>
-          <h2 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Opérations
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+            Ordres de mission & Opérations ({operations.length})
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Création, affectation et suivi opérationnel du réseau ETS AMANI.
-          </p>
         </div>
-        {onClose && (
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-800 p-0.5 text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setActiveTab('list')}
+              className={`whitespace-nowrap shrink-0 rounded-md px-3 py-1.5 transition ${
+                activeTab === 'list'
+                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Liste & Suivi
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('create')}
+              className={`whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 transition ${
+                activeTab === 'create'
+                  ? 'bg-slate-900 dark:bg-emerald-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Nouvelle mission
+            </button>
+          </div>
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+              aria-label="Fermer"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </header>
 
-      <div className="space-y-6 p-6">
+      <div className="space-y-4 p-4 sm:p-5 bg-slate-50/50 dark:bg-slate-950/40">
         {errorMessage && (
-          <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-            <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+          <div className="flex items-start gap-2.5 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/30 p-3 text-xs text-red-800 dark:text-red-300">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
             <p className="flex-1">{errorMessage}</p>
           </div>
         )}
         {successMessage && (
-          <div className="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
-            <Check className="mt-0.5 h-5 w-5 shrink-0" />
+          <div className="flex items-start gap-2.5 rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/30 p-3 text-xs text-emerald-800 dark:text-emerald-300">
+            <Check className="mt-0.5 h-4 w-4 shrink-0" />
             <p className="flex-1">{successMessage}</p>
           </div>
         )}
 
-        {/* Section création */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
-          <div className="border-b border-slate-100 pb-3 flex items-center gap-2">
-            <Plus className="h-5 w-5 text-blue-600" />
-            <h3 className="font-bold text-slate-900">Nouvelle Opération</h3>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label className="block text-xs font-semibold uppercase text-slate-500 mb-1">
-                Agence de rattachement *
-              </label>
-              <select
-                value={selectedAgencyId}
-                onChange={(e) => setSelectedAgencyId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 focus:bg-white focus:outline-none"
+        {activeTab === 'create' ? (
+          <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 space-y-4">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Plus className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Nouvel ordre de mission</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveTab('list')}
+                className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white"
               >
-                <option value="">Sélectionner une agence...</option>
-                {filteredAgencies.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name} ({a.city || 'RDC'})
-                  </option>
-                ))}
-              </select>
+                Retour à la liste
+              </button>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold uppercase text-slate-500 mb-1">
-                Type d'opération
-              </label>
-              <select
-                value={operationType}
-                onChange={(e) => setOperationType(e.target.value as OperationType)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 focus:bg-white focus:outline-none"
-              >
-                {OPERATION_TYPES.map((t) => (
-                  <option key={t.value} value={t.value}>
-                    {t.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold uppercase text-slate-500 mb-1">
-                Titre de l opération *
-              </label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Ex. Approvisionnement devises agence Goma"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 focus:bg-white focus:outline-none"
-              />
-            </div>
-
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold uppercase text-slate-500 mb-1">
-                Description / Ordre de mission *
-              </label>
-              <textarea
-                rows={3}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Détaillez les instructions pour les agents affectés..."
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 focus:bg-white focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold uppercase text-slate-500 mb-1">
-                Montant facultatif
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="0.00"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 focus:bg-white focus:outline-none"
-                />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">
+                  Agence de rattachement *
+                </label>
                 <select
-                  value={currency}
-                  onChange={(e) => setCurrency(e.target.value as 'USD' | 'CDF')}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-bold"
+                  value={selectedAgencyId}
+                  onChange={(e) => setSelectedAgencyId(e.target.value)}
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:outline-none"
                 >
-                  <option value="USD">USD</option>
-                  <option value="CDF">CDF</option>
+                  <option value="">Sélectionner une agence...</option>
+                  {filteredAgencies.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.name} ({a.city || 'RDC'})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">
+                  Type d'opération
+                </label>
+                <select
+                  value={operationType}
+                  onChange={(e) => setOperationType(e.target.value as OperationType)}
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:outline-none"
+                >
+                  {OPERATION_TYPES.map((t) => (
+                    <option key={t.value} value={t.value}>
+                      {t.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">
+                  Titre de l'opération *
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Ex. Approvisionnement devises agence Goma"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:outline-none"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">
+                  Description / Ordre de mission *
+                </label>
+                <textarea
+                  rows={3}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Détaillez les instructions pour les agents affectés..."
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">
+                  Montant facultatif
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="0.00"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm tabular-nums text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:outline-none"
+                  />
+                  <select
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value as 'USD' | 'CDF')}
+                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm font-bold text-slate-900 dark:text-slate-100"
+                  >
+                    <option value="USD">USD</option>
+                    <option value="CDF">CDF</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">
+                  Priorité
+                </label>
+                <select
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value as OperationPriority)}
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:outline-none"
+                >
+                  {PRIORITIES.map((p) => (
+                    <option key={p.value} value={p.value}>
+                      {p.label}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold uppercase text-slate-500 mb-1">
-                Priorité
-              </label>
-              <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value as OperationPriority)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 focus:bg-white focus:outline-none"
-              >
-                {PRIORITIES.map((p) => (
-                  <option key={p.value} value={p.value}>
-                    {p.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Sélection des agents */}
-          {selectedAgencyId && (
-            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-              <p className="text-xs font-bold uppercase text-slate-500 mb-2">
-                Affecter des agents de l'agence ({selectedAgentIds.length} sélectionné(s))
-              </p>
-              {loadingAgents ? (
-                <p className="text-xs text-slate-400">Chargement des agents...</p>
-              ) : activeAgents.length === 0 ? (
-                <p className="text-xs text-amber-700">Aucun agent actif dans cette agence.</p>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                  {activeAgents.map((agent) => {
-                    const isSelected = selectedAgentIds.includes(agent.uid);
-                    const isBusy = busyAgentIds.has(agent.uid);
-                    return (
-                      <button
-                        key={agent.uid}
-                        type="button"
-                        onClick={() => toggleAgent(agent.uid)}
-                        className={`flex items-center justify-between rounded-xl border p-2.5 text-left text-xs transition ${
-                          isSelected
-                            ? 'border-blue-500 bg-blue-50 text-blue-900'
-                            : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                          <UserAvatar
-                            name={agent.displayName}
-                            photoURL={agent.photoURL}
-                            email={agent.email}
-                            size="sm"
-                            showStatus
-                            isOnline={!isBusy}
-                          />
-                          <div className="min-w-0 flex-1">
-                            <p className="font-bold truncate">{agent.displayName}</p>
-                            <p className="text-[10px] text-slate-500">{agent.function || 'Agent'}</p>
+            {selectedAgencyId && (
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 p-3.5">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-2">
+                  Affecter des agents de l'agence ({selectedAgentIds.length} sélectionné(s))
+                </p>
+                {loadingAgents ? (
+                  <p className="text-xs text-slate-400">Chargement des agents...</p>
+                ) : activeAgents.length === 0 ? (
+                  <p className="text-xs text-amber-700 dark:text-amber-400">Aucun agent actif dans cette agence.</p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                    {activeAgents.map((agent) => {
+                      const isSelected = selectedAgentIds.includes(agent.uid);
+                      const isBusy = busyAgentIds.has(agent.uid);
+                      return (
+                        <button
+                          key={agent.uid}
+                          type="button"
+                          onClick={() => toggleAgent(agent.uid)}
+                          className={`flex items-center justify-between rounded-lg border p-2 text-left text-xs transition ${
+                            isSelected
+                              ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200'
+                              : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <UserAvatar
+                              name={agent.displayName}
+                              photoURL={agent.photoURL}
+                              email={agent.email}
+                              size="sm"
+                              showStatus
+                              isOnline={!isBusy}
+                            />
+                            <div className="min-w-0 flex-1">
+                              <p className="font-semibold truncate">{agent.displayName}</p>
+                              <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{agent.function || 'Agent'}</p>
+                            </div>
                           </div>
-                        </div>
-                        <span className={`ml-2 rounded-full px-2 py-0.5 text-[9px] font-bold ${
-                          isBusy ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
-                        }`}>
-                          {isBusy ? 'Occupé' : 'Libre'}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
+                          <span className={`ml-2 rounded-md px-1.5 py-0.5 text-[10px] font-bold shrink-0 ${
+                            isBusy
+                              ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300'
+                              : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300'
+                          }`}>
+                            {isBusy ? 'Occupé' : 'Libre'}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
 
-          <div className="flex justify-end pt-2">
-            <button
-              type="button"
-              disabled={saving}
-              onClick={handleCreateOperation}
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-50"
-            >
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-              Créer et affecter la mission
-            </button>
-          </div>
-        </section>
-
-        {/* Liste des opérations */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
-            <div className="flex items-center gap-2">
-              <ClipboardCheck className="h-5 w-5 text-slate-700" />
-              <h3 className="font-bold text-slate-900">
-                Opérations Réseau Enregistrées ({filteredOperations.length})
-              </h3>
-            </div>
-            <div className="flex items-center gap-2">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as OperationFilter)}
-                className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 outline-none"
-              >
-                <option value="all">Tous les statuts</option>
-                {Object.entries(STATUS_LABELS).map(([val, label]) => (
-                  <option key={val} value={val}>
-                    {label}
-                  </option>
-                ))}
-              </select>
+            <div className="flex justify-end gap-2 pt-1">
               <button
                 type="button"
-                onClick={loadOperations}
-                className="flex items-center gap-1.5 text-xs text-blue-600 hover:underline"
+                onClick={() => setActiveTab('list')}
+                className="rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
               >
-                <RefreshCw className="h-3.5 w-3.5" />
-                Rafraîchir
+                Annuler
+              </button>
+              <button
+                type="button"
+                disabled={saving}
+                onClick={handleCreateOperation}
+                className="inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-emerald-600 px-5 py-2 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-emerald-500 disabled:opacity-50"
+              >
+                {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+                Créer et affecter la mission
               </button>
             </div>
-          </div>
+          </section>
+        ) : (
+          <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 space-y-3">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1 lg:pb-0">
+                {(
+                  [
+                    { id: 'all', label: 'Toutes' },
+                    { id: 'cree', label: 'Créées' },
+                    { id: 'en_cours', label: 'En cours' },
+                    { id: 'termine', label: 'Terminées' },
+                    { id: 'rejete', label: 'Rejetées' },
+                  ] as { id: OperationFilter; label: string }[]
+                ).map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setStatusFilter(tab.id)}
+                    className={`whitespace-nowrap shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                      statusFilter === tab.id
+                        ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
 
-          {filteredOperations.length === 0 ? (
-            <p className="text-center py-8 text-sm text-slate-400">
-              Aucune opération enregistrée dans la base locale.
-            </p>
-          ) : (
-            <div className="divide-y divide-slate-100">
-              {filteredOperations.map((op) => (
-                <div key={op.id} className="py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono font-bold text-slate-900">{op.operationNumber}</span>
-                      <span className="rounded bg-blue-50 px-2 py-0.5 font-semibold text-blue-700">
-                        {getTypeLabel(op.type)}
-                      </span>
-                      <span className={`rounded px-2 py-0.5 font-semibold ${getPriorityClasses(op.priority)}`}>
-                        {getPriorityLabel(op.priority)}
-                      </span>
-                      <span className="rounded bg-slate-100 px-2 py-0.5 font-semibold text-slate-700">
-                        {STATUS_LABELS[op.status] || op.status}
-                      </span>
-                    </div>
-                    <p className="mt-1 font-semibold text-sm text-slate-800">{op.title}</p>
-                    <p className="text-slate-500 mt-0.5 line-clamp-1">{op.description}</p>
-                    <div className="mt-2 flex flex-wrap items-center gap-3 text-slate-400">
-                      <span>Agence : <strong>{op.agencyName}</strong></span>
-                      <span>•</span>
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        <span>Agents ({op.assignedAgentNames?.length || 0}) :</span>
-                        {(op.assignedAgentNames || []).map((agName, idx) => {
-                          const agUid = op.assignedAgentIds?.[idx];
-                          const foundAg = agents.find((a) => a.uid === agUid);
-                          return (
-                            <span
-                              key={`${op.id}_ag_${idx}`}
-                              className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 py-0.5 pl-1 pr-2 text-[11px] font-semibold text-slate-700"
-                            >
-                              <UserAvatar
-                                name={agName}
-                                photoURL={foundAg?.photoURL}
-                                size="xs"
-                              />
-                              <span>{agName}</span>
-                            </span>
-                          );
-                        })}
-                      </div>
-                      {op.amount !== undefined && (
-                        <>
-                          <span>•</span>
-                          <span>Montant : <strong>{op.amount} {op.currency}</strong></span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex flex-col sm:items-end gap-2 shrink-0">
-                    <div className="flex items-center gap-2">
-                      <select
-                        value={op.status}
-                        onChange={(e) =>
-                          void handleUpdateOperationStatus(op.id, e.target.value as OperationStatus)
-                        }
-                        className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-700 outline-none"
-                      >
-                        {Object.entries(STATUS_LABELS).map(([val, label]) => (
-                          <option key={val} value={val}>
-                            {label}
-                          </option>
-                        ))}
-                      </select>
-                      <span className={`inline-block rounded-full px-2.5 py-0.5 font-semibold ${getSyncClasses(op.syncStatus)}`}>
-                        {getSyncLabel(op.syncStatus)}
-                      </span>
-                    </div>
-                    <p className="text-slate-400">
-                      {new Date(op.createdAt).toLocaleDateString('fr-FR')}
-                    </p>
-                  </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="relative flex-1 sm:w-52">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Réf, titre, agence..."
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 outline-none"
+                  />
                 </div>
-              ))}
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value as OperationFilter)}
+                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none"
+                >
+                  <option value="all">Tous les statuts</option>
+                  {Object.entries(STATUS_LABELS).map(([val, label]) => (
+                    <option key={val} value={val}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={loadOperations}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 ${loadingOperations ? 'animate-spin' : ''}`} />
+                  Actualiser
+                </button>
+              </div>
             </div>
-          )}
-        </section>
+
+            {filteredOperations.length === 0 ? (
+              <div className="py-10 text-center">
+                <ClipboardCheck className="mx-auto h-7 w-7 text-slate-300 dark:text-slate-600 mb-2" />
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  Aucune opération correspondante dans la base locale.
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                {filteredOperations.map((op) => (
+                  <div key={op.id} className="py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="font-mono font-bold tabular-nums text-slate-900 dark:text-white">{op.operationNumber}</span>
+                        <span className="rounded-md bg-blue-50 dark:bg-blue-950/60 px-1.5 py-0.5 text-[11px] font-semibold text-blue-700 dark:text-blue-300">
+                          {getTypeLabel(op.type)}
+                        </span>
+                        <span className={`rounded-md px-1.5 py-0.5 text-[11px] font-semibold ${getPriorityClasses(op.priority)}`}>
+                          {getPriorityLabel(op.priority)}
+                        </span>
+                        <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                          {STATUS_LABELS[op.status] || op.status}
+                        </span>
+                      </div>
+                      <p className="mt-1 font-semibold text-sm text-slate-800 dark:text-slate-100">{op.title}</p>
+                      <p className="text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">{op.description}</p>
+                      <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                        <span>Agence : <strong className="text-slate-700 dark:text-slate-200">{op.agencyName}</strong></span>
+                        <span>•</span>
+                        <div className="flex flex-wrap items-center gap-1">
+                          <span>Agents ({op.assignedAgentNames?.length || 0}) :</span>
+                          {(op.assignedAgentNames || []).map((agName, idx) => {
+                            const agUid = op.assignedAgentIds?.[idx];
+                            const foundAg = agents.find((a) => a.uid === agUid);
+                            return (
+                              <span
+                                key={`${op.id}_ag_${idx}`}
+                                className="inline-flex items-center gap-1 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 py-0.5 pl-1 pr-1.5 text-[11px] font-medium text-slate-700 dark:text-slate-200"
+                              >
+                                <UserAvatar
+                                  name={agName}
+                                  photoURL={foundAg?.photoURL}
+                                  size="xs"
+                                />
+                                <span>{agName}</span>
+                              </span>
+                            );
+                          })}
+                        </div>
+                        {op.amount !== undefined && (
+                          <>
+                            <span>•</span>
+                            <span className="tabular-nums">
+                              Montant : <strong className="text-slate-800 dark:text-slate-100">{op.amount.toLocaleString('fr-FR')} {op.currency}</strong>
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex sm:flex-col items-center sm:items-end justify-between gap-2 shrink-0">
+                      <div className="flex items-center gap-1.5">
+                        <select
+                          value={op.status}
+                          onChange={(e) =>
+                            void handleUpdateOperationStatus(op.id, e.target.value as OperationStatus)
+                          }
+                          className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none"
+                        >
+                          {Object.entries(STATUS_LABELS).map(([val, label]) => (
+                            <option key={val} value={val}>
+                              {label}
+                            </option>
+                          ))}
+                        </select>
+                        <span className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold ${getSyncClasses(op.syncStatus)}`}>
+                          {getSyncLabel(op.syncStatus)}
+                        </span>
+                      </div>
+                      <p className="text-[11px] tabular-nums text-slate-400">
+                        {new Date(op.createdAt).toLocaleDateString('fr-FR')}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
       </div>
     </div>
   );

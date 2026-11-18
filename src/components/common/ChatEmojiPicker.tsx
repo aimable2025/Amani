@@ -195,11 +195,11 @@ export default function ChatEmojiPicker({
   return (
     <div
       ref={containerRef}
-      className={`absolute bottom-full mb-2 left-0 right-0 sm:left-2 sm:right-auto sm:w-84 md:w-96 rounded-2xl bg-white border border-slate-200/90 shadow-2xl shadow-slate-900/15 overflow-hidden z-40 animate-in fade-in zoom-in-95 duration-150 ${className}`}
+      className={`absolute bottom-full mb-2 left-0 right-0 sm:left-2 sm:right-auto sm:w-84 md:w-96 rounded-2xl bg-white dark:bg-[#202c33] border border-slate-200/90 dark:border-slate-700 shadow-2xl shadow-slate-900/15 dark:shadow-black/50 overflow-hidden z-40 animate-in fade-in zoom-in-95 duration-150 ${className}`}
     >
       {/* En-tête WhatsApp : Recherche & Fermeture */}
-      <div className="flex items-center gap-2 px-3 pt-3 pb-2 border-b border-slate-100 bg-slate-50/70">
-        <div className="flex flex-1 items-center gap-2 rounded-xl bg-white px-2.5 py-1.5 border border-slate-200 text-xs shadow-2xs">
+      <div className="flex items-center gap-2 px-3 pt-3 pb-2 border-b border-slate-100 dark:border-slate-700/80 bg-slate-50/70 dark:bg-[#111b21]">
+        <div className="flex flex-1 items-center gap-2 rounded-lg bg-white dark:bg-[#2a3942] px-2.5 py-1.5 border border-slate-200 dark:border-slate-700 text-xs shadow-2xs">
           <Search className="h-3.5 w-3.5 text-slate-400 shrink-0" />
           <input
             ref={searchInputRef}
@@ -207,13 +207,13 @@ export default function ChatEmojiPicker({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Rechercher un émoji (ok, merci, argent...)"
-            className="w-full bg-transparent text-xs text-slate-800 placeholder:text-slate-400 outline-none"
+            className="w-full bg-transparent text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 outline-none"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="text-slate-400 hover:text-slate-600 p-0.5 rounded"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 rounded"
             >
               <X className="h-3 w-3" />
             </button>
@@ -222,7 +222,7 @@ export default function ChatEmojiPicker({
         <button
           type="button"
           onClick={onClose}
-          className="rounded-lg p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition"
+          className="rounded-lg p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-700 transition"
           title="Fermer le sélecteur"
         >
           <X className="h-4 w-4" />
@@ -231,14 +231,14 @@ export default function ChatEmojiPicker({
 
       {/* Onglets des catégories avec style WhatsApp */}
       {!searchQuery && (
-        <div className="flex items-center justify-between px-2 pt-1 border-b border-slate-100 bg-slate-50/40 text-slate-500 text-xs">
+        <div className="flex items-center justify-between px-2 pt-1 border-b border-slate-100 dark:border-slate-700/80 bg-slate-50/40 dark:bg-[#111b21]/80 text-slate-500 dark:text-slate-400 text-xs overflow-x-auto scrollbar-none">
           <button
             type="button"
             onClick={() => setActiveCategory('recents')}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold border-b-2 transition ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold border-b-2 transition whitespace-nowrap shrink-0 ${
               activeCategory === 'recents'
-                ? 'border-[#008069] text-[#008069]'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-[#008069] dark:border-[#00a884] text-[#008069] dark:text-[#00a884]'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
             title="Fréquents & récents"
           >
@@ -248,10 +248,10 @@ export default function ChatEmojiPicker({
           <button
             type="button"
             onClick={() => setActiveCategory('faces')}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold border-b-2 transition ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold border-b-2 transition whitespace-nowrap shrink-0 ${
               activeCategory === 'faces'
-                ? 'border-[#008069] text-[#008069]'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-[#008069] dark:border-[#00a884] text-[#008069] dark:text-[#00a884]'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
             title="Visages & émotions"
           >
@@ -261,10 +261,10 @@ export default function ChatEmojiPicker({
           <button
             type="button"
             onClick={() => setActiveCategory('gestures')}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold border-b-2 transition ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold border-b-2 transition whitespace-nowrap shrink-0 ${
               activeCategory === 'gestures'
-                ? 'border-[#008069] text-[#008069]'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-[#008069] dark:border-[#00a884] text-[#008069] dark:text-[#00a884]'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
             title="Gestes & mains"
           >
@@ -274,10 +274,10 @@ export default function ChatEmojiPicker({
           <button
             type="button"
             onClick={() => setActiveCategory('office')}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold border-b-2 transition ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold border-b-2 transition whitespace-nowrap shrink-0 ${
               activeCategory === 'office'
-                ? 'border-[#008069] text-[#008069]'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-[#008069] dark:border-[#00a884] text-[#008069] dark:text-[#00a884]'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
             title="Bureau, Caisse & Trésorerie"
           >
@@ -287,10 +287,10 @@ export default function ChatEmojiPicker({
           <button
             type="button"
             onClick={() => setActiveCategory('symbols')}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold border-b-2 transition ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold border-b-2 transition whitespace-nowrap shrink-0 ${
               activeCategory === 'symbols'
-                ? 'border-[#008069] text-[#008069]'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-[#008069] dark:border-[#00a884] text-[#008069] dark:text-[#00a884]'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
             title="Statuts & validation"
           >
@@ -301,8 +301,8 @@ export default function ChatEmojiPicker({
       )}
 
       {/* Raccourcis ultra-rapides en une ligne (toujours visibles pour efficacité maximale) */}
-      <div className="flex items-center gap-1 px-3 py-1.5 bg-emerald-50/40 border-b border-emerald-100/60 overflow-x-auto scrollbar-none">
-        <span className="text-[10px] font-bold text-[#008069] uppercase tracking-wider shrink-0 flex items-center gap-1 mr-1">
+      <div className="flex items-center gap-1 px-3 py-1.5 bg-emerald-50/40 dark:bg-[#005c4b]/20 border-b border-emerald-100/60 dark:border-slate-700/80 overflow-x-auto scrollbar-none">
+        <span className="text-[10px] font-bold text-[#008069] dark:text-[#00a884] uppercase tracking-wider shrink-0 flex items-center gap-1 mr-1">
           <Zap className="h-2.5 w-2.5" /> Express:
         </span>
         {['👍', '🙏', '✅', '💼', '💰', '🤝', '😊', '👏', '🎯', '🔥', '📍'].map((emoji) => (
@@ -310,7 +310,7 @@ export default function ChatEmojiPicker({
             key={emoji}
             type="button"
             onClick={() => handlePickEmoji(emoji)}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-base hover:bg-white hover:scale-125 transition-transform"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-base hover:bg-white dark:hover:bg-[#2a3942] hover:scale-125 transition-transform"
             title={`Insérer ${emoji}`}
           >
             {emoji}
@@ -321,7 +321,7 @@ export default function ChatEmojiPicker({
       {/* Grille d'émojis principale */}
       <div className="p-3 max-h-52 overflow-y-auto">
         {filteredEmojis.length === 0 ? (
-          <div className="py-8 text-center text-xs text-slate-400">
+          <div className="py-8 text-center text-xs text-slate-400 dark:text-slate-500">
             Aucun émoji trouvé pour « {searchQuery} »
           </div>
         ) : (
@@ -331,7 +331,7 @@ export default function ChatEmojiPicker({
                 key={item.emoji + item.name}
                 type="button"
                 onClick={() => handlePickEmoji(item.emoji)}
-                className="group relative flex h-9 w-9 items-center justify-center rounded-xl text-lg hover:bg-slate-100 hover:scale-120 active:scale-95 transition-all"
+                className="group relative flex h-9 w-9 items-center justify-center rounded-lg text-lg hover:bg-slate-100 dark:hover:bg-[#2a3942] hover:scale-120 active:scale-95 transition-all"
                 title={`${item.emoji} ${item.name}`}
               >
                 {item.emoji}
@@ -342,7 +342,7 @@ export default function ChatEmojiPicker({
       </div>
 
       {/* Pied de panneau avec conseil discret */}
-      <div className="px-3 py-1.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+      <div className="px-3 py-1.5 bg-slate-50 dark:bg-[#111b21] border-t border-slate-100 dark:border-slate-700/80 flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500">
         <span>Cliquez pour insérer dans le message</span>
         <span>Échap pour fermer</span>
       </div>

@@ -288,7 +288,7 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
           <button
             type="button"
             onClick={handleOpenCreate}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#0B192C] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#13233D] transition active:scale-95"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B192C] dark:bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#13233D] dark:hover:bg-emerald-500 transition active:scale-95"
           >
             <Plus size={14} />
             <span>Nouvelle agence</span>
@@ -297,7 +297,7 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
             type="button"
             onClick={() => void loadData()}
             disabled={loading}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 transition"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
             title="Actualiser"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -306,7 +306,7 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
             <button
               type="button"
               onClick={onClose}
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-500 hover:bg-slate-50"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
               aria-label="Fermer"
             >
               <X size={14} />
@@ -316,15 +316,15 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 rounded-2xl border border-red-200 bg-red-50 p-4 text-xs font-semibold text-red-700">
+        <div className="flex items-center gap-2 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 p-3.5 text-xs font-semibold text-red-700 dark:text-red-300">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {feedback && (
-        <div className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-xs font-semibold text-emerald-800">
-          <Check className="h-4 w-4 shrink-0 text-emerald-600" />
+        <div className="flex items-center gap-2 rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/40 p-3.5 text-xs font-semibold text-emerald-800 dark:text-emerald-300">
+          <Check className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
           <span>{feedback}</span>
         </div>
       )}
@@ -332,7 +332,7 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
       {/* Modal Flottante : Nouvelle Agence conforme à Screenshot_20261104-114730_a9367296.jpg */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl dark:border-slate-800 dark:bg-slate-900 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
               <h2 className="text-base font-bold text-slate-900 dark:text-white mx-auto">
                 {editingAgencyId ? "Modifier l'agence" : 'Nouvelle agence'}
@@ -340,7 +340,7 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
               <button
                 type="button"
                 onClick={resetForm}
-                className="absolute right-4 top-4 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+                className="absolute right-4 top-4 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200"
               >
                 <X size={18} />
               </button>
@@ -475,7 +475,7 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="w-full rounded-xl bg-[#0B192C] py-3 text-xs font-semibold text-white hover:bg-slate-800 transition active:scale-95 disabled:opacity-50"
+                  className="w-full rounded-lg bg-[#0B192C] dark:bg-emerald-600 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 dark:hover:bg-emerald-500 transition active:scale-95 disabled:opacity-50"
                 >
                   {saving && <Loader2 className="h-3.5 w-3.5 animate-spin inline mr-1" />}
                   Enregistrer
@@ -495,26 +495,25 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
 
       {/* Barre de recherche discrète */}
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <input
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher une agence par nom, code, ville ou responsable..."
-          className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-xs text-slate-900 outline-none focus:border-[#B45309] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+          className="w-full rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-2 pl-9 pr-4 text-xs text-slate-900 dark:text-white outline-none focus:border-[#B45309]"
         />
       </div>
 
-      {/* État vide conforme à Screenshot_20261104-114752_d14ccc96.jpg */}
       {loading ? (
-        <div className="py-12 text-center text-slate-400">
+        <div className="py-10 text-center text-slate-400">
           <Loader2 className="mx-auto h-6 w-6 animate-spin mb-2" />
           <p className="text-xs">Chargement des agences...</p>
         </div>
       ) : filteredAgencies.length === 0 ? (
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-12 text-center shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 mb-3">
-            <Building2 size={22} strokeWidth={1.7} />
+        <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-10 text-center">
+          <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 mb-3">
+            <Building2 size={20} strokeWidth={1.7} />
           </div>
           <h3 className="text-sm font-bold text-slate-900 dark:text-white">
             Aucune agence
@@ -524,7 +523,7 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
           </p>
         </div>
       ) : (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2">
             {filteredAgencies.map((agency) => {
               const personnelCount = agentCountsByAgency[agency.id] || 0;
               const isSuspended = agency.status === 'suspended';
@@ -533,38 +532,38 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
               return (
                 <div
                   key={agency.id}
-                  className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300"
+                  className="flex flex-col justify-between rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm transition hover:border-slate-300 dark:hover:border-slate-700"
                 >
                   <div>
                     <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white font-bold text-xs">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-900 dark:bg-slate-800 text-white font-bold text-xs">
                           {agency.code ? agency.code.slice(0, 3) : 'AG'}
                         </div>
-                        <div>
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="text-sm font-bold text-slate-900">
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate">
                               {agency.name}
                             </h3>
                             {agency.code && (
-                              <span className="rounded bg-slate-100 px-2 py-0.5 font-mono text-[10px] font-bold text-slate-600">
+                              <span className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 font-mono text-[10px] font-bold text-slate-600 dark:text-slate-300">
                                 {agency.code}
                               </span>
                             )}
                           </div>
-                          <p className="text-[11px] text-slate-400 font-mono">
+                          <p className="text-[11px] text-slate-400 font-mono truncate">
                             ID : {agency.id}
                           </p>
                         </div>
                       </div>
 
                       <span
-                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase ${
+                        className={`rounded-md px-2 py-0.5 text-[10px] font-bold uppercase shrink-0 ${
                           isSuspended
-                            ? 'bg-amber-100 text-amber-800'
+                            ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
                             : isInactive
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-emerald-100 text-emerald-800'
+                              ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300'
+                              : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                         }`}
                       >
                         {isSuspended
@@ -575,21 +574,21 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                       </span>
                     </div>
 
-                    <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-slate-600">
-                      <div className="flex items-center gap-1.5">
+                    <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-slate-600 dark:text-slate-300">
+                      <div className="flex items-center gap-1.5 min-w-0">
                         <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
                         <span className="truncate">
                           {agency.city || 'Ville non spécifiée'}
                           {agency.address ? ` — ${agency.address}` : ''}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 min-w-0">
                         <Phone className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                        <span className="truncate">
+                        <span className="truncate tabular-nums">
                           {agency.phone || 'Sans téléphone'}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 min-w-0">
                         {agency.managerName ? (
                           <UserAvatar
                             name={agency.managerName}
@@ -602,20 +601,20 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                           <UserRound className="h-3.5 w-3.5 text-slate-400 shrink-0" />
                         )}
                         <span className="truncate">
-                          Resp. : <strong>{agency.managerName || 'Non assigné'}</strong>
+                          Resp. : <strong className="text-slate-800 dark:text-slate-100">{agency.managerName || 'Non assigné'}</strong>
                         </span>
                       </div>
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 min-w-0">
                         <Users className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                        <span>
-                          <strong>{personnelCount}</strong> membre{personnelCount > 1 ? 's' : ''} affecté{personnelCount > 1 ? 's' : ''}
+                        <span className="tabular-nums">
+                          <strong className="text-slate-800 dark:text-slate-100">{personnelCount}</strong> membre{personnelCount > 1 ? 's' : ''}
                         </span>
                       </div>
                     </div>
 
                     {(isSuspended || isInactive || !agency.managerId || personnelCount === 0) && (
-                      <div className="mt-3 flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-medium text-amber-800">
-                        <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-amber-600" />
+                      <div className="mt-3 flex items-center gap-1.5 rounded-lg border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/30 px-2.5 py-1 text-[11px] font-medium text-amber-800 dark:text-amber-300">
+                        <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
                         <span>
                           {isSuspended || isInactive
                             ? 'Agence non opérationnelle'
@@ -627,11 +626,11 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                     )}
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
+                  <div className="mt-3.5 flex items-center justify-between gap-2 border-t border-slate-100 dark:border-slate-800 pt-3">
                     <button
                       type="button"
                       onClick={() => void handleOpenDetails(agency)}
-                      className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-800"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 dark:bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-800 dark:hover:bg-emerald-500"
                     >
                       <Eye className="h-3.5 w-3.5" />
                       Superviser
@@ -640,7 +639,7 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                       <button
                         type="button"
                         onClick={() => handleOpenEdit(agency)}
-                        className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
                       >
                         <Edit3 className="h-3.5 w-3.5" />
                         Modifier
@@ -649,7 +648,7 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                         type="button"
                         disabled={deletingId === agency.id}
                         onClick={() => setConfirmDeleteAgency(agency)}
-                        className="inline-flex items-center gap-1.5 rounded-xl bg-red-50 px-2.5 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100 disabled:opacity-50"
+                        className="inline-flex items-center gap-1 rounded-lg bg-red-50 dark:bg-red-950/50 px-2.5 py-1.5 text-xs font-semibold text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-950 disabled:opacity-50"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                         Supprimer
@@ -664,31 +663,31 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
 
       {/* Modal de Supervision Approfondie de l'Agence */}
       {selectedAgencyDetails && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
-          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col rounded-3xl bg-white shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-4 backdrop-blur-xs">
+          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
             {/* Modal Header */}
-            <div className="flex items-start justify-between border-b border-slate-200 bg-slate-50/60 p-6">
-              <div className="flex items-center gap-3.5">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-900 font-bold text-white shadow-sm">
+            <div className="flex items-start justify-between border-b border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950/50 p-5">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-900 dark:bg-slate-800 font-bold text-white shadow-sm text-xs">
                   {selectedAgencyDetails.code ? selectedAgencyDetails.code.slice(0, 3) : 'AG'}
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-bold text-slate-900">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">
                       {selectedAgencyDetails.name}
                     </h3>
                     {selectedAgencyDetails.code && (
-                      <span className="rounded bg-slate-200 px-2 py-0.5 font-mono text-xs font-bold text-slate-700">
+                      <span className="rounded bg-slate-200 dark:bg-slate-800 px-2 py-0.5 font-mono text-xs font-bold text-slate-700 dark:text-slate-200">
                         {selectedAgencyDetails.code}
                       </span>
                     )}
                     <span
-                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase ${
+                      className={`rounded-md px-2 py-0.5 text-[10px] font-bold uppercase ${
                         selectedAgencyDetails.status === 'suspended'
-                          ? 'bg-amber-100 text-amber-800'
+                          ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
                           : selectedAgencyDetails.status === 'inactive'
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-emerald-100 text-emerald-800'
+                          ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300'
+                          : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                       }`}
                     >
                       {selectedAgencyDetails.status === 'suspended'
@@ -698,7 +697,7 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                         : 'Active'}
                     </span>
                   </div>
-                  <p className="mt-0.5 text-xs text-slate-500">
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400 tabular-nums">
                     {selectedAgencyDetails.city} {selectedAgencyDetails.address ? `• ${selectedAgencyDetails.address}` : ''} {selectedAgencyDetails.phone ? `• Tél : ${selectedAgencyDetails.phone}` : ''}
                   </p>
                 </div>
@@ -706,15 +705,15 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
               <button
                 type="button"
                 onClick={() => setSelectedAgencyDetails(null)}
-                className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
             {/* Administrateur d'Agence Card */}
-            <div className="border-b border-slate-200 bg-white px-6 py-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+            <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-5 py-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 p-3.5">
                 <div className="flex items-center gap-3">
                   <UserAvatar
                     name={selectedAgencyDetails.managerName || 'Non assigné'}
@@ -725,21 +724,21 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                   />
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                         Responsable :
                       </span>
-                      <span className="rounded-md bg-blue-100 px-2 py-0.5 text-[11px] font-bold text-blue-800">
+                      <span className="rounded-md bg-blue-100 dark:bg-blue-950/60 px-2 py-0.5 text-[11px] font-bold text-blue-800 dark:text-blue-300">
                         Administrateur d'Agence
                       </span>
                     </div>
-                    <p className="font-bold text-slate-900">
-                      {selectedAgencyDetails.managerName || 'Aucun administrateur d\'agence assigné'}
+                    <p className="font-bold text-sm text-slate-900 dark:text-white">
+                      {selectedAgencyDetails.managerName || "Aucun administrateur d'agence assigné"}
                     </p>
                   </div>
                 </div>
 
                 {selectedAgencyDetails.managerId && (
-                  <div className="text-right text-xs text-slate-500">
+                  <div className="text-right text-xs text-slate-500 dark:text-slate-400 tabular-nums">
                     <p>
                       Email : {systemUsers.find((u) => u.uid === selectedAgencyDetails.managerId)?.email || '—'}
                     </p>
@@ -752,59 +751,59 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
             </div>
 
             {/* Supervision Tabs */}
-            <div className="flex border-b border-slate-200 bg-slate-100 px-6 pt-2">
+            <div className="flex overflow-x-auto scrollbar-none border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/50 px-5 pt-2">
               <button
                 type="button"
                 onClick={() => setDetailsTab('personnel')}
-                className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
+                className={`flex items-center gap-2 whitespace-nowrap shrink-0 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
                   detailsTab === 'personnel'
-                    ? 'border-slate-900 bg-white text-slate-950'
-                    : 'border-transparent text-slate-600 hover:text-slate-950'
+                    ? 'border-slate-900 dark:border-emerald-500 bg-white dark:bg-slate-900 text-slate-950 dark:text-white rounded-t-lg'
+                    : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >
                 <Users className="h-4 w-4" />
-                Agents rattachés ({systemUsers.filter((u) => u.agencyId === selectedAgencyDetails.id).length})
+                <span className="tabular-nums">Agents rattachés ({systemUsers.filter((u) => u.agencyId === selectedAgencyDetails.id).length})</span>
               </button>
               <button
                 type="button"
                 onClick={() => setDetailsTab('operations')}
-                className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
+                className={`flex items-center gap-2 whitespace-nowrap shrink-0 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
                   detailsTab === 'operations'
-                    ? 'border-slate-900 bg-white text-slate-950'
-                    : 'border-transparent text-slate-600 hover:text-slate-950'
+                    ? 'border-slate-900 dark:border-emerald-500 bg-white dark:bg-slate-900 text-slate-950 dark:text-white rounded-t-lg'
+                    : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >
                 <CheckCircle2 className="h-4 w-4" />
-                Opérations ({agencyOperations.length})
+                <span className="tabular-nums">Opérations ({agencyOperations.length})</span>
               </button>
               <button
                 type="button"
                 onClick={() => setDetailsTab('reports')}
-                className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
+                className={`flex items-center gap-2 whitespace-nowrap shrink-0 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
                   detailsTab === 'reports'
-                    ? 'border-slate-900 bg-white text-slate-950'
-                    : 'border-transparent text-slate-600 hover:text-slate-950'
+                    ? 'border-slate-900 dark:border-emerald-500 bg-white dark:bg-slate-900 text-slate-950 dark:text-white rounded-t-lg'
+                    : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >
                 <FileText className="h-4 w-4" />
-                Rapports ({agencyReports.length})
+                <span className="tabular-nums">Rapports ({agencyReports.length})</span>
               </button>
               <button
                 type="button"
                 onClick={() => setDetailsTab('billetages')}
-                className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
+                className={`flex items-center gap-2 whitespace-nowrap shrink-0 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
                   detailsTab === 'billetages'
-                    ? 'border-slate-900 bg-white text-slate-950'
-                    : 'border-transparent text-slate-600 hover:text-slate-950'
+                    ? 'border-slate-900 dark:border-emerald-500 bg-white dark:bg-slate-900 text-slate-950 dark:text-white rounded-t-lg'
+                    : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >
                 <WalletCards className="h-4 w-4" />
-                Billetages ({agencyBilletages.length})
+                <span className="tabular-nums">Billetages ({agencyBilletages.length})</span>
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-5">
               {loadingDetails ? (
                 <div className="py-12 text-center text-slate-400">
                   <Loader2 className="mx-auto h-6 w-6 animate-spin mb-2" />
@@ -816,30 +815,32 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                   {detailsTab === 'personnel' && (
                     <div className="space-y-3">
                       {systemUsers.filter((u) => u.agencyId === selectedAgencyDetails.id).length === 0 ? (
-                        <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-slate-500">
-                          <Users className="mx-auto h-8 w-8 text-slate-300" />
+                        <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-8 text-center text-slate-500 dark:text-slate-400">
+                          <Users className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
                           <p className="mt-2 text-xs font-semibold">Aucun personnel rattaché à cette agence.</p>
                         </div>
                       ) : (
-                        <div className="divide-y divide-slate-100 rounded-2xl border border-slate-200">
+                        <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800">
                           {systemUsers
                             .filter((u) => u.agencyId === selectedAgencyDetails.id)
                             .map((u) => (
-                              <div key={u.uid} className="flex items-center justify-between p-3.5">
-                                <div className="flex items-center gap-3">
+                              <div key={u.uid} className="flex flex-wrap items-center justify-between gap-2 p-3.5">
+                                <div className="flex items-center gap-3 min-w-0">
                                   <UserAvatar user={u} size="sm" />
-                                  <div>
-                                    <p className="text-xs font-bold text-slate-900">{u.displayName}</p>
-                                    <p className="text-[11px] text-slate-500">{u.email || u.phone || '—'}</p>
+                                  <div className="min-w-0">
+                                    <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{u.displayName}</p>
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 tabular-nums truncate">{u.email || u.phone || '—'}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                  <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700">
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
                                     {u.role === 'administrateur_agence' ? "Administrateur d'Agence" : u.function || u.role}
                                   </span>
                                   <span
-                                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
-                                      u.status === 'active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                                    className={`rounded-md px-2 py-0.5 text-[10px] font-bold uppercase ${
+                                      u.status === 'active'
+                                        ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
+                                        : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
                                     }`}
                                   >
                                     {u.status}
@@ -856,19 +857,19 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                   {detailsTab === 'operations' && (
                     <div className="space-y-3">
                       {agencyOperations.length === 0 ? (
-                        <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-slate-500">
-                          <CheckCircle2 className="mx-auto h-8 w-8 text-slate-300" />
+                        <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-8 text-center text-slate-500 dark:text-slate-400">
+                          <CheckCircle2 className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
                           <p className="mt-2 text-xs font-semibold">Aucune opération enregistrée pour cette agence.</p>
                         </div>
                       ) : (
-                        <div className="divide-y divide-slate-100 rounded-2xl border border-slate-200">
+                        <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800">
                           {agencyOperations.map((op) => (
-                            <div key={op.id} className="flex items-center justify-between p-3.5 text-xs">
-                              <div>
-                                <p className="font-bold text-slate-900">{op.title || op.operationNumber}</p>
-                                <p className="text-[11px] text-slate-500 font-mono">N° {op.operationNumber} • {new Date(op.createdAt).toLocaleDateString()}</p>
+                            <div key={op.id} className="flex items-center justify-between gap-2 p-3.5 text-xs">
+                              <div className="min-w-0">
+                                <p className="font-bold text-slate-900 dark:text-white truncate">{op.title || op.operationNumber}</p>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono tabular-nums">N° {op.operationNumber} • {new Date(op.createdAt).toLocaleDateString()}</p>
                               </div>
-                              <span className="rounded-md bg-slate-100 px-2.5 py-1 font-semibold text-slate-700">
+                              <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2.5 py-1 font-semibold text-slate-700 dark:text-slate-300 shrink-0">
                                 {op.status}
                               </span>
                             </div>
@@ -882,19 +883,19 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                   {detailsTab === 'reports' && (
                     <div className="space-y-3">
                       {agencyReports.length === 0 ? (
-                        <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-slate-500">
-                          <FileText className="mx-auto h-8 w-8 text-slate-300" />
+                        <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-8 text-center text-slate-500 dark:text-slate-400">
+                          <FileText className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
                           <p className="mt-2 text-xs font-semibold">Aucun rapport produit par cette agence.</p>
                         </div>
                       ) : (
-                        <div className="divide-y divide-slate-100 rounded-2xl border border-slate-200">
+                        <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800">
                           {agencyReports.map((rep) => (
-                            <div key={rep.id} className="flex items-center justify-between p-3.5 text-xs">
-                              <div>
-                                <p className="font-bold text-slate-900">{rep.title}</p>
-                                <p className="text-[11px] text-slate-500">Réf : {rep.reference} • Auteur : {rep.createdByName}</p>
+                            <div key={rep.id} className="flex items-center justify-between gap-2 p-3.5 text-xs">
+                              <div className="min-w-0">
+                                <p className="font-bold text-slate-900 dark:text-white truncate">{rep.title}</p>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400">Réf : <span className="tabular-nums">{rep.reference}</span> • Auteur : {rep.createdByName}</p>
                               </div>
-                              <span className="rounded-md bg-slate-100 px-2.5 py-1 font-semibold text-slate-700">
+                              <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2.5 py-1 font-semibold text-slate-700 dark:text-slate-300 shrink-0">
                                 {rep.status}
                               </span>
                             </div>
@@ -908,27 +909,27 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                   {detailsTab === 'billetages' && (
                     <div className="space-y-3">
                       {agencyBilletages.length === 0 ? (
-                        <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-slate-500">
-                          <WalletCards className="mx-auto h-8 w-8 text-slate-300" />
+                        <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-8 text-center text-slate-500 dark:text-slate-400">
+                          <WalletCards className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
                           <p className="mt-2 text-xs font-semibold">Aucun comptage de billetage enregistré pour cette agence.</p>
                         </div>
                       ) : (
-                        <div className="divide-y divide-slate-100 rounded-2xl border border-slate-200">
+                        <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800">
                           {agencyBilletages.map((b) => (
-                            <div key={b.id} className="flex items-center justify-between p-3.5 text-xs">
+                            <div key={b.id} className="flex items-center justify-between gap-2 p-3.5 text-xs">
                               <div>
-                                <p className="font-bold text-slate-900">
+                                <p className="font-bold text-slate-900 dark:text-white tabular-nums">
                                   {b.currency} {b.calculatedTotal.toLocaleString('fr-FR')}
                                 </p>
-                                <p className="text-[11px] text-slate-500">
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 tabular-nums">
                                   {new Date(b.createdAt).toLocaleDateString()} • {b.type === 'business' ? 'Professionnel' : 'Personnel'}
                                 </p>
                               </div>
                               <span
-                                className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
+                                className={`rounded-md px-2 py-0.5 text-[10px] font-bold uppercase shrink-0 ${
                                   b.status === 'validated'
-                                    ? 'bg-emerald-100 text-emerald-800'
-                                    : 'bg-slate-100 text-slate-700'
+                                    ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                                 }`}
                               >
                                 {b.status}
@@ -944,11 +945,11 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
             </div>
 
             {/* Modal Footer */}
-            <div className="flex justify-end border-t border-slate-200 bg-slate-50 px-6 py-3">
+            <div className="flex justify-end border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 px-5 py-3">
               <button
                 type="button"
                 onClick={() => setSelectedAgencyDetails(null)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Fermer
               </button>
@@ -959,19 +960,19 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
 
       {/* Modal de confirmation de suppression */}
       {confirmDeleteAgency && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4">
-            <h3 className="text-base font-bold text-slate-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl space-y-4">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
               Supprimer l'agence « {confirmDeleteAgency.name} » ?
             </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Cette action retirera l'agence ({confirmDeleteAgency.id}) de la liste active du réseau Ets AMANI.
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Cette action retirera l'agence (<span className="font-mono">{confirmDeleteAgency.id}</span>) de la liste active du réseau Ets AMANI.
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setConfirmDeleteAgency(null)}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Annuler
               </button>
@@ -979,7 +980,7 @@ export default function AgenciesModule({ onClose }: AgenciesModuleProps) {
                 type="button"
                 disabled={deletingId === confirmDeleteAgency.id}
                 onClick={() => void handleConfirmDelete()}
-                className="rounded-xl bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-700 disabled:opacity-50"
+                className="rounded-lg bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-700 disabled:opacity-50"
               >
                 {deletingId === confirmDeleteAgency.id ? 'Suppression...' : 'Confirmer la suppression'}
               </button>

@@ -409,35 +409,35 @@ export default function AgentManagementModule({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Module Header Card */}
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm">
-              <ShieldCheck className="h-6 w-6" />
+          <div className="flex items-center gap-3.5 min-w-0">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-900 dark:bg-slate-800 text-white shadow-sm">
+              <ShieldCheck className="h-5 w-5" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-slate-900">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
                   Direction des Administrateurs & Agents
                 </h1>
-                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700">
+                <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300 tabular-nums">
                   {managedUsers.length} comptes
                 </span>
               </div>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                 Supervision des Administrateurs d'Agence, gestion du personnel opérationnel, affectations et services.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <button
               type="button"
               onClick={loadData}
               disabled={isLoading}
-              className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`} />
               Actualiser
@@ -446,7 +446,7 @@ export default function AgentManagementModule({
               <button
                 type="button"
                 onClick={() => setShowCreateAdminModal(true)}
-                className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800"
+                className="flex items-center gap-1.5 rounded-lg bg-slate-900 dark:bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 dark:hover:bg-emerald-500"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Nouvel Administrateur d'Agence
@@ -456,7 +456,7 @@ export default function AgentManagementModule({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-800 dark:hover:text-white"
                 aria-label="Fermer"
               >
                 <X className="h-4 w-4" />
@@ -467,51 +467,51 @@ export default function AgentManagementModule({
 
         {/* Feedback messages */}
         {successMessage && (
-          <div className="mt-4 flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs font-medium text-emerald-800">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+          <div className="mt-4 flex items-center gap-2 rounded-lg border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/40 p-3 text-xs font-medium text-emerald-800 dark:text-emerald-300">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <p>{successMessage}</p>
           </div>
         )}
 
         {errorMessage && (
-          <div className="mt-4 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-800">
-            <AlertCircle className="h-4 w-4 text-red-600 shrink-0" />
+          <div className="mt-4 flex items-center gap-2 rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 p-3 text-xs font-medium text-red-800 dark:text-red-300">
+            <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400 shrink-0" />
             <p>{errorMessage}</p>
           </div>
         )}
 
         {/* Tab switcher */}
-        <div className="mt-6 flex border-b border-slate-200">
+        <div className="mt-5 flex overflow-x-auto scrollbar-none border-b border-slate-200 dark:border-slate-800">
           <button
             type="button"
             onClick={() => setActiveTab('agency_admins')}
-            className={`flex items-center gap-2 border-b-2 px-5 py-3 text-xs font-bold transition ${
+            className={`flex items-center gap-2 whitespace-nowrap shrink-0 border-b-2 px-4 py-2.5 text-xs font-bold transition ${
               activeTab === 'agency_admins'
-                ? 'border-slate-900 text-slate-950'
-                : 'border-transparent text-slate-500 hover:text-slate-900'
+                ? 'border-slate-900 dark:border-emerald-500 text-slate-950 dark:text-white'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <Building2 className="h-4 w-4" />
-            Administrateurs d'Agence ({agencyAdmins.length})
+            <span className="tabular-nums">Administrateurs d'Agence ({agencyAdmins.length})</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('agents')}
-            className={`flex items-center gap-2 border-b-2 px-5 py-3 text-xs font-bold transition ${
+            className={`flex items-center gap-2 whitespace-nowrap shrink-0 border-b-2 px-4 py-2.5 text-xs font-bold transition ${
               activeTab === 'agents'
-                ? 'border-slate-900 text-slate-950'
-                : 'border-transparent text-slate-500 hover:text-slate-900'
+                ? 'border-slate-900 dark:border-emerald-500 text-slate-950 dark:text-white'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <Users className="h-4 w-4" />
-            Agents de l'Entreprise ({agents.length})
+            <span className="tabular-nums">Agents de l'Entreprise ({agents.length})</span>
           </button>
         </div>
 
         {/* Filters and search bar */}
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={search}
@@ -521,7 +521,7 @@ export default function AgentManagementModule({
                   ? "Rechercher un Administrateur d'Agence par nom, email, agence..."
                   : 'Rechercher un agent par nom, email, service...'
               }
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none"
+              className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 py-2 pl-9 pr-4 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500"
             />
           </div>
 
@@ -530,7 +530,7 @@ export default function AgentManagementModule({
               <select
                 value={filterAgency}
                 onChange={(e) => setFilterAgency(e.target.value)}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 outline-none"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none"
               >
                 <option value="all">Toutes les agences</option>
                 {agencies.map((a) => (
@@ -543,7 +543,7 @@ export default function AgentManagementModule({
               <select
                 value={filterService}
                 onChange={(e) => setFilterService(e.target.value)}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 outline-none"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none"
               >
                 <option value="all">Tous les services</option>
                 {AVAILABLE_SERVICES.map((s) => (
@@ -556,7 +556,7 @@ export default function AgentManagementModule({
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 outline-none"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none"
               >
                 <option value="all">Tous les statuts</option>
                 <option value="active">Actifs</option>
@@ -570,23 +570,23 @@ export default function AgentManagementModule({
 
       {/* TAB 1: ADMINISTRATEURS D'AGENCE */}
       {activeTab === 'agency_admins' && (
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-100 bg-slate-50 font-bold uppercase tracking-wider text-slate-600">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 <tr>
-                  <th className="p-4">Administrateur d'Agence</th>
-                  <th className="p-4">Agence Assignée</th>
-                  <th className="p-4">Statut</th>
-                  <th className="p-4">Contact</th>
-                  <th className="p-4 text-right">Actions</th>
+                  <th className="p-3.5">Administrateur d'Agence</th>
+                  <th className="p-3.5">Agence Assignée</th>
+                  <th className="p-3.5">Statut</th>
+                  <th className="p-3.5">Contact</th>
+                  <th className="p-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {agencyAdmins.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-slate-500">
-                      {search ? 'Aucun Administrateur d’Agence ne correspond à votre recherche.' : 'Aucun Administrateur d’Agence enregistré. Cliquez sur « Nouvel Administrateur d\'Agence ».'}
+                    <td colSpan={5} className="p-8 text-center text-slate-500 dark:text-slate-400">
+                      {search ? 'Aucun Administrateur d’Agence ne correspond à votre recherche.' : "Aucun Administrateur d’Agence enregistré. Cliquez sur « Nouvel Administrateur d'Agence »."}
                     </td>
                   </tr>
                 ) : (
@@ -594,51 +594,51 @@ export default function AgentManagementModule({
                     const assignedAgency = agencies.find((a) => a.id === admin.agencyId);
                     const isSuspended = admin.status === 'suspended';
                     return (
-                      <tr key={admin.uid} className="transition hover:bg-slate-50">
-                        <td className="p-4">
+                      <tr key={admin.uid} className="transition hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                        <td className="p-3.5">
                           <div className="flex items-center gap-3">
                             <UserAvatar user={admin} size="sm" showStatus isOnline={admin.status === 'active'} />
                             <div>
-                              <p className="font-bold text-slate-900">{admin.displayName}</p>
-                              <span className="rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700">
+                              <p className="font-bold text-slate-900 dark:text-white">{admin.displayName}</p>
+                              <span className="inline-block rounded bg-blue-50 dark:bg-blue-950/60 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 dark:text-blue-300">
                                 Administrateur d'Agence
                               </span>
                             </div>
                           </div>
                         </td>
-                        <td className="p-4">
+                        <td className="p-3.5">
                           {assignedAgency ? (
                             <div>
-                              <p className="font-bold text-slate-900">{assignedAgency.name}</p>
-                              <p className="text-[11px] text-slate-400 font-mono">{assignedAgency.code || assignedAgency.city}</p>
+                              <p className="font-bold text-slate-900 dark:text-white">{assignedAgency.name}</p>
+                              <p className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">{assignedAgency.code || assignedAgency.city}</p>
                             </div>
                           ) : (
-                            <span className="text-slate-400 italic">Non affecté</span>
+                            <span className="text-slate-400 dark:text-slate-500 italic">Non affecté</span>
                           )}
                         </td>
-                        <td className="p-4">
+                        <td className="p-3.5">
                           <span
-                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase ${
+                            className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold uppercase ${
                               admin.status === 'active'
-                                ? 'bg-emerald-100 text-emerald-800'
+                                ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                                 : isSuspended
-                                ? 'bg-amber-100 text-amber-800'
-                                : 'bg-red-100 text-red-800'
+                                ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
+                                : 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300'
                             }`}
                           >
                             {admin.status === 'active' ? 'Actif' : isSuspended ? 'Suspendu' : 'Désactivé'}
                           </span>
                         </td>
-                        <td className="p-4 text-slate-600">
+                        <td className="p-3.5 text-slate-600 dark:text-slate-300 tabular-nums">
                           <p>{admin.email || '—'}</p>
-                          <p className="text-[11px] text-slate-400">{admin.phone || ''}</p>
+                          <p className="text-[11px] text-slate-400 dark:text-slate-500">{admin.phone || ''}</p>
                         </td>
-                        <td className="p-4 text-right">
+                        <td className="p-3.5 text-right">
                           <div className="flex items-center justify-end gap-1.5">
                             <button
                               type="button"
                               onClick={() => void handleOpenSuperviseAdmin(admin)}
-                              className="inline-flex items-center gap-1 rounded-xl bg-slate-900 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
+                              className="inline-flex items-center gap-1 rounded-lg bg-slate-900 dark:bg-emerald-600 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:hover:bg-emerald-500 whitespace-nowrap"
                             >
                               <Eye className="h-3 w-3" />
                               Détails & Audit
@@ -646,7 +646,7 @@ export default function AgentManagementModule({
                             <button
                               type="button"
                               onClick={() => handleOpenEditAdmin(admin)}
-                              className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 whitespace-nowrap"
                             >
                               <Edit3 className="h-3 w-3" />
                               Modifier
@@ -654,10 +654,10 @@ export default function AgentManagementModule({
                             <button
                               type="button"
                               onClick={() => void handleToggleAdminStatus(admin)}
-                              className={`rounded-xl px-2.5 py-1.5 text-xs font-semibold ${
+                              className={`rounded-lg px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap ${
                                 admin.status === 'active'
-                                  ? 'bg-amber-50 text-amber-800 hover:bg-amber-100'
-                                  : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+                                  ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-950'
+                                  : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-950'
                               }`}
                             >
                               {admin.status === 'active' ? 'Suspendre' : 'Réactiver'}
@@ -676,23 +676,23 @@ export default function AgentManagementModule({
 
       {/* TAB 2: AGENTS DE L'ENTREPRISE */}
       {activeTab === 'agents' && (
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-100 bg-slate-50 font-bold uppercase tracking-wider text-slate-600">
+              <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 <tr>
-                  <th className="p-4">Agent</th>
-                  <th className="p-4">Agence de Rattachement</th>
-                  <th className="p-4">Fonction Principale</th>
-                  <th className="p-4">Polyvalence</th>
-                  <th className="p-4">Services Actifs</th>
-                  <th className="p-4 text-right">Actions</th>
+                  <th className="p-3.5">Agent</th>
+                  <th className="p-3.5">Agence de Rattachement</th>
+                  <th className="p-3.5">Fonction Principale</th>
+                  <th className="p-3.5">Polyvalence</th>
+                  <th className="p-3.5">Services Actifs</th>
+                  <th className="p-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {agents.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-500">
+                    <td colSpan={6} className="p-8 text-center text-slate-500 dark:text-slate-400">
                       Aucun agent trouvé selon les critères de recherche.
                     </td>
                   </tr>
@@ -702,8 +702,8 @@ export default function AgentManagementModule({
                     const activeAssignments = (agentAppUser.serviceAssignments || []).filter((s) => s.active);
                     const assignedAgency = agencies.find((a) => a.id === agent.agencyId);
                     return (
-                      <tr key={agent.uid} className="transition hover:bg-slate-50">
-                        <td className="p-4">
+                      <tr key={agent.uid} className="transition hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                        <td className="p-3.5">
                           <div className="flex items-center gap-3">
                             <UserAvatar
                               user={agent}
@@ -712,44 +712,44 @@ export default function AgentManagementModule({
                               isOnline={agent.status === 'active'}
                             />
                             <div>
-                              <p className="font-bold text-slate-900">{agent.displayName}</p>
-                              <p className="text-[11px] text-slate-500">{agent.email || agent.phone || '—'}</p>
+                              <p className="font-bold text-slate-900 dark:text-white">{agent.displayName}</p>
+                              <p className="text-[11px] text-slate-500 dark:text-slate-400 tabular-nums">{agent.email || agent.phone || '—'}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="p-4">
+                        <td className="p-3.5">
                           {assignedAgency ? (
-                            <span className="font-semibold text-slate-800">{assignedAgency.name}</span>
+                            <span className="font-semibold text-slate-800 dark:text-slate-200">{assignedAgency.name}</span>
                           ) : (
-                            <span className="text-slate-400 italic">Non affecté</span>
+                            <span className="text-slate-400 dark:text-slate-500 italic">Non affecté</span>
                           )}
                         </td>
-                        <td className="p-4 font-semibold text-slate-800">
+                        <td className="p-3.5 font-semibold text-slate-800 dark:text-slate-200">
                           {agent.function || 'Agent standard'}
                         </td>
-                        <td className="p-4">
+                        <td className="p-3.5">
                           <button
                             type="button"
                             onClick={() => void handleToggleMultiService(agent)}
-                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold transition ${
+                            className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-0.5 text-[11px] font-semibold transition whitespace-nowrap ${
                               agentAppUser.multiServiceEnabled
-                                ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
-                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/60'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                             }`}
                           >
-                            <span className={`h-1.5 w-1.5 rounded-full ${agentAppUser.multiServiceEnabled ? 'bg-emerald-600' : 'bg-slate-400'}`} />
+                            <span className={`h-1.5 w-1.5 rounded-full ${agentAppUser.multiServiceEnabled ? 'bg-emerald-600 dark:bg-emerald-400' : 'bg-slate-400'}`} />
                             {agentAppUser.multiServiceEnabled ? 'Activée' : 'Désactivée'}
                           </button>
                         </td>
-                        <td className="p-4">
+                        <td className="p-3.5">
                           <div className="flex flex-wrap gap-1">
                             {activeAssignments.length === 0 ? (
-                              <span className="text-[11px] text-slate-400 italic">Aucun service</span>
+                              <span className="text-[11px] text-slate-400 dark:text-slate-500 italic">Aucun service</span>
                             ) : (
                               activeAssignments.map((a) => (
                                 <span
                                   key={a.service}
-                                  className="rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700"
+                                  className="rounded-md bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 text-[10px] font-semibold text-blue-700 dark:text-blue-300"
                                 >
                                   {a.service}
                                 </span>
@@ -757,12 +757,12 @@ export default function AgentManagementModule({
                             )}
                           </div>
                         </td>
-                        <td className="p-4 text-right">
+                        <td className="p-3.5 text-right">
                           <div className="flex items-center justify-end gap-1.5">
                             <button
                               type="button"
                               onClick={() => void handleOpenSuperviseAgent(agent)}
-                              className="inline-flex items-center gap-1 rounded-xl bg-slate-900 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
+                              className="inline-flex items-center gap-1 rounded-lg bg-slate-900 dark:bg-emerald-600 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:hover:bg-emerald-500 whitespace-nowrap"
                             >
                               <Eye className="h-3 w-3" />
                               Superviser
@@ -770,7 +770,7 @@ export default function AgentManagementModule({
                             <button
                               type="button"
                               onClick={() => setEditingAgent(agentAppUser)}
-                              className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100"
+                              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-700 whitespace-nowrap"
                             >
                               <Settings className="h-3 w-3" />
                               Services
@@ -789,24 +789,24 @@ export default function AgentManagementModule({
 
       {/* MODAL: Créer un Administrateur d'Agence */}
       {showCreateAdminModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
-          <div className="w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-base font-bold text-slate-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 Créer un Administrateur d'Agence
               </h3>
               <button
                 type="button"
                 onClick={() => setShowCreateAdminModal(false)}
-                className="text-slate-400 hover:text-slate-600"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleCreateAgencyAdmin} className="mt-4 space-y-4 text-xs">
+            <form onSubmit={handleCreateAgencyAdmin} className="mt-4 space-y-3.5 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Nom et prénom du responsable *
                 </label>
                 <input
@@ -815,12 +815,12 @@ export default function AgentManagementModule({
                   value={newAdminName}
                   onChange={(e) => setNewAdminName(e.target.value)}
                   placeholder="Ex: Jean Mukendi"
-                  className="w-full rounded-xl border border-slate-200 p-2.5 outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-slate-900 dark:text-white outline-none focus:border-slate-400 dark:focus:border-slate-500"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Adresse email officielle *
                 </label>
                 <input
@@ -829,12 +829,12 @@ export default function AgentManagementModule({
                   value={newAdminEmail}
                   onChange={(e) => setNewAdminEmail(e.target.value)}
                   placeholder="jean.mukendi@ets-amani.cd"
-                  className="w-full rounded-xl border border-slate-200 p-2.5 outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-slate-900 dark:text-white outline-none focus:border-slate-400 dark:focus:border-slate-500"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Numéro de téléphone
                 </label>
                 <input
@@ -842,18 +842,18 @@ export default function AgentManagementModule({
                   value={newAdminPhone}
                   onChange={(e) => setNewAdminPhone(e.target.value)}
                   placeholder="+243..."
-                  className="w-full rounded-xl border border-slate-200 p-2.5 outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-slate-900 dark:text-white tabular-nums outline-none focus:border-slate-400 dark:focus:border-slate-500"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Affectation à une agence
                 </label>
                 <select
                   value={newAdminAgencyId}
                   onChange={(e) => setNewAdminAgencyId(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 p-2.5 outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-slate-900 dark:text-white outline-none focus:border-slate-400 dark:focus:border-slate-500"
                 >
                   <option value="">Sélectionner une agence (optionnel)</option>
                   {agencies.map((a) => (
@@ -865,7 +865,7 @@ export default function AgentManagementModule({
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Mot de passe initial (facultatif si auth locale)
                 </label>
                 <input
@@ -873,22 +873,22 @@ export default function AgentManagementModule({
                   value={newAdminPassword}
                   onChange={(e) => setNewAdminPassword(e.target.value)}
                   placeholder="Mot de passe sécurisé..."
-                  className="w-full rounded-xl border border-slate-200 p-2.5 outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-slate-900 dark:text-white outline-none focus:border-slate-400 dark:focus:border-slate-500"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowCreateAdminModal(false)}
-                  className="rounded-xl border border-slate-200 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-50"
+                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
                   disabled={isSavingAdmin}
-                  className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2 font-bold text-white hover:bg-slate-800 disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-emerald-600 px-5 py-2 font-bold text-white hover:bg-slate-800 dark:hover:bg-emerald-500 disabled:opacity-50"
                 >
                   {isSavingAdmin && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   Créer l'Administrateur d'Agence
@@ -901,24 +901,24 @@ export default function AgentManagementModule({
 
       {/* MODAL: Modifier le profil d'un Administrateur d'Agence */}
       {editingAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-base font-bold text-slate-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 Modifier Administrateur d'Agence
               </h3>
               <button
                 type="button"
                 onClick={() => setEditingAdmin(null)}
-                className="text-slate-400 hover:text-slate-600"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveEditAdmin} className="mt-4 space-y-4 text-xs">
+            <form onSubmit={handleSaveEditAdmin} className="mt-4 space-y-3.5 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Nom complet
                 </label>
                 <input
@@ -926,30 +926,30 @@ export default function AgentManagementModule({
                   required
                   value={editAdminName}
                   onChange={(e) => setEditAdminName(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 p-2.5 outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-slate-900 dark:text-white outline-none focus:border-slate-400 dark:focus:border-slate-500"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Téléphone
                 </label>
                 <input
                   type="tel"
                   value={editAdminPhone}
                   onChange={(e) => setEditAdminPhone(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 p-2.5 outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-slate-900 dark:text-white tabular-nums outline-none focus:border-slate-400 dark:focus:border-slate-500"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Agence assignée
                 </label>
                 <select
                   value={editAdminAgencyId}
                   onChange={(e) => setEditAdminAgencyId(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 p-2.5 outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-slate-900 dark:text-white outline-none focus:border-slate-400 dark:focus:border-slate-500"
                 >
                   <option value="">Non assigné</option>
                   {agencies.map((a) => (
@@ -960,17 +960,17 @@ export default function AgentManagementModule({
                 </select>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setEditingAdmin(null)}
-                  className="rounded-xl border border-slate-200 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-50"
+                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-slate-900 px-5 py-2 font-bold text-white hover:bg-slate-800"
+                  className="rounded-lg bg-slate-900 dark:bg-emerald-600 px-5 py-2 font-bold text-white hover:bg-slate-800 dark:hover:bg-emerald-500"
                 >
                   Enregistrer
                 </button>
@@ -982,14 +982,14 @@ export default function AgentManagementModule({
 
       {/* MODAL: Détails & Journal d'Audit Administrateur d'Agence */}
       {supervisingAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
-          <div className="flex max-h-[85vh] w-full max-w-2xl flex-col rounded-3xl bg-white shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 p-5">
-              <div className="flex items-center gap-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-4 backdrop-blur-xs">
+          <div className="flex max-h-[85vh] w-full max-w-2xl flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 p-5">
+              <div className="flex items-center gap-3 min-w-0">
                 <UserAvatar user={supervisingAdmin} size="md" />
-                <div>
-                  <h3 className="text-base font-bold text-slate-900">{supervisingAdmin.displayName}</h3>
-                  <p className="text-xs text-slate-500">
+                <div className="min-w-0">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">{supervisingAdmin.displayName}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                     Administrateur d'Agence • {agencies.find((a) => a.id === supervisingAdmin.agencyId)?.name || 'Non rattaché'}
                   </p>
                 </div>
@@ -997,54 +997,54 @@ export default function AgentManagementModule({
               <button
                 type="button"
                 onClick={() => setSupervisingAdmin(null)}
-                className="text-slate-400 hover:text-slate-600"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             <div className="flex-1 overflow-y-auto p-5 text-xs space-y-4">
-              <div className="grid grid-cols-2 gap-3 rounded-2xl bg-slate-50 p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-4">
                 <div>
-                  <span className="text-slate-400">Email :</span>
-                  <p className="font-bold text-slate-900">{supervisingAdmin.email || '—'}</p>
+                  <span className="text-slate-400 dark:text-slate-500">Email :</span>
+                  <p className="font-bold text-slate-900 dark:text-white break-all">{supervisingAdmin.email || '—'}</p>
                 </div>
                 <div>
-                  <span className="text-slate-400">Téléphone :</span>
-                  <p className="font-bold text-slate-900">{supervisingAdmin.phone || '—'}</p>
+                  <span className="text-slate-400 dark:text-slate-500">Téléphone :</span>
+                  <p className="font-bold text-slate-900 dark:text-white tabular-nums">{supervisingAdmin.phone || '—'}</p>
                 </div>
                 <div>
-                  <span className="text-slate-400">Statut :</span>
-                  <p className="font-bold text-slate-900 uppercase">{supervisingAdmin.status}</p>
+                  <span className="text-slate-400 dark:text-slate-500">Statut :</span>
+                  <p className="font-bold text-slate-900 dark:text-white uppercase">{supervisingAdmin.status}</p>
                 </div>
                 <div>
-                  <span className="text-slate-400">Rôle officiel :</span>
-                  <p className="font-semibold text-slate-800">Administrateur d'Agence</p>
+                  <span className="text-slate-400 dark:text-slate-500">Rôle officiel :</span>
+                  <p className="font-semibold text-slate-800 dark:text-slate-200">Administrateur d'Agence</p>
                 </div>
               </div>
 
               <div>
-                <h4 className="font-bold text-slate-900 mb-2">Historique d'audit & Traçabilité</h4>
+                <h4 className="font-bold text-slate-900 dark:text-white mb-2">Historique d'audit & Traçabilité</h4>
                 {loadingAdminAudit ? (
                   <div className="py-6 text-center text-slate-400">
                     <Loader2 className="mx-auto h-5 w-5 animate-spin mb-1" />
                     Chargement de l'historique...
                   </div>
                 ) : adminAuditLogs.length === 0 ? (
-                  <p className="rounded-xl border border-dashed border-slate-200 p-4 text-center text-slate-400">
+                  <p className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-4 text-center text-slate-400 dark:text-slate-500">
                     Aucun événement d'audit enregistré pour cet administrateur.
                   </p>
                 ) : (
-                  <div className="divide-y divide-slate-100 rounded-2xl border border-slate-200">
+                  <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800">
                     {adminAuditLogs.map((log) => (
                       <div key={log.id} className="p-3">
-                        <div className="flex items-center justify-between">
-                          <p className="font-bold text-slate-800">{log.action}</p>
-                          <span className="text-[10px] text-slate-400">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="font-bold text-slate-800 dark:text-slate-100">{log.action}</p>
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums shrink-0">
                             {new Date(log.timestamp).toLocaleString()}
                           </span>
                         </div>
-                        <p className="mt-0.5 text-slate-600">{log.details}</p>
+                        <p className="mt-0.5 text-slate-600 dark:text-slate-300">{log.details}</p>
                       </div>
                     ))}
                   </div>
@@ -1052,11 +1052,11 @@ export default function AgentManagementModule({
               </div>
             </div>
 
-            <div className="flex justify-end border-t border-slate-100 bg-slate-50 px-5 py-3">
+            <div className="flex justify-end border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 px-5 py-3">
               <button
                 type="button"
                 onClick={() => setSupervisingAdmin(null)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Fermer
               </button>
@@ -1067,14 +1067,14 @@ export default function AgentManagementModule({
 
       {/* MODAL: Superviser un Agent (Opérations, Rapports, Billetages) */}
       {supervisingAgent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
-          <div className="flex max-h-[88vh] w-full max-w-3xl flex-col rounded-3xl bg-white shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 p-5">
-              <div className="flex items-center gap-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-4 backdrop-blur-xs">
+          <div className="flex max-h-[88vh] w-full max-w-3xl flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 p-5">
+              <div className="flex items-center gap-3 min-w-0">
                 <UserAvatar user={supervisingAgent} size="md" />
-                <div>
-                  <h3 className="text-base font-bold text-slate-900">{supervisingAgent.displayName}</h3>
-                  <p className="text-xs text-slate-500">
+                <div className="min-w-0">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">{supervisingAgent.displayName}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                     Agent • Fonction : {supervisingAgent.function || 'Standard'} • Agence : {agencies.find((a) => a.id === supervisingAgent.agencyId)?.name || 'Non rattaché'}
                   </p>
                 </div>
@@ -1082,7 +1082,7 @@ export default function AgentManagementModule({
               <button
                 type="button"
                 onClick={() => setSupervisingAgent(null)}
-                className="text-slate-400 hover:text-slate-600"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -1098,23 +1098,23 @@ export default function AgentManagementModule({
                 <>
                   {/* Operations section */}
                   <div>
-                    <h4 className="flex items-center gap-2 font-bold text-slate-900 mb-2">
-                      <CheckCircle2 className="h-4 w-4 text-blue-600" />
+                    <h4 className="flex items-center gap-2 font-bold text-slate-900 dark:text-white mb-2 tabular-nums">
+                      <CheckCircle2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       Opérations & Missions ({agentOperations.length})
                     </h4>
                     {agentOperations.length === 0 ? (
-                      <p className="rounded-xl border border-dashed border-slate-200 p-3 text-slate-400">
+                      <p className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-3 text-slate-400 dark:text-slate-500">
                         Aucune opération initiée par cet agent.
                       </p>
                     ) : (
-                      <div className="divide-y divide-slate-100 rounded-2xl border border-slate-200">
+                      <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800">
                         {agentOperations.map((op) => (
-                          <div key={op.id} className="flex items-center justify-between p-3">
-                            <div>
-                              <p className="font-bold text-slate-900">{op.title || op.operationNumber}</p>
-                              <p className="text-[11px] text-slate-400 font-mono">N° {op.operationNumber}</p>
+                          <div key={op.id} className="flex items-center justify-between gap-2 p-3">
+                            <div className="min-w-0">
+                              <p className="font-bold text-slate-900 dark:text-white truncate">{op.title || op.operationNumber}</p>
+                              <p className="text-[11px] text-slate-400 dark:text-slate-500 font-mono tabular-nums">N° {op.operationNumber}</p>
                             </div>
-                            <span className="rounded bg-slate-100 px-2 py-0.5 font-semibold text-slate-700">
+                            <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 font-semibold text-slate-700 dark:text-slate-300 shrink-0">
                               {op.status}
                             </span>
                           </div>
@@ -1125,23 +1125,23 @@ export default function AgentManagementModule({
 
                   {/* Reports section */}
                   <div>
-                    <h4 className="flex items-center gap-2 font-bold text-slate-900 mb-2">
-                      <FileText className="h-4 w-4 text-emerald-600" />
+                    <h4 className="flex items-center gap-2 font-bold text-slate-900 dark:text-white mb-2 tabular-nums">
+                      <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                       Rapports soumis ({agentReports.length})
                     </h4>
                     {agentReports.length === 0 ? (
-                      <p className="rounded-xl border border-dashed border-slate-200 p-3 text-slate-400">
+                      <p className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-3 text-slate-400 dark:text-slate-500">
                         Aucun rapport soumis par cet agent.
                       </p>
                     ) : (
-                      <div className="divide-y divide-slate-100 rounded-2xl border border-slate-200">
+                      <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800">
                         {agentReports.map((rep) => (
-                          <div key={rep.id} className="flex items-center justify-between p-3">
-                            <div>
-                              <p className="font-bold text-slate-900">{rep.title}</p>
-                              <p className="text-[11px] text-slate-400">Réf : {rep.reference}</p>
+                          <div key={rep.id} className="flex items-center justify-between gap-2 p-3">
+                            <div className="min-w-0">
+                              <p className="font-bold text-slate-900 dark:text-white truncate">{rep.title}</p>
+                              <p className="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">Réf : {rep.reference}</p>
                             </div>
-                            <span className="rounded bg-slate-100 px-2 py-0.5 font-semibold text-slate-700">
+                            <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 font-semibold text-slate-700 dark:text-slate-300 shrink-0">
                               {rep.status}
                             </span>
                           </div>
@@ -1152,27 +1152,27 @@ export default function AgentManagementModule({
 
                   {/* Billetages section */}
                   <div>
-                    <h4 className="flex items-center gap-2 font-bold text-slate-900 mb-2">
-                      <WalletCards className="h-4 w-4 text-amber-600" />
+                    <h4 className="flex items-center gap-2 font-bold text-slate-900 dark:text-white mb-2 tabular-nums">
+                      <WalletCards className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                       Comptages de Billetage ({agentBilletages.length})
                     </h4>
                     {agentBilletages.length === 0 ? (
-                      <p className="rounded-xl border border-dashed border-slate-200 p-3 text-slate-400">
+                      <p className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-3 text-slate-400 dark:text-slate-500">
                         Aucun billetage enregistré par cet agent.
                       </p>
                     ) : (
-                      <div className="divide-y divide-slate-100 rounded-2xl border border-slate-200">
+                      <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800">
                         {agentBilletages.map((b) => (
-                          <div key={b.id} className="flex items-center justify-between p-3">
+                          <div key={b.id} className="flex items-center justify-between gap-2 p-3">
                             <div>
-                              <p className="font-bold text-slate-900">
+                              <p className="font-bold text-slate-900 dark:text-white tabular-nums">
                                 {b.currency} {b.calculatedTotal.toLocaleString('fr-FR')}
                               </p>
-                              <p className="text-[11px] text-slate-400">
+                              <p className="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
                                 {new Date(b.createdAt).toLocaleDateString()} • {b.type === 'business' ? 'Professionnel' : 'Personnel'}
                               </p>
                             </div>
-                            <span className="rounded bg-slate-100 px-2 py-0.5 font-semibold text-slate-700">
+                            <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 font-semibold text-slate-700 dark:text-slate-300 shrink-0">
                               {b.status}
                             </span>
                           </div>
@@ -1184,11 +1184,11 @@ export default function AgentManagementModule({
               )}
             </div>
 
-            <div className="flex justify-end border-t border-slate-100 bg-slate-50 px-5 py-3">
+            <div className="flex justify-end border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 px-5 py-3">
               <button
                 type="button"
                 onClick={() => setSupervisingAgent(null)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Fermer
               </button>
@@ -1199,16 +1199,16 @@ export default function AgentManagementModule({
 
       {/* MODAL: Configurer Services Agent */}
       {editingAgent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4">
-          <div className="w-full max-w-2xl rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
-            <div className="flex items-start justify-between border-b border-slate-100 pb-4">
-              <div className="flex items-center gap-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div className="flex items-center gap-3 min-w-0">
                 <UserAvatar user={editingAgent} size="md" />
-                <div>
-                  <h3 className="text-base font-bold text-slate-900">
+                <div className="min-w-0">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">
                     Services de {editingAgent.displayName}
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     Cochez les services opérationnels que cet agent a l'autorisation d'exécuter.
                   </p>
                 </div>
@@ -1216,16 +1216,16 @@ export default function AgentManagementModule({
               <button
                 type="button"
                 onClick={() => setEditingAgent(null)}
-                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="mt-4 flex items-center justify-between rounded-2xl bg-slate-50 p-4">
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-4">
               <div>
-                <p className="text-xs font-bold text-slate-900">Polyvalence multi-services</p>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-xs font-bold text-slate-900 dark:text-white">Polyvalence multi-services</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Permet à l'agent de basculer dynamiquement entre plusieurs postes au guichet.
                 </p>
               </div>
@@ -1235,17 +1235,17 @@ export default function AgentManagementModule({
                   const m = managedUsers.find((u) => u.uid === editingAgent.uid);
                   if (m) void handleToggleMultiService(m);
                 }}
-                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
+                className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
                   editingAgent.multiServiceEnabled
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-slate-200 text-slate-700'
+                    ? 'bg-emerald-600 text-white hover:bg-emerald-500'
+                    : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600'
                 }`}
               >
                 {editingAgent.multiServiceEnabled ? 'Activée' : 'Désactivée'}
               </button>
             </div>
 
-            <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {AVAILABLE_SERVICES.map(({ value, label }) => {
                 const isChecked = (editingAgent.serviceAssignments || []).some(
                   (s) => s.service === value && s.active
@@ -1255,21 +1255,21 @@ export default function AgentManagementModule({
                     key={value}
                     type="button"
                     onClick={() => void handleToggleService(editingAgent, value)}
-                    className={`flex items-center justify-between rounded-2xl border p-3.5 text-left transition ${
+                    className={`flex items-center justify-between rounded-xl border p-3.5 text-left transition ${
                       isChecked
-                        ? 'border-blue-300 bg-blue-50/60 text-blue-900'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                        ? 'border-blue-300 dark:border-blue-700 bg-blue-50/70 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200'
+                        : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60'
                     }`}
                   >
                     <div>
                       <p className="text-xs font-bold">{label}</p>
-                      <p className="text-[10px] text-slate-400">{value}</p>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">{value}</p>
                     </div>
                     <div
-                      className={`flex h-5 w-5 items-center justify-center rounded-lg border transition ${
+                      className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${
                         isChecked
                           ? 'border-blue-600 bg-blue-600 text-white'
-                          : 'border-slate-300 bg-white'
+                          : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
                       }`}
                     >
                       {isChecked && <Check className="h-3.5 w-3.5" />}
@@ -1279,11 +1279,11 @@ export default function AgentManagementModule({
               })}
             </div>
 
-            <div className="mt-6 flex justify-end">
+            <div className="mt-5 flex justify-end">
               <button
                 type="button"
                 onClick={() => setEditingAgent(null)}
-                className="rounded-xl bg-slate-900 px-6 py-2.5 text-xs font-bold text-white hover:bg-slate-800"
+                className="rounded-lg bg-slate-900 dark:bg-emerald-600 px-5 py-2 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-emerald-500"
               >
                 Terminé
               </button>

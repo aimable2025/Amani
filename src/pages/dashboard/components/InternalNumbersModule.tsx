@@ -84,10 +84,10 @@ const OPERATORS: {
   badgeBg: string;
   badgeText: string;
 }[] = [
-  { value: 'vodacom', label: 'Vodacom (M-Pesa)', badgeBg: 'bg-red-50 text-red-700 border-red-200', badgeText: 'Vodacom' },
-  { value: 'airtel', label: 'Airtel Money', badgeBg: 'bg-rose-50 text-rose-700 border-rose-200', badgeText: 'Airtel' },
-  { value: 'orange', label: 'Orange Money', badgeBg: 'bg-orange-50 text-orange-700 border-orange-200', badgeText: 'Orange' },
-  { value: 'africell', label: 'Africell Money', badgeBg: 'bg-purple-50 text-purple-700 border-purple-200', badgeText: 'Africell' },
+  { value: 'vodacom', label: 'Vodacom (M-Pesa)', badgeBg: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-900/60', badgeText: 'Vodacom' },
+  { value: 'airtel', label: 'Airtel Money', badgeBg: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-900/60', badgeText: 'Airtel' },
+  { value: 'orange', label: 'Orange Money', badgeBg: 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/60 dark:text-orange-300 dark:border-orange-900/60', badgeText: 'Orange' },
+  { value: 'africell', label: 'Africell Money', badgeBg: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-900/60', badgeText: 'Africell' },
 ];
 
 const STATUS_OPTIONS: {
@@ -107,7 +107,7 @@ function operatorLabel(operator: MobileOperator): string {
 }
 
 function operatorBadgeClasses(operator: MobileOperator): string {
-  return OPERATORS.find((item) => item.value === operator)?.badgeBg ?? 'bg-slate-100 text-slate-700 border-slate-200';
+  return OPERATORS.find((item) => item.value === operator)?.badgeBg ?? 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
 }
 
 function statusLabel(status: InternalNumberStatus): string {
@@ -117,14 +117,14 @@ function statusLabel(status: InternalNumberStatus): string {
 function statusClasses(status: InternalNumberStatus): string {
   switch (status) {
     case 'active':
-      return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-900/60';
     case 'suspended':
-      return 'bg-red-50 text-red-700 border-red-200';
+      return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-900/60';
     case 'archived':
-      return 'bg-slate-100 text-slate-600 border-slate-200';
+      return 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
     case 'inactive':
     default:
-      return 'bg-amber-50 text-amber-700 border-amber-200';
+      return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-900/60';
   }
 }
 
@@ -673,28 +673,28 @@ export default function InternalNumbersModule({
 
   return (
     <section
-      className="rounded-3xl border border-slate-200 bg-white shadow-xl overflow-hidden"
+      className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden"
       aria-label="Supervision des flux SMS Opérateurs et numéros internes"
     >
       {/* En-tête Principal */}
-      <div className="flex flex-col gap-4 border-b border-slate-200 bg-slate-50/60 p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-start gap-3.5">
+      <div className="flex flex-col gap-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-4 sm:p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-3">
           <img
             src="/logo.png"
             alt="Ets AMANI"
-            className="h-12 w-12 shrink-0 object-contain rounded-2xl border border-slate-200 bg-white p-1 shadow-xs"
+            className="h-11 w-11 shrink-0 object-contain rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-1 shadow-xs"
           />
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-slate-900">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                 Supervision SMS & Numéros Internes
               </h2>
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
+              <span className="inline-flex items-center gap-1 rounded-md border border-emerald-200 dark:border-emerald-900/60 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 text-[11px] font-bold text-emerald-800 dark:text-emerald-300">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 Lecture Seule
               </span>
             </div>
-            <p className="mt-0.5 text-xs text-slate-500">
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
               Contrôle interne, traçabilité et flux SMS transmis depuis les téléphones sources vers la Direction Générale.
             </p>
           </div>
@@ -708,7 +708,7 @@ export default function InternalNumbersModule({
               void refreshRemoteSms();
             }}
             disabled={loading || smsRefreshing}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-xs transition hover:bg-slate-50 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-xs transition hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading || smsRefreshing ? 'animate-spin' : ''}`} />
             Actualiser
@@ -719,7 +719,7 @@ export default function InternalNumbersModule({
               setShowForm((v) => !v);
               setActiveTab('numbers_fleet');
             }}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-emerald-700"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-emerald-700"
           >
             <Plus className="h-3.5 w-3.5" />
             Nouveau numéro
@@ -728,7 +728,7 @@ export default function InternalNumbersModule({
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-300"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-300 dark:hover:bg-slate-700"
             >
               <X className="h-3.5 w-3.5" />
               Fermer
@@ -738,19 +738,19 @@ export default function InternalNumbersModule({
       </div>
 
       {/* Barre d'onglets */}
-      <div className="flex border-b border-slate-200 bg-white px-5 overflow-x-auto">
+      <div className="flex border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 sm:px-5 overflow-x-auto scrollbar-none">
         <button
           type="button"
           onClick={() => setActiveTab('sms_supervision')}
-          className={`flex items-center gap-2 border-b-2 px-4 py-3 text-xs font-bold transition whitespace-nowrap ${
+          className={`flex items-center gap-2 border-b-2 px-3.5 py-3 text-xs font-bold transition whitespace-nowrap shrink-0 ${
             activeTab === 'sms_supervision'
-              ? 'border-emerald-600 text-emerald-700'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
+              ? 'border-emerald-600 text-emerald-700 dark:text-emerald-400'
+              : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
           }`}
         >
           <Activity className="h-4 w-4" />
           Supervision des SMS Opérateurs
-          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-700 font-bold">
+          <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[11px] text-slate-700 dark:text-slate-300 font-bold tabular-nums">
             {smsOperations.length}
           </span>
         </button>
@@ -758,23 +758,23 @@ export default function InternalNumbersModule({
         <button
           type="button"
           onClick={() => setActiveTab('numbers_fleet')}
-          className={`flex items-center gap-2 border-b-2 px-4 py-3 text-xs font-bold transition whitespace-nowrap ${
+          className={`flex items-center gap-2 border-b-2 px-3.5 py-3 text-xs font-bold transition whitespace-nowrap shrink-0 ${
             activeTab === 'numbers_fleet'
-              ? 'border-emerald-600 text-emerald-700'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
+              ? 'border-emerald-600 text-emerald-700 dark:text-emerald-400'
+              : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
           }`}
         >
           <Phone className="h-4 w-4" />
-          Flotte des Numéros ({numbers.length})
+          <span className="tabular-nums">Flotte des Numéros ({numbers.length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('collector_config')}
-          className={`flex items-center gap-2 border-b-2 px-4 py-3 text-xs font-bold transition whitespace-nowrap ${
+          className={`flex items-center gap-2 border-b-2 px-3.5 py-3 text-xs font-bold transition whitespace-nowrap shrink-0 ${
             activeTab === 'collector_config'
-              ? 'border-emerald-600 text-emerald-700'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
+              ? 'border-emerald-600 text-emerald-700 dark:text-emerald-400'
+              : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
           }`}
         >
           <Smartphone className="h-4 w-4" />
@@ -787,10 +787,10 @@ export default function InternalNumbersModule({
         <button
           type="button"
           onClick={() => setActiveTab('collab_chat')}
-          className={`flex items-center gap-2 border-b-2 px-4 py-3 text-xs font-bold transition whitespace-nowrap ${
+          className={`flex items-center gap-2 border-b-2 px-3.5 py-3 text-xs font-bold transition whitespace-nowrap shrink-0 ${
             activeTab === 'collab_chat'
-              ? 'border-emerald-600 text-emerald-700'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
+              ? 'border-emerald-600 text-emerald-700 dark:text-emerald-400'
+              : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
           }`}
         >
           <MessageSquare className="h-4 w-4" />
@@ -798,27 +798,27 @@ export default function InternalNumbersModule({
         </button>
       </div>
 
-      <div className="p-5">
+      <div className="p-4 sm:p-5">
         {/* Messages d'erreur & succès */}
         {error && (
-          <div className="mb-4 flex items-center justify-between rounded-2xl border border-red-200 bg-red-50 p-3.5 text-xs font-semibold text-red-700">
+          <div className="mb-4 flex items-center justify-between rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/60 p-3.5 text-xs font-semibold text-red-700 dark:text-red-300">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600" />
+              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
               <span>{error}</span>
             </div>
-            <button type="button" onClick={() => setError(null)}>
+            <button type="button" onClick={() => setError(null)} className="rounded-md p-0.5 hover:bg-red-100 dark:hover:bg-red-900/40">
               <X className="h-4 w-4" />
             </button>
           </div>
         )}
 
         {successMessage && (
-          <div className="mb-4 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50 p-3.5 text-xs font-semibold text-emerald-800">
+          <div className="mb-4 flex items-center justify-between rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/60 p-3.5 text-xs font-semibold text-emerald-800 dark:text-emerald-300">
             <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 shrink-0 text-emerald-600" />
+              <Check className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
               <span>{successMessage}</span>
             </div>
-            <button type="button" onClick={() => setSuccessMessage(null)}>
+            <button type="button" onClick={() => setSuccessMessage(null)} className="rounded-md p-0.5 hover:bg-emerald-100 dark:hover:bg-emerald-900/40">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -826,16 +826,16 @@ export default function InternalNumbersModule({
 
         {/* Bannière Détection Vodacom 03220590 */}
         {!vodacomTargetNumber ? (
-          <div className="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
+          <div className="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/70 dark:bg-amber-950/40 p-4">
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300">
                 <AlertTriangle className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-amber-900">
+                <h4 className="text-xs font-bold text-amber-900 dark:text-amber-200">
                   Numéro Vodacom 03220590 non configuré
                 </h4>
-                <p className="mt-0.5 text-xs text-amber-800">
+                <p className="mt-0.5 text-xs text-amber-800 dark:text-amber-300/90">
                   Ce numéro est le premier canal cible pour la collecte des SMS M-Pesa. Enregistrez-le pour permettre sa collecte par le terminal dédié.
                 </p>
               </div>
@@ -843,29 +843,29 @@ export default function InternalNumbersModule({
             <button
               type="button"
               onClick={handlePreFillVodacom03220590}
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-amber-800 shrink-0"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-amber-700 px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-amber-800 shrink-0"
             >
               <Plus className="h-3.5 w-3.5" />
               Configurer 03220590
             </button>
           </div>
         ) : (
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-emerald-200 bg-emerald-50/50 px-4 py-2.5 text-xs">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              <span className="font-bold text-slate-900">Numéro de référence Vodacom {vodacomTargetNumber.phoneNumber}</span>
-              <span className="rounded-md bg-emerald-100 px-2 py-0.5 font-bold text-emerald-800">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/40 px-4 py-2.5 text-xs">
+            <div className="flex flex-wrap items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              <span className="font-bold text-slate-900 dark:text-white tabular-nums">Numéro de référence Vodacom {vodacomTargetNumber.phoneNumber}</span>
+              <span className="rounded-md bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 font-bold text-emerald-800 dark:text-emerald-300">
                 {vodacomTargetNumber.monitoringEnabled ? 'Surveillance Active' : 'Surveillance Inactive'}
               </span>
-              <span className="text-slate-600">
-                Agence : <strong className="text-slate-800">{vodacomTargetNumber.agencyId ? agencyMap.get(vodacomTargetNumber.agencyId)?.name ?? 'Non affectée' : 'Non affectée'}</strong>
+              <span className="text-slate-600 dark:text-slate-400">
+                Agence : <strong className="text-slate-800 dark:text-slate-200">{vodacomTargetNumber.agencyId ? agencyMap.get(vodacomTargetNumber.agencyId)?.name ?? 'Non affectée' : 'Non affectée'}</strong>
               </span>
-              <span className="text-slate-600">
-                Agent : <strong className="text-slate-800">{vodacomTargetNumber.assignedUserName || 'Non affecté'}</strong>
+              <span className="text-slate-600 dark:text-slate-400">
+                Agent : <strong className="text-slate-800 dark:text-slate-200">{vodacomTargetNumber.assignedUserName || 'Non affecté'}</strong>
               </span>
             </div>
             {(!vodacomTargetNumber.agencyId || !vodacomTargetNumber.assignedUserId) && (
-              <span className="text-[11px] font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">
+              <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 rounded-md">
                 Champs à compléter dans l'onglet Flotte
               </span>
             )}
@@ -877,46 +877,46 @@ export default function InternalNumbersModule({
           <div className="space-y-5">
             {/* Statistiques Rapides */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total SMS</p>
-                <p className="mt-1 text-2xl font-black text-slate-900">{stats.totalCount}</p>
-                <p className="text-[10px] text-slate-500 mt-0.5">Captés & transmis</p>
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/70 p-3.5">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total SMS</p>
+                <p className="mt-1 text-2xl font-black text-slate-900 dark:text-white tabular-nums">{stats.totalCount}</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Captés & transmis</p>
               </div>
 
-              <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-3.5">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-amber-700">Non Rapprochés</p>
-                <p className="mt-1 text-2xl font-black text-amber-800">{stats.unmatchedCount}</p>
-                <p className="text-[10px] text-amber-600 mt-0.5">En attente rapprochement</p>
+              <div className="rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/60 dark:bg-amber-950/40 p-3.5">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">Non Rapprochés</p>
+                <p className="mt-1 text-2xl font-black text-amber-800 dark:text-amber-300 tabular-nums">{stats.unmatchedCount}</p>
+                <p className="text-[10px] text-amber-600 dark:text-amber-400/80 mt-0.5">En attente rapprochement</p>
               </div>
 
-              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-3.5">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Rapprochés</p>
-                <p className="mt-1 text-2xl font-black text-emerald-800">{stats.matchedCount}</p>
-                <p className="text-[10px] text-emerald-600 mt-0.5">Vérifiés avec opérations</p>
+              <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/40 p-3.5">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Rapprochés</p>
+                <p className="mt-1 text-2xl font-black text-emerald-800 dark:text-emerald-300 tabular-nums">{stats.matchedCount}</p>
+                <p className="text-[10px] text-emerald-600 dark:text-emerald-400/80 mt-0.5">Vérifiés avec opérations</p>
               </div>
 
-              <div className="rounded-2xl border border-blue-200 bg-blue-50/60 p-3.5">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-blue-700">Volume USD</p>
-                <p className="mt-1 text-xl font-black text-blue-900">
+              <div className="rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/60 dark:bg-blue-950/40 p-3.5">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">Volume USD</p>
+                <p className="mt-1 text-xl font-black text-blue-900 dark:text-blue-200 tabular-nums">
                   {stats.totalUSD.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} $
                 </p>
-                <p className="text-[10px] text-blue-600 mt-0.5">Montants détectés</p>
+                <p className="text-[10px] text-blue-600 dark:text-blue-400/80 mt-0.5">Montants détectés</p>
               </div>
 
-              <div className="rounded-2xl border border-purple-200 bg-purple-50/60 p-3.5">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-purple-700">Volume CDF</p>
-                <p className="mt-1 text-xl font-black text-purple-900">
+              <div className="rounded-xl border border-purple-200 dark:border-purple-900/60 bg-purple-50/60 dark:bg-purple-950/40 p-3.5">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400">Volume CDF</p>
+                <p className="mt-1 text-xl font-black text-purple-900 dark:text-purple-200 tabular-nums">
                   {stats.totalCDF.toLocaleString('fr-FR')} FC
                 </p>
-                <p className="text-[10px] text-purple-600 mt-0.5">Montants détectés</p>
+                <p className="text-[10px] text-purple-600 dark:text-purple-400/80 mt-0.5">Montants détectés</p>
               </div>
             </div>
 
             {/* Barre de Filtres */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-3">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
-                  <Filter className="h-4 w-4 text-emerald-600" />
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
+                  <Filter className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   <span>Filtres de supervision</span>
                 </div>
                 {(filterInternalNumber !== 'all' ||
@@ -937,7 +937,7 @@ export default function InternalNumbersModule({
                       setFilterReconciliation('all');
                       setSmsSearch('');
                     }}
-                    className="text-xs font-semibold text-emerald-700 hover:underline"
+                    className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:underline"
                   >
                     Réinitialiser les filtres
                   </button>
@@ -952,7 +952,7 @@ export default function InternalNumbersModule({
                     value={smsSearch}
                     onChange={(e) => setSmsSearch(e.target.value)}
                     placeholder="Recherche référence, montant, expéditeur..."
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-100"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-100 dark:focus:ring-emerald-900/40"
                   />
                 </div>
 
@@ -961,7 +961,7 @@ export default function InternalNumbersModule({
                   <select
                     value={filterInternalNumber}
                     onChange={(e) => setFilterInternalNumber(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-xs outline-none"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-2 text-xs text-slate-900 dark:text-white outline-none"
                   >
                     <option value="all">Tous numéros internes</option>
                     {numbers.map((num) => (
@@ -978,7 +978,7 @@ export default function InternalNumbersModule({
                     <select
                       value={filterAgency}
                       onChange={(e) => setFilterAgency(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-xs outline-none"
+                      className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-2 text-xs text-slate-900 dark:text-white outline-none"
                     >
                       <option value="all">Toutes les agences</option>
                       {agencies.map((agency) => (
@@ -995,7 +995,7 @@ export default function InternalNumbersModule({
                   <select
                     value={filterOperator}
                     onChange={(e) => setFilterOperator(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-xs outline-none"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-2 text-xs text-slate-900 dark:text-white outline-none"
                   >
                     <option value="all">Tous opérateurs</option>
                     {OPERATORS.map((op) => (
@@ -1011,7 +1011,7 @@ export default function InternalNumbersModule({
                   <select
                     value={filterPeriod}
                     onChange={(e) => setFilterPeriod(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-xs outline-none"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-2 text-xs text-slate-900 dark:text-white outline-none"
                   >
                     <option value="all">Toutes périodes</option>
                     <option value="today">Aujourd'hui</option>
@@ -1025,7 +1025,7 @@ export default function InternalNumbersModule({
                   <select
                     value={filterReconciliation}
                     onChange={(e) => setFilterReconciliation(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-xs outline-none"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-2 text-xs text-slate-900 dark:text-white outline-none"
                   >
                     <option value="all">Tous rapprochements</option>
                     <option value="unmatched">Non rapproché</option>
@@ -1040,7 +1040,7 @@ export default function InternalNumbersModule({
                   <select
                     value={filterSyncStatus}
                     onChange={(e) => setFilterSyncStatus(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-xs outline-none"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-2 text-xs text-slate-900 dark:text-white outline-none"
                   >
                     <option value="all">Tous états synchro</option>
                     <option value="synced">Synchronisé (Cloud)</option>
@@ -1053,18 +1053,18 @@ export default function InternalNumbersModule({
 
             {/* Tableau de supervision des SMS */}
             {filteredSmsOperations.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center">
+              <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 p-10 text-center">
                 <Activity className="mx-auto h-8 w-8 text-slate-400" />
-                <h4 className="mt-2 font-bold text-slate-900">Aucun SMS opérateur ne correspond aux filtres</h4>
-                <p className="mt-1 text-xs text-slate-500">
+                <h4 className="mt-2 font-bold text-slate-900 dark:text-white">Aucun SMS opérateur ne correspond aux filtres</h4>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   Les flux SMS des numéros de flotte apparaîtront automatiquement dès leur transmission par les appareils sources configurés.
                 </p>
               </div>
             ) : (
-              <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-xs">
+              <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-50/80 font-bold text-slate-600">
+                    <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/50 font-bold text-slate-600 dark:text-slate-300">
                       <th className="py-3 px-3.5">Numéro Interne & Agence</th>
                       <th className="py-3 px-3.5">Date & Heure</th>
                       <th className="py-3 px-3.5">Expéditeur</th>
@@ -1076,40 +1076,40 @@ export default function InternalNumbersModule({
                       <th className="py-3 px-3.5 text-right">Détails</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                     {filteredSmsOperations.map((sms) => {
                       const internalNum = numberMap.get(sms.internalNumberId);
                       const agency = sms.agencyId ? agencyMap.get(sms.agencyId) : (internalNum?.agencyId ? agencyMap.get(internalNum.agencyId) : undefined);
                       const dateObj = new Date(sms.receivedAt || sms.operationDate || Date.now());
 
                       return (
-                        <tr key={sms.id} className="hover:bg-slate-50/80 transition">
+                        <tr key={sms.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition">
                           {/* Numéro Interne & Opérateur */}
                           <td className="py-3 px-3.5 whitespace-nowrap">
-                            <div className="flex items-center gap-1.5 font-bold text-slate-900">
-                              <Phone className="h-3.5 w-3.5 text-emerald-600" />
+                            <div className="flex items-center gap-1.5 font-bold text-slate-900 dark:text-white tabular-nums">
+                              <Phone className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                               <span>{internalNum?.phoneNumber || sms.receiverPhoneNumber || 'Numéro interne'}</span>
                             </div>
                             <div className="mt-0.5 flex items-center gap-1.5">
-                              <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold border ${operatorBadgeClasses(sms.operator)}`}>
+                              <span className={`rounded-md px-1.5 py-0.5 text-[10px] font-bold border ${operatorBadgeClasses(sms.operator)}`}>
                                 {operatorLabel(sms.operator)}
                               </span>
-                              <span className="text-[11px] text-slate-500 truncate max-w-[120px]">
+                              <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[120px]">
                                 {agency?.name ?? 'Sans agence'}
                               </span>
                             </div>
                           </td>
 
                           {/* Date & Heure */}
-                          <td className="py-3 px-3.5 whitespace-nowrap">
-                            <p className="font-semibold text-slate-800">
+                          <td className="py-3 px-3.5 whitespace-nowrap tabular-nums">
+                            <p className="font-semibold text-slate-800 dark:text-slate-200">
                               {dateObj.toLocaleDateString('fr-FR', {
                                 day: '2-digit',
                                 month: '2-digit',
                                 year: 'numeric',
                               })}
                             </p>
-                            <p className="text-[11px] text-slate-400">
+                            <p className="text-[11px] text-slate-400 dark:text-slate-500">
                               {dateObj.toLocaleTimeString('fr-FR', {
                                 hour: '2-digit',
                                 minute: '2-digit',
@@ -1119,21 +1119,21 @@ export default function InternalNumbersModule({
                           </td>
 
                           {/* Expéditeur */}
-                          <td className="py-3 px-3.5 whitespace-nowrap font-medium text-slate-800">
-                            {sms.sender || <span className="text-slate-400 italic">Indisponible</span>}
+                          <td className="py-3 px-3.5 whitespace-nowrap font-medium text-slate-800 dark:text-slate-200 tabular-nums">
+                            {sms.sender || <span className="text-slate-400 dark:text-slate-500 italic">Indisponible</span>}
                           </td>
 
                           {/* Montant & Devise */}
                           <td className="py-3 px-3.5 whitespace-nowrap">
                             {sms.amount !== undefined && sms.amount !== null ? (
-                              <span className="font-black text-slate-900 text-sm">
+                              <span className="font-black text-slate-900 dark:text-white text-sm tabular-nums">
                                 {sms.amount.toLocaleString('fr-FR')} {sms.currency || 'USD'}
                               </span>
                             ) : (
-                              <span className="text-slate-400 italic">Indisponible</span>
+                              <span className="text-slate-400 dark:text-slate-500 italic">Indisponible</span>
                             )}
                             {sms.transactionType && (
-                              <span className="block text-[10px] font-semibold uppercase text-slate-500">
+                              <span className="block text-[10px] font-semibold uppercase text-slate-500 dark:text-slate-400">
                                 {sms.transactionType}
                               </span>
                             )}
@@ -1142,17 +1142,17 @@ export default function InternalNumbersModule({
                           {/* Référence */}
                           <td className="py-3 px-3.5 whitespace-nowrap">
                             {sms.transactionReference ? (
-                              <span className="rounded bg-slate-100 px-2 py-1 font-mono text-[11px] font-bold text-slate-800 border border-slate-200">
+                              <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-1 font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 tabular-nums">
                                 {sms.transactionReference}
                               </span>
                             ) : (
-                              <span className="text-slate-400 italic text-[11px]">Indisponible</span>
+                              <span className="text-slate-400 dark:text-slate-500 italic text-[11px]">Indisponible</span>
                             )}
                           </td>
 
                           {/* Message Original */}
                           <td className="py-3 px-3.5 max-w-xs">
-                            <p className="line-clamp-2 text-slate-600 text-[11px] leading-relaxed">
+                            <p className="line-clamp-2 text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
                               {sms.rawMessage}
                             </p>
                           </td>
@@ -1161,23 +1161,23 @@ export default function InternalNumbersModule({
                           <td className="py-3 px-3.5 whitespace-nowrap">
                             <div className="flex items-center gap-1.5">
                               {sms.syncStatus === 'synced' ? (
-                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
+                                <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/60">
                                   <Check className="h-3 w-3" />
                                   Synchronisé
                                 </span>
                               ) : sms.syncStatus === 'failed' ? (
-                                <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-bold text-red-700 border border-red-200">
+                                <span className="inline-flex items-center gap-1 rounded-md bg-red-50 dark:bg-red-950/60 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900/60">
                                   <AlertTriangle className="h-3 w-3" />
                                   Échoué
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 border border-amber-200">
+                                <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60">
                                   <Clock className="h-3 w-3" />
                                   En attente
                                 </span>
                               )}
                             </div>
-                            <span className="mt-0.5 block text-[10px] text-slate-400 truncate max-w-[130px]">
+                            <span className="mt-0.5 block text-[10px] text-slate-400 dark:text-slate-500 truncate max-w-[130px]">
                               {sms.collectorDeviceName || 'Terminal Source'}
                             </span>
                           </td>
@@ -1185,15 +1185,15 @@ export default function InternalNumbersModule({
                           {/* Rapprochement */}
                           <td className="py-3 px-3.5 whitespace-nowrap">
                             {sms.reconciliationStatus === 'matched' || sms.reconciliationStatus === 'validated' ? (
-                              <span className="rounded-md bg-emerald-100 px-2 py-0.5 font-bold text-emerald-800">
+                              <span className="rounded-md bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 font-bold text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/60">
                                 Rapproché
                               </span>
                             ) : sms.reconciliationStatus === 'discrepancy' ? (
-                              <span className="rounded-md bg-red-100 px-2 py-0.5 font-bold text-red-800">
+                              <span className="rounded-md bg-red-100 dark:bg-red-950/60 px-2 py-0.5 font-bold text-red-800 dark:text-red-300 border border-red-200 dark:border-red-900/60">
                                 Écart détecté
                               </span>
                             ) : (
-                              <span className="rounded-md bg-slate-100 px-2 py-0.5 font-semibold text-slate-600">
+                              <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                                 Non rapproché
                               </span>
                             )}
@@ -1204,7 +1204,7 @@ export default function InternalNumbersModule({
                             <button
                               type="button"
                               onClick={() => setSelectedSms(sms)}
-                              className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-200 transition"
+                              className="inline-flex items-center gap-1 rounded-lg bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
                             >
                               <Eye className="h-3.5 w-3.5" />
                               Audit
@@ -1219,8 +1219,8 @@ export default function InternalNumbersModule({
             )}
 
             {/* Note de contrôle interne */}
-            <div className="flex items-start gap-3 rounded-2xl border border-blue-200 bg-blue-50/70 p-4 text-xs text-blue-900 leading-relaxed">
-              <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-blue-700" />
+            <div className="flex items-start gap-3 rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/70 dark:bg-blue-950/40 p-4 text-xs text-blue-900 dark:text-blue-200 leading-relaxed">
+              <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-blue-700 dark:text-blue-400" />
               <div>
                 <strong className="block font-bold">Règle de Contrôle Interne & Supervision :</strong>
                 Un SMS opérateur reçu par l'appareil collecteur est un indicateur de traçabilité externe. Il ne constitue jamais une preuve définitive du succès d'une opération financière tant qu'il n'est pas rapproché avec l'opération validée en caisse. Ets AMANI ne réalise aucune commande USSD ni transaction financière.
@@ -1234,18 +1234,18 @@ export default function InternalNumbersModule({
           <div className="space-y-5">
             {/* Formulaire d'ajout d'un numéro */}
             {showForm && (
-              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-5">
+              <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/30 p-4 sm:p-5">
                 <div className="mb-4">
-                  <h3 className="font-bold text-slate-900">
+                  <h3 className="font-bold text-slate-900 dark:text-white">
                     Ajouter un numéro interne
                   </h3>
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     Enregistrez un numéro professionnel officiellement géré par Ets AMANI (ex: Vodacom 03220590).
                   </p>
                 </div>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <label className="block">
-                    <span className="mb-1.5 block text-xs font-bold text-slate-700">
+                    <span className="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">
                       Numéro de téléphone <span className="text-red-500">*</span>
                     </span>
                     <input
@@ -1253,18 +1253,18 @@ export default function InternalNumbersModule({
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       placeholder="Ex: 03220590 ou +243..."
-                      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+                      className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 dark:focus:ring-emerald-900/40"
                     />
                   </label>
 
                   <label className="block">
-                    <span className="mb-1.5 block text-xs font-bold text-slate-700">
+                    <span className="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">
                       Opérateur Mobile <span className="text-red-500">*</span>
                     </span>
                     <select
                       value={operator}
                       onChange={(e) => setOperator(e.target.value as MobileOperator)}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+                      className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 dark:focus:ring-emerald-900/40"
                     >
                       {OPERATORS.map((item) => (
                         <option key={item.value} value={item.value}>
@@ -1275,13 +1275,13 @@ export default function InternalNumbersModule({
                   </label>
 
                   <label className="block">
-                    <span className="mb-1.5 block text-xs font-bold text-slate-700">
+                    <span className="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">
                       Agence de rattachement
                     </span>
                     <select
                       value={agencyId}
                       onChange={(e) => setAgencyId(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+                      className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 dark:focus:ring-emerald-900/40"
                     >
                       <option value="">Sélectionner une agence...</option>
                       {agencies.map((agency) => (
@@ -1293,7 +1293,7 @@ export default function InternalNumbersModule({
                   </label>
 
                   <label className="block">
-                    <span className="mb-1.5 block text-xs font-bold text-slate-700">
+                    <span className="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">
                       Libellé / Rôle du numéro
                     </span>
                     <input
@@ -1301,12 +1301,12 @@ export default function InternalNumbersModule({
                       value={label}
                       onChange={(e) => setLabel(e.target.value)}
                       placeholder="Ex: Numéro Guichet Vodacom M-Pesa"
-                      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+                      className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 dark:focus:ring-emerald-900/40"
                     />
                   </label>
 
                   <label className="block md:col-span-2">
-                    <span className="mb-1.5 block text-xs font-bold text-slate-700">
+                    <span className="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">
                       Description & Instructions d'exploitation
                     </span>
                     <textarea
@@ -1314,7 +1314,7 @@ export default function InternalNumbersModule({
                       onChange={(e) => setDescription(e.target.value)}
                       rows={2}
                       placeholder="Précisions sur l'utilisation du numéro ou terminal associé..."
-                      className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+                      className="w-full resize-none rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 dark:focus:ring-emerald-900/40"
                     />
                   </label>
                 </div>
@@ -1322,7 +1322,7 @@ export default function InternalNumbersModule({
                   <button
                     type="button"
                     onClick={resetForm}
-                    className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
                   >
                     Annuler
                   </button>
@@ -1330,7 +1330,7 @@ export default function InternalNumbersModule({
                     type="button"
                     onClick={() => void handleCreate()}
                     disabled={saving}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-50"
                   >
                     {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                     Enregistrer le numéro
@@ -1346,23 +1346,23 @@ export default function InternalNumbersModule({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Rechercher par numéro, agence, opérateur, agent..."
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs outline-none focus:border-slate-400 focus:bg-white focus:ring-1 focus:ring-slate-200"
+                className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-slate-400 dark:focus:border-slate-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-1 focus:ring-slate-200 dark:focus:ring-slate-700"
               />
             </div>
 
             {/* Liste des numéros */}
             {loading ? (
-              <div className="flex min-h-36 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50">
-                <div className="flex items-center gap-2 text-xs text-slate-500">
+              <div className="flex min-h-36 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40">
+                <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                   <Loader2 className="h-4 w-4 animate-spin text-emerald-600" />
                   Chargement des numéros internes...
                 </div>
               </div>
             ) : filteredNumbers.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+              <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 p-8 text-center">
                 <Phone className="mx-auto h-7 w-7 text-slate-400" />
-                <h4 className="mt-2 text-xs font-bold text-slate-900">Aucun numéro interne enregistré</h4>
-                <p className="mt-1 text-xs text-slate-500">Commencez par ajouter le numéro Vodacom 03220590.</p>
+                <h4 className="mt-2 text-xs font-bold text-slate-900 dark:text-white">Aucun numéro interne enregistré</h4>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Commencez par ajouter le numéro Vodacom 03220590.</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -1375,46 +1375,46 @@ export default function InternalNumbersModule({
                   return (
                     <div
                       key={number.id}
-                      className={`rounded-2xl border p-4 shadow-xs transition ${
+                      className={`rounded-xl border p-4 shadow-xs transition ${
                         isVodacomTarget
-                          ? 'border-emerald-300 bg-emerald-50/20 ring-1 ring-emerald-200'
-                          : 'border-slate-200 bg-white'
+                          ? 'border-emerald-300 dark:border-emerald-800 bg-emerald-50/20 dark:bg-emerald-950/20 ring-1 ring-emerald-200 dark:ring-emerald-900/50'
+                          : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900'
                       }`}
                     >
                       <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
-                            <div className="flex items-center gap-1.5 font-bold text-slate-900">
-                              <Phone className="h-4 w-4 text-emerald-600" />
+                            <div className="flex items-center gap-1.5 font-bold text-slate-900 dark:text-white tabular-nums">
+                              <Phone className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                               <span className="text-sm">{number.phoneNumber}</span>
                             </div>
-                            <span className={`rounded px-2 py-0.5 text-xs font-bold border ${operatorBadgeClasses(number.operator)}`}>
+                            <span className={`rounded-md px-2 py-0.5 text-xs font-bold border ${operatorBadgeClasses(number.operator)}`}>
                               {operatorLabel(number.operator)}
                             </span>
-                            <span className={`rounded px-2 py-0.5 text-xs font-bold border ${statusClasses(number.status)}`}>
+                            <span className={`rounded-md px-2 py-0.5 text-xs font-bold border ${statusClasses(number.status)}`}>
                               {statusLabel(number.status)}
                             </span>
                             {number.monitoringEnabled && (
-                              <span className="inline-flex items-center gap-1 rounded bg-blue-50 px-2 py-0.5 text-xs font-bold text-blue-700 border border-blue-200">
+                              <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 text-xs font-bold text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/60">
                                 <Activity className="h-3 w-3" />
                                 Surveillance SMS Active
                               </span>
                             )}
                             {isVodacomTarget && (
-                              <span className="rounded bg-red-100 px-2 py-0.5 text-[11px] font-bold text-red-800">
+                              <span className="rounded-md bg-red-100 dark:bg-red-950/60 px-2 py-0.5 text-[11px] font-bold text-red-800 dark:text-red-300 border border-red-200 dark:border-red-900/60">
                                 Numéro Référence M-Pesa
                               </span>
                             )}
                           </div>
 
                           {number.label && (
-                            <p className="mt-1 text-xs font-semibold text-slate-700">{number.label}</p>
+                            <p className="mt-1 text-xs font-semibold text-slate-700 dark:text-slate-300">{number.label}</p>
                           )}
 
-                          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+                          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
                             <span className="inline-flex items-center gap-1">
                               <Building2 className="h-3.5 w-3.5 text-slate-400" />
-                              {agency?.name ?? <span className="text-amber-600 italic">Aucune agence</span>}
+                              {agency?.name ?? <span className="text-amber-600 dark:text-amber-400 italic">Aucune agence</span>}
                             </span>
                             <span className="inline-flex items-center gap-1.5">
                               {number.assignedUserName ? (
@@ -1428,8 +1428,8 @@ export default function InternalNumbersModule({
                               ) : (
                                 <UserRound className="h-3.5 w-3.5 text-slate-400" />
                               )}
-                              <span className="font-medium text-slate-700">
-                                {number.assignedUserName ?? <span className="text-amber-600 italic">Agent non affecté</span>}
+                              <span className="font-medium text-slate-700 dark:text-slate-300">
+                                {number.assignedUserName ?? <span className="text-amber-600 dark:text-amber-400 italic">Agent non affecté</span>}
                               </span>
                             </span>
                           </div>
@@ -1441,7 +1441,7 @@ export default function InternalNumbersModule({
                               value={number.assignedUserId ?? ''}
                               disabled={busy}
                               onChange={(e) => void handleAssign(number, e.target.value)}
-                              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 outline-none"
+                              className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 outline-none"
                             >
                               <option value="">Aucun agent affecté</option>
                               {agencyAgents.map((agent) => (
@@ -1457,10 +1457,10 @@ export default function InternalNumbersModule({
                               type="button"
                               disabled={busy}
                               onClick={() => void handleMonitoring(number)}
-                              className={`inline-flex items-center gap-1 rounded-xl px-3 py-1.5 text-xs font-bold transition disabled:opacity-50 ${
+                              className={`inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold transition disabled:opacity-50 ${
                                 number.monitoringEnabled
-                                  ? 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
-                                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                  ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-900/60'
+                                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                               }`}
                             >
                               <Activity className="h-3 w-3" />
@@ -1471,7 +1471,7 @@ export default function InternalNumbersModule({
                               value={number.status}
                               disabled={busy}
                               onChange={(e) => void handleStatus(number, e.target.value as InternalNumberStatus)}
-                              className="rounded-xl border border-slate-200 bg-white px-2 py-1.5 text-xs font-semibold text-slate-700 outline-none"
+                              className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none"
                             >
                               {STATUS_OPTIONS.map((item) => (
                                 <option key={item.value} value={item.value}>
@@ -1484,7 +1484,7 @@ export default function InternalNumbersModule({
                               type="button"
                               disabled={busy}
                               onClick={() => setConfirmDeleteNumber(number)}
-                              className="inline-flex items-center gap-1 rounded-xl bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100 border border-red-200"
+                              className="inline-flex items-center gap-1 rounded-lg bg-red-50 dark:bg-red-950/60 px-2.5 py-1.5 text-xs font-bold text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/50 border border-red-200 dark:border-red-900/60"
                             >
                               <Trash2 className="h-3 w-3" />
                               Supprimer
@@ -1505,16 +1505,16 @@ export default function InternalNumbersModule({
         {/* ONGLET 3 : CONFIGURATION TERMINAL COLLECTEUR (SIM) */}
         {activeTab === 'collector_config' && (
           <div className="space-y-5">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 space-y-4">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 p-4 sm:p-5 space-y-4">
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-800">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300">
                   <Smartphone className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                     Association de l'Appareil Collecteur Source
                   </h3>
-                  <p className="mt-0.5 text-xs text-slate-600 leading-relaxed">
+                  <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     Le téléphone qui contient physiquement la carte SIM (ex: Vodacom 03220590) est l'appareil collecteur.
                     Comme l'API Android ne garantit pas toujours la lecture du numéro de la SIM, configurez explicitement ici l'association entre ce terminal et le numéro interne supervisé.
                   </p>
@@ -1523,13 +1523,13 @@ export default function InternalNumbersModule({
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 pt-2">
                 <label className="block">
-                  <span className="mb-1.5 block text-xs font-bold text-slate-700">
+                  <span className="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">
                     Numéro interne affecté à ce terminal
                   </span>
                   <select
                     value={collectorInternalNumberId}
                     onChange={(e) => setCollectorInternalNumberId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs outline-none"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-900 dark:text-white outline-none"
                   >
                     <option value="">Sélectionner le numéro interne collecté...</option>
                     {numbers.map((num) => (
@@ -1541,7 +1541,7 @@ export default function InternalNumbersModule({
                 </label>
 
                 <label className="block">
-                  <span className="mb-1.5 block text-xs font-bold text-slate-700">
+                  <span className="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">
                     Nom / Identifiant du terminal source
                   </span>
                   <input
@@ -1549,15 +1549,15 @@ export default function InternalNumbersModule({
                     value={collectorDeviceLabel}
                     onChange={(e) => setCollectorDeviceLabel(e.target.value)}
                     placeholder="Ex: Terminal Collecteur Vodacom (03220590)"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs outline-none"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none"
                   />
                 </label>
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                <div className="text-xs text-slate-500">
+                <div className="text-xs text-slate-500 dark:text-slate-400">
                   État actuel :{' '}
-                  <strong className="text-slate-800">
+                  <strong className="text-slate-800 dark:text-slate-200 tabular-nums">
                     {collectorConfig?.phoneNumber
                       ? `Associé à ${collectorConfig.phoneNumber} (${collectorConfig.deviceName || 'Terminal Source'})`
                       : 'Aucun numéro configuré sur cet appareil'}
@@ -1567,7 +1567,7 @@ export default function InternalNumbersModule({
                   type="button"
                   onClick={() => void handleSaveCollectorConfig()}
                   disabled={saving || !collectorInternalNumberId}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-50 shadow-xs"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-50 shadow-xs"
                 >
                   {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   Valider l'association collecteur
@@ -1576,13 +1576,13 @@ export default function InternalNumbersModule({
             </div>
 
             {/* État des permissions Android */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-3">
-              <div className="flex items-center justify-between">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900">
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-white">
                     État des autorisations Android (SMS & Téléphonie)
                   </h4>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     Permissions requises sur l'appareil source pour capter les SMS opérateurs
                   </p>
                 </div>
@@ -1590,7 +1590,7 @@ export default function InternalNumbersModule({
                   <button
                     type="button"
                     onClick={() => void handleRequestPermissions()}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800 shadow-xs"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 dark:bg-slate-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-xs"
                   >
                     Demander les autorisations
                   </button>
@@ -1599,36 +1599,36 @@ export default function InternalNumbersModule({
 
               {Capacitor.isNativePlatform() ? (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-xs">
-                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-3">
                     <span className="text-[10px] uppercase font-bold text-slate-400 block">RECEIVE_SMS</span>
-                    <span className={`font-bold mt-1 block ${permissionStatus?.receiveSms ? 'text-emerald-700' : 'text-red-600'}`}>
+                    <span className={`font-bold mt-1 block ${permissionStatus?.receiveSms ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                       {permissionStatus?.receiveSms ? 'Accordée' : 'Non accordée'}
                     </span>
                   </div>
-                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-3">
                     <span className="text-[10px] uppercase font-bold text-slate-400 block">READ_SMS</span>
-                    <span className={`font-bold mt-1 block ${permissionStatus?.readSms ? 'text-emerald-700' : 'text-red-600'}`}>
+                    <span className={`font-bold mt-1 block ${permissionStatus?.readSms ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                       {permissionStatus?.readSms ? 'Accordée' : 'Non accordée'}
                     </span>
                   </div>
-                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-3">
                     <span className="text-[10px] uppercase font-bold text-slate-400 block">Capteur Mobile</span>
-                    <span className="font-bold mt-1 block text-emerald-700">Actif sur terminal</span>
+                    <span className="font-bold mt-1 block text-emerald-700 dark:text-emerald-400">Actif sur terminal</span>
                   </div>
-                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-3">
                     <span className="text-[10px] uppercase font-bold text-slate-400 block">File d'attente</span>
-                    <span className="font-bold mt-1 block text-emerald-700">Mémoire locale sécurisée</span>
+                    <span className="font-bold mt-1 block text-emerald-700 dark:text-emerald-400">Mémoire locale sécurisée</span>
                   </div>
                 </div>
               ) : (
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 flex items-center justify-between">
+                <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-3 text-xs text-slate-600 dark:text-slate-300 flex flex-wrap items-center justify-between gap-2">
                   <span>
                     Module actif en mode supervision réseau. La collecte automatique est opérationnelle sur les terminaux sources configurés.
                   </span>
                   <button
                     type="button"
                     onClick={() => void refreshRemoteSms()}
-                    className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800 transition"
+                    className="rounded-lg bg-slate-900 dark:bg-slate-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-slate-600 transition shrink-0"
                   >
                     Actualiser les flux
                   </button>
@@ -1643,8 +1643,8 @@ export default function InternalNumbersModule({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {/* Canaux et membres */}
             <div className="space-y-4">
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3 space-y-2">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Canaux opérationnels
                 </p>
                 <div className="space-y-1">
@@ -1658,10 +1658,10 @@ export default function InternalNumbersModule({
                         key={ch.id}
                         type="button"
                         onClick={() => setActiveChannelId(ch.id)}
-                        className={`flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-left text-xs transition ${
+                        className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-xs transition ${
                           isActive
-                            ? 'bg-slate-900 text-white font-bold shadow-xs'
-                            : 'text-slate-700 hover:bg-white'
+                            ? 'bg-slate-900 dark:bg-emerald-600 text-white font-bold shadow-xs'
+                            : 'text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800'
                         }`}
                       >
                         <div className="flex items-center gap-2 min-w-0">
@@ -1676,7 +1676,9 @@ export default function InternalNumbersModule({
                           )}
                           <span className="truncate">{ch.label}</span>
                         </div>
-                        <span className="ml-1 rounded-md bg-white/15 px-1.5 py-0.5 text-[10px]">
+                        <span className={`ml-1 rounded-md px-1.5 py-0.5 text-[10px] ${
+                          isActive ? 'bg-white/15' : 'bg-slate-200/80 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                        }`}>
                           {ch.roleBadge}
                         </span>
                       </button>
@@ -1685,9 +1687,9 @@ export default function InternalNumbersModule({
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2">
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3 space-y-2">
                 <div className="flex items-center justify-between">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 tabular-nums">
                     Intervenants ({teamMembers.length})
                   </p>
                   <Users className="h-3.5 w-3.5 text-slate-400" />
@@ -1699,7 +1701,7 @@ export default function InternalNumbersModule({
                     teamMembers.slice(0, 10).map((member) => (
                       <div
                         key={member.uid}
-                        className="flex items-center justify-between gap-2 rounded-lg bg-white p-2 border border-slate-100 text-xs"
+                        className="flex items-center justify-between gap-2 rounded-lg bg-white dark:bg-slate-900 p-2 border border-slate-100 dark:border-slate-800 text-xs"
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           <UserAvatar
@@ -1711,7 +1713,7 @@ export default function InternalNumbersModule({
                             isOnline={member.status === 'active'}
                           />
                           <div className="min-w-0">
-                            <p className="truncate font-semibold text-slate-800">
+                            <p className="truncate font-semibold text-slate-800 dark:text-slate-200">
                               {member.displayName}
                             </p>
                             <p className="truncate text-[10px] text-slate-400 uppercase">
@@ -1727,10 +1729,10 @@ export default function InternalNumbersModule({
             </div>
 
             {/* Fil de discussion */}
-            <div className="lg:col-span-2 flex flex-col justify-between rounded-xl border border-slate-200 bg-slate-50/60 p-3.5 min-h-[300px]">
+            <div className="lg:col-span-2 flex flex-col justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950/40 p-3.5 min-h-[300px]">
               <div className="max-h-72 overflow-y-auto space-y-3 pr-1">
                 {collabMessages.filter((m) => m.channelId === activeChannelId).length === 0 ? (
-                  <div className="py-12 text-center text-xs text-slate-400">
+                  <div className="py-12 text-center text-xs text-slate-400 dark:text-slate-500">
                     Aucun message dans ce canal. Envoyez une note de coordination à l'équipe.
                   </div>
                 ) : (
@@ -1754,15 +1756,15 @@ export default function InternalNumbersModule({
                             size="sm"
                           />
                           <div
-                            className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-xs shadow-xs ${
+                            className={`max-w-[78%] rounded-xl px-3.5 py-2.5 text-xs shadow-xs ${
                               isMe
-                                ? 'bg-slate-900 text-white'
-                                : 'bg-white border border-slate-200 text-slate-800'
+                                ? 'bg-slate-900 dark:bg-emerald-700 text-white'
+                                : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100'
                             }`}
                           >
                             <div className="flex items-center gap-2 mb-0.5">
                               <span className="font-bold">{msg.senderName}</span>
-                              <span className="text-[10px] opacity-70">
+                              <span className="text-[10px] opacity-70 tabular-nums">
                                 {new Date(msg.createdAt).toLocaleTimeString('fr-FR', {
                                   hour: '2-digit',
                                   minute: '2-digit',
@@ -1777,19 +1779,19 @@ export default function InternalNumbersModule({
                 )}
               </div>
 
-              <form onSubmit={handleSendCollabMessage} className="mt-3 flex items-center gap-2 pt-2 border-t border-slate-200/80">
+              <form onSubmit={handleSendCollabMessage} className="mt-3 flex items-center gap-2 pt-2 border-t border-slate-200/80 dark:border-slate-800">
                 <UserAvatar user={user} size="xs" />
                 <input
                   type="text"
                   value={messageInput}
                   onChange={(e) => setMessageInput(e.target.value)}
                   placeholder="Écrire une consigne opérationnelle..."
-                  className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none focus:border-slate-400"
+                  className="flex-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-slate-400 dark:focus:border-slate-500"
                 />
                 <button
                   type="submit"
                   disabled={!messageInput.trim()}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white hover:bg-slate-800 disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 dark:bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-emerald-700 disabled:opacity-50"
                 >
                   <Send className="h-3.5 w-3.5" />
                   <span>Envoyer</span>
@@ -1802,18 +1804,18 @@ export default function InternalNumbersModule({
 
       {/* Modal Détail & Audit d'un SMS */}
       {selectedSms && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
-          <div className="w-full max-w-xl rounded-3xl bg-white p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+          <div className="w-full max-w-xl rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
                   <Activity className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     Fiche d'Audit SMS Opérateur
                   </h3>
-                  <p className="text-xs text-slate-500 font-mono">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-mono tabular-nums">
                     Réf: {selectedSms.transactionReference || 'Flux opérateur'}
                   </p>
                 </div>
@@ -1821,86 +1823,86 @@ export default function InternalNumbersModule({
               <button
                 type="button"
                 onClick={() => setSelectedSms(null)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3.5 space-y-2">
-                <p className="font-bold uppercase tracking-wider text-slate-400 text-[10px]">
+              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3.5 space-y-2">
+                <p className="font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-[10px]">
                   Contenu Brut du SMS reçu
                 </p>
-                <p className="font-mono text-xs text-slate-800 leading-relaxed bg-white p-3 rounded-xl border border-slate-200 select-all">
+                <p className="font-mono text-xs text-slate-800 dark:text-slate-200 leading-relaxed bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-700 select-all">
                   {selectedSms.rawMessage}
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl border border-slate-200 p-3 bg-white">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-white dark:bg-slate-800/40">
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">Opérateur & Expéditeur</span>
-                  <p className="font-bold text-slate-900 mt-0.5">
+                  <p className="font-bold text-slate-900 dark:text-white mt-0.5 tabular-nums">
                     {operatorLabel(selectedSms.operator)} — {selectedSms.sender || 'Non renseigné'}
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 p-3 bg-white">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-white dark:bg-slate-800/40">
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">Référence de Transaction</span>
-                  <p className="font-mono font-bold text-slate-900 mt-0.5">
+                  <p className="font-mono font-bold text-slate-900 dark:text-white mt-0.5 tabular-nums">
                     {selectedSms.transactionReference || 'Non détectée'}
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 p-3 bg-white">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-white dark:bg-slate-800/40">
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">Montant & Devise</span>
-                  <p className="font-bold text-slate-900 mt-0.5 text-sm">
+                  <p className="font-bold text-slate-900 dark:text-white mt-0.5 text-sm tabular-nums">
                     {selectedSms.amount !== undefined ? `${selectedSms.amount.toLocaleString('fr-FR')} ${selectedSms.currency || 'USD'}` : 'Indisponible'}
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 p-3 bg-white">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-white dark:bg-slate-800/40">
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">Date & Heure Réception</span>
-                  <p className="font-medium text-slate-900 mt-0.5">
+                  <p className="font-medium text-slate-900 dark:text-slate-200 mt-0.5 tabular-nums">
                     {new Date(selectedSms.receivedAt).toLocaleString('fr-FR')}
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 p-3 bg-white">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-white dark:bg-slate-800/40">
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">Terminal Source / Collecteur</span>
-                  <p className="font-medium text-slate-800 mt-0.5 truncate">
+                  <p className="font-medium text-slate-800 dark:text-slate-200 mt-0.5 truncate">
                     {selectedSms.collectorDeviceName || 'Terminal Source'}
                   </p>
-                  <p className="text-[11px] text-slate-500 truncate">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate tabular-nums">
                     {selectedSms.receiverPhoneNumber ? `Ligne : ${selectedSms.receiverPhoneNumber}` : 'Canal actif'}
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 p-3 bg-white">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-white dark:bg-slate-800/40">
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">État Rapprochement</span>
-                  <p className="font-bold text-slate-800 mt-0.5">
+                  <p className="font-bold text-slate-800 dark:text-slate-200 mt-0.5">
                     {selectedSms.reconciliationStatus === 'matched' ? 'Rapproché avec une opération' : 'Non rapproché'}
                   </p>
                 </div>
               </div>
 
               {selectedSms.lastSyncError && (
-                <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-700">
+                <div className="rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/50 p-3 text-red-700 dark:text-red-300">
                   <span className="font-bold block">Dernière erreur de synchronisation :</span>
                   <span className="font-mono text-[11px]">{selectedSms.lastSyncError}</span>
                 </div>
               )}
 
-              <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-3 text-blue-900 text-[11px] leading-relaxed">
+              <div className="rounded-xl border border-blue-100 dark:border-blue-900/60 bg-blue-50/60 dark:bg-blue-950/40 p-3 text-blue-900 dark:text-blue-200 text-[11px] leading-relaxed">
                 <strong>Rappel Direction Générale :</strong> Le statut de ce SMS est en lecture seule vis-à-vis des opérateurs télécoms. Ets AMANI ne génère aucune instruction de transfert ou USSD.
               </div>
             </div>
 
-            <div className="flex justify-end pt-2 border-t border-slate-100">
+            <div className="flex justify-end pt-2 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setSelectedSms(null)}
-                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800"
+                className="rounded-lg bg-slate-900 dark:bg-slate-800 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-slate-700"
               >
                 Fermer
               </button>
@@ -1911,19 +1913,19 @@ export default function InternalNumbersModule({
 
       {/* Modal Confirmation Suppression Numéro */}
       {confirmDeleteNumber && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4">
-            <h3 className="text-base font-bold text-slate-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl space-y-4">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white tabular-nums">
               Supprimer le numéro {confirmDeleteNumber.phoneNumber} ?
             </h3>
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-slate-600 dark:text-slate-400">
               Cette action retirera ce numéro de la flotte supervisée. Les SMS déjà synchronisés restent historisés dans le journal d'audit.
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setConfirmDeleteNumber(null)}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Annuler
               </button>
@@ -1931,7 +1933,7 @@ export default function InternalNumbersModule({
                 type="button"
                 disabled={actionId === confirmDeleteNumber.id}
                 onClick={() => void handleDelete(confirmDeleteNumber)}
-                className="rounded-xl bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-700 disabled:opacity-50"
+                className="rounded-lg bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-700 disabled:opacity-50"
               >
                 Confirmer la suppression
               </button>

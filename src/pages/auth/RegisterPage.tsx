@@ -110,22 +110,22 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="flex min-h-full flex-1 items-center justify-center bg-slate-50 p-4">
-        <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+      <div className="flex min-h-full flex-1 items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
+        <div className="w-full max-w-md rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 text-center shadow-xl">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
             <CheckCircle2 className="h-8 w-8" />
           </div>
-          <h2 className="mt-6 text-xl font-black text-slate-900">Demande enregistrée</h2>
-          <p className="mt-2 text-xs leading-relaxed text-slate-500">
-            Votre demande d'inscription en tant que <strong>{requestedRole === 'abonne' ? 'Abonné' : 'Client'}</strong> a été transmise aux services de supervision d'Ets AMANI.
+          <h2 className="mt-5 text-xl font-black text-slate-900 dark:text-white">Demande enregistrée</h2>
+          <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+            Votre demande d'inscription en tant que <strong className="text-slate-700 dark:text-slate-200">{requestedRole === 'abonne' ? 'Abonné' : 'Client'}</strong> a été transmise aux services de supervision d'Ets AMANI.
           </p>
-          <p className="mt-2 text-xs text-slate-400">
+          <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
             Vous pourrez accéder à vos fonctionnalités dès validation par notre équipe d'agence.
           </p>
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="mt-6 w-full rounded-xl bg-slate-900 py-3 text-xs font-bold text-white hover:bg-slate-800"
+            className="mt-6 w-full rounded-lg bg-slate-900 dark:bg-white py-2.5 text-xs font-bold text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 transition"
           >
             Aller à la page de connexion
           </button>
@@ -135,13 +135,13 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-full flex-1 bg-slate-50">
-      <div className="flex-1 flex flex-col justify-center px-5 py-8 overflow-y-auto">
-        <div className="mx-auto w-full max-w-lg space-y-6">
+    <div className="flex min-h-full flex-1 bg-slate-50 dark:bg-slate-950">
+      <div className="flex-1 flex flex-col justify-center px-4 sm:px-5 py-8 overflow-y-auto">
+        <div className="mx-auto w-full max-w-lg space-y-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-7 shadow-sm">
           <div className="flex items-center justify-between">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
             >
               <ArrowLeft className="h-4 w-4" />
               Retour à la connexion
@@ -154,21 +154,21 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-black text-slate-900">Demande d'inscription</h2>
-            <p className="mt-1 text-xs text-slate-500">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Demande d'inscription</h2>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Ouvrez un compte Client ou Abonné auprès d'Ets AMANI.
             </p>
           </div>
 
           {/* Sélecteur de rôle demandé */}
-          <div className="grid grid-cols-2 gap-2 rounded-2xl bg-slate-200/60 p-1">
+          <div className="grid grid-cols-2 gap-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 p-1">
             <button
               type="button"
               onClick={() => setRequestedRole('client')}
-              className={`rounded-xl py-2.5 text-xs font-bold transition ${
+              className={`rounded-lg py-2 text-xs font-bold transition ${
                 requestedRole === 'client'
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Compte Client
@@ -176,10 +176,10 @@ export default function RegisterPage() {
             <button
               type="button"
               onClick={() => setRequestedRole('abonne')}
-              className={`rounded-xl py-2.5 text-xs font-bold transition ${
+              className={`rounded-lg py-2 text-xs font-bold transition ${
                 requestedRole === 'abonne'
-                  ? 'bg-white text-purple-900 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-900 text-purple-900 dark:text-purple-300 shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Compte Abonné VIP
@@ -187,13 +187,13 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-xs font-semibold text-red-700">
+            <div className="rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 p-3.5 text-xs font-semibold text-red-700 dark:text-red-300">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-3.5 shadow-xs">
+            <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-3.5">
               <div className="flex items-center gap-3 min-w-0">
                 <UserAvatar
                   name={`${firstName} ${lastName}`.trim() || 'Nouveau Profil'}
@@ -201,10 +201,10 @@ export default function RegisterPage() {
                   size="md"
                 />
                 <div className="min-w-0">
-                  <p className="text-xs font-bold text-slate-800">
+                  <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
                     Photo de profil (optionnelle)
                   </p>
-                  <p className="text-[11px] text-slate-500 truncate">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
                     Visible par l'agence lors de la validation
                   </p>
                 </div>
@@ -219,16 +219,16 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => photoInputRef.current?.click()}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
               >
-                <Camera className="h-3.5 w-3.5 text-blue-600" />
+                <Camera className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                 <span>{photoURL ? 'Modifier' : 'Choisir'}</span>
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Prénom *
                 </label>
                 <input
@@ -237,11 +237,11 @@ export default function RegisterPage() {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="Jean"
-                  className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-900 outline-none"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-blue-600 dark:focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Nom de famille *
                 </label>
                 <input
@@ -250,13 +250,13 @@ export default function RegisterPage() {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Kasongo"
-                  className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-900 outline-none"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-blue-600 dark:focus:border-blue-500"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+              <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Adresse Email *
               </label>
               <input
@@ -265,12 +265,12 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="jean.kasongo@gmail.com"
-                className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-900 outline-none"
+                className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-blue-600 dark:focus:border-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+              <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Numéro WhatsApp / Téléphone *
               </label>
               <input
@@ -279,19 +279,19 @@ export default function RegisterPage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+243 970 000 000"
-                className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-900 outline-none"
+                className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-sm tabular-nums text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-blue-600 dark:focus:border-blue-500"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Province
                 </label>
                 <select
                   value={province}
                   onChange={(e) => setProvince(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm font-semibold outline-none"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-sm font-semibold text-slate-900 dark:text-white outline-none focus:border-blue-600 dark:focus:border-blue-500"
                 >
                   <option value="Nord-Kivu">Nord-Kivu (Goma)</option>
                   <option value="Sud-Kivu">Sud-Kivu (Bukavu)</option>
@@ -301,7 +301,7 @@ export default function RegisterPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Profession / Activité
                 </label>
                 <input
@@ -309,20 +309,20 @@ export default function RegisterPage() {
                   value={profession}
                   onChange={(e) => setProfession(e.target.value)}
                   placeholder="Commerçant, Agent..."
-                  className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-900 outline-none"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-blue-600 dark:focus:border-blue-500"
                 />
               </div>
             </div>
 
             {requestedRole === 'abonne' && (
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Agence de rattachement *
                 </label>
                 <select
                   value={agencyId}
                   onChange={(e) => setAgencyId(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm font-semibold text-slate-900 outline-none"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-sm font-semibold text-slate-900 dark:text-white outline-none focus:border-blue-600 dark:focus:border-blue-500"
                 >
                   {agencies.length > 0 ? (
                     agencies.map((ag) => (
@@ -343,7 +343,7 @@ export default function RegisterPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Mot de passe *
                 </label>
                 <div className="relative">
@@ -353,7 +353,7 @@ export default function RegisterPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-3 pr-11 text-sm text-slate-900 outline-none focus:border-blue-600"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-2.5 pl-3 pr-11 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-blue-600 dark:focus:border-blue-500"
                   />
                   <button
                     type="button"
@@ -368,10 +368,10 @@ export default function RegisterPage() {
                         ? 'Masquer le mot de passe'
                         : 'Afficher le mot de passe'
                     }
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-800 dark:hover:text-white"
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-blue-600" />
+                      <EyeOff className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     ) : (
                       <Eye className="h-4 w-4" />
                     )}
@@ -379,7 +379,7 @@ export default function RegisterPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Confirmer le mot de passe *
                 </label>
                 <div className="relative">
@@ -389,7 +389,7 @@ export default function RegisterPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-3 pr-11 text-sm text-slate-900 outline-none focus:border-blue-600"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-2.5 pl-3 pr-11 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-blue-600 dark:focus:border-blue-500"
                   />
                   <button
                     type="button"
@@ -404,10 +404,10 @@ export default function RegisterPage() {
                         ? 'Masquer le mot de passe'
                         : 'Afficher le mot de passe'
                     }
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 transition hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-800 dark:hover:text-white"
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4 text-blue-600" />
+                      <EyeOff className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     ) : (
                       <Eye className="h-4 w-4" />
                     )}
@@ -419,7 +419,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-slate-950 py-3.5 text-sm font-bold text-white shadow-lg transition hover:bg-slate-800 disabled:opacity-50"
+              className="w-full rounded-lg bg-slate-950 dark:bg-white py-3 text-sm font-bold text-white dark:text-slate-900 shadow-lg transition hover:bg-slate-800 dark:hover:bg-slate-200 disabled:opacity-50"
             >
               {loading ? 'Soumission en cours...' : 'Envoyer ma demande d inscription'}
             </button>

@@ -1,6 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, Camera, CheckCircle2, Command, Keyboard, Loader2, LogOut, RefreshCw, Trash2, User, Wifi, X } from 'lucide-react';
+import {
+  Bell,
+  Camera,
+  CheckCircle2,
+  Command,
+  Loader2,
+  LogOut,
+  RefreshCw,
+  Trash2,
+  Wifi,
+  X,
+} from 'lucide-react';
 import Header from './Header';
 import MobileNavigation, { type MobileNavigationItem } from './MobileNavigation';
 import Sidebar from './Sidebar';
@@ -29,7 +40,7 @@ interface AppLayoutProps {
 export default function AppLayout({
   children,
   title = 'Tableau de bord',
-  subtitle = 'Vue d ensemble de votre activité',
+  subtitle = 'Supervision & gestion opérationnelle',
   activeItem = 'dashboard',
   isOnline: isOnlineProp,
   onNavigate,
@@ -92,10 +103,7 @@ export default function AppLayout({
     if (isSyncingNow) return;
     setIsSyncingNow(true);
     try {
-      await Promise.all([
-        triggerSyncNow(),
-        syncPendingSmsOperations(),
-      ]);
+      await Promise.all([triggerSyncNow(), syncPendingSmsOperations()]);
       await loadCounts();
     } catch {
       // ignore
@@ -150,7 +158,6 @@ export default function AppLayout({
     }, 8000);
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Échap : fermer les fenêtres modales
       if (event.key === 'Escape') {
         setShowProfileModal(false);
         setShowNotificationsModal(false);
@@ -165,7 +172,6 @@ export default function AppLayout({
         target instanceof HTMLTextAreaElement ||
         Boolean(target?.isContentEditable);
 
-      // Ouvrir l'aide des raccourcis clavier avec '?' ou 'Ctrl + /'
       if (
         !isTyping &&
         (event.key === '?' ||
@@ -181,36 +187,27 @@ export default function AppLayout({
 
       const key = event.key.toLowerCase();
 
-      // 1. Navigation Tableau de bord Principal (Ctrl+D ou Alt+D)
       if (key === 'd') {
         event.preventDefault();
         onNavigate?.('dashboard');
         setMobileMenuOpen(false);
         triggerShortcutFeedback('Tableau de bord');
-      }
-      // 2. Navigation Billetage & Devises (Ctrl+B ou Alt+B)
-      else if (key === 'b') {
+      } else if (key === 'b') {
         event.preventDefault();
         onNavigate?.('billetage');
         setMobileMenuOpen(false);
         triggerShortcutFeedback('Billetage de Caisse');
-      }
-      // 3. Navigation Missions & Opérations (Ctrl+M ou Alt+M)
-      else if (key === 'm') {
+      } else if (key === 'm') {
         event.preventDefault();
         onNavigate?.('transactions');
         setMobileMenuOpen(false);
         triggerShortcutFeedback('Missions & Opérations');
-      }
-      // 4. Navigation Rapports & Synthèses (Alt+R ou Ctrl+Shift+R)
-      else if (key === 'r' && (event.altKey || event.shiftKey)) {
+      } else if (key === 'r' && (event.altKey || event.shiftKey)) {
         event.preventDefault();
         onNavigate?.('reports');
         setMobileMenuOpen(false);
         triggerShortcutFeedback('Rapports d’Activité');
-      }
-      // 5. Navigation Messagerie Interne / Chat (Alt+C ou Ctrl+Shift+C)
-      else if (key === 'c' && (event.altKey || event.shiftKey)) {
+      } else if (key === 'c' && (event.altKey || event.shiftKey)) {
         event.preventDefault();
         if (onNavigateToChat) {
           onNavigateToChat();
@@ -219,34 +216,24 @@ export default function AppLayout({
         }
         setMobileMenuOpen(false);
         triggerShortcutFeedback('Messagerie Interne');
-      }
-      // 5b. Navigation Journal d'Audit Système & Agence (Alt+A ou Ctrl+Shift+A)
-      else if (key === 'a' && (event.altKey || event.shiftKey)) {
+      } else if (key === 'a' && (event.altKey || event.shiftKey)) {
         event.preventDefault();
         onNavigate?.('audit');
         setMobileMenuOpen(false);
-        triggerShortcutFeedback("Journal d'Audit Système");
-      }
-      // 6. Déclenchement de la Synchronisation Immédiate (Ctrl+S ou Alt+S)
-      else if (key === 's') {
+        triggerShortcutFeedback("Journal d'Audit");
+      } else if (key === 's') {
         event.preventDefault();
         void handleSyncNow();
         triggerShortcutFeedback('Synchronisation lancée...');
-      }
-      // 7. Ouverture Profil & Paramètres (Alt+P ou Ctrl+Shift+P)
-      else if (key === 'p' && (event.altKey || event.shiftKey)) {
+      } else if (key === 'p' && (event.altKey || event.shiftKey)) {
         event.preventDefault();
         navigate('/profil');
         triggerShortcutFeedback('Profil Utilisateur');
-      }
-      // 8. État Réseau & Notifications (Ctrl+I ou Alt+I)
-      else if (key === 'i') {
+      } else if (key === 'i') {
         event.preventDefault();
         setShowNotificationsModal(true);
         triggerShortcutFeedback('Diagnostic & Notifications');
-      }
-      // 9. Bascule Thème Clair / Sombre (Alt+T ou Ctrl+Shift+T)
-      else if (key === 't' && (event.altKey || event.shiftKey)) {
+      } else if (key === 't' && (event.altKey || event.shiftKey)) {
         event.preventDefault();
         toggleTheme();
         triggerShortcutFeedback(isDark ? 'Mode Clair activé' : 'Mode Sombre activé');
@@ -262,21 +249,25 @@ export default function AppLayout({
     };
   }, [loadCounts]);
 
-  const handleNavigate = (item: string) => {
-    onNavigate?.(item);
-    setMobileMenuOpen(false);
-  };
-
-  const handleMobileMenuClick = () => {
-    setMobileMenuOpen((current) => !current);
-  };
-
   const handleOpenNotifications = () => {
     if (onNotificationsClick) {
       onNotificationsClick();
     } else {
       setShowNotificationsModal(true);
     }
+  };
+
+  const handleNavigate = (item: string) => {
+    setMobileMenuOpen(false);
+    if (item === 'notifications') {
+      handleOpenNotifications();
+      return;
+    }
+    onNavigate?.(item);
+  };
+
+  const handleMobileMenuClick = () => {
+    setMobileMenuOpen((current) => !current);
   };
 
   const handleOpenProfile = () => {
@@ -300,36 +291,35 @@ export default function AppLayout({
       }
     } else if (item === 'reports') {
       onNavigate?.('reports');
+    } else if (item === 'billetage') {
+      onNavigate?.('billetage');
+    } else if (item === 'profile') {
+      handleOpenProfile();
     } else if (item === 'menu') {
       setMobileMenuOpen(true);
     }
   };
 
   return (
-    <div className="min-h-full bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50 flex flex-col flex-1 transition-colors duration-200">
+    <div className="min-h-full bg-[var(--app-bg)] text-[var(--app-text)] flex flex-col flex-1 transition-colors duration-200">
       <div className="flex min-h-full flex-1">
-        {/* Barre latérale fixe sur grand écran uniquement si demandé, sinon navigation horizontale fluide */}
         {isDesktopMode && (
           <div className="no-print hidden lg:flex lg:shrink-0">
             <div className="sticky top-0 h-screen">
-              <Sidebar
-                activeItem={activeItem}
-                onNavigate={handleNavigate}
-              />
+              <Sidebar activeItem={activeItem} onNavigate={handleNavigate} />
             </div>
           </div>
         )}
 
-        {/* Tiroir latéral mobile / tablette / bureau (ouvert via le bouton Menu) */}
         {mobileMenuOpen && (
           <div className="no-print fixed inset-0 z-[60]">
             <button
               type="button"
               aria-label="Fermer le menu"
               onClick={() => setMobileMenuOpen(false)}
-              className="absolute inset-0 bg-slate-950/50 backdrop-blur-[2px]"
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"
             />
-            <div className="relative z-10 h-full w-[min(19rem,86%)] shadow-2xl animate-in slide-in-from-left duration-200">
+            <div className="relative z-10 h-full w-[min(17.5rem,85%)] shadow-2xl">
               <Sidebar
                 activeItem={activeItem}
                 onNavigate={handleNavigate}
@@ -361,19 +351,17 @@ export default function AppLayout({
           <main className="min-w-0 flex-1">
             <div
               className={[
-                'mx-auto w-full px-4 py-5',
-                isDesktopMode ? 'max-w-7xl sm:px-6 lg:px-8 pb-16' : 'pb-24',
+                'mx-auto w-full px-3 py-3 sm:px-5 sm:py-4',
+                isDesktopMode ? 'max-w-[1440px] lg:px-6 pb-20 lg:pb-8' : 'pb-20',
               ].join(' ')}
             >
               {children}
 
-              <footer className="mt-10 border-t border-slate-200/80 dark:border-slate-800 pt-5 pb-2 text-center text-xs text-slate-500 dark:text-slate-400">
-                <p className="font-semibold text-slate-700 dark:text-slate-300 tracking-tight">
-                  Ets AMANI — Ensemble, plus connectés, plus efficaces
-                </p>
-                <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
-                  Système de gestion financière, de caisse et de supervision multi-agences • Offline-First
-                </p>
+              <footer className="no-print hidden sm:flex items-center justify-between mt-8 border-t border-slate-200/80 dark:border-slate-800/80 pt-3 pb-1 text-[11px] text-slate-500 dark:text-slate-400">
+                <span className="font-medium">
+                  Ets AMANI — Supervision, gestion opérationnelle & contrôle interne
+                </span>
+                <span>Contrôle & Traçabilité • Offline-First</span>
               </footer>
             </div>
           </main>
@@ -381,6 +369,7 @@ export default function AppLayout({
           <div className={isDesktopMode ? 'no-print lg:hidden' : 'no-print'}>
             <MobileNavigation
               activeItem={activeItem}
+              unreadNotificationsCount={pendingSyncCount}
               onNavigate={handleMobileBottomNavigate}
               onMenuClick={handleMobileMenuClick}
             />
@@ -390,54 +379,72 @@ export default function AppLayout({
 
       {/* Modal Notifications & État Réel */}
       {showNotificationsModal && (
-        <div className="no-print fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/50 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="no-print fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-[2px]">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl space-y-4 text-slate-900 dark:text-slate-100">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
                   <Bell className="h-4 w-4" />
                 </div>
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 className="text-sm font-bold">
                   État Opérationnel & Synchronisation
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowNotificationsModal(false)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="space-y-3 text-xs">
-              <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
-                <div className="flex items-center gap-2.5">
-                  <Wifi className={`h-4 w-4 ${isOnline ? 'text-emerald-600' : 'text-amber-600'}`} />
-                  <span className="font-semibold text-slate-700">Connectivité réseau</span>
+            <div className="space-y-2.5 text-xs">
+              <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 p-3">
+                <div className="flex items-center gap-2">
+                  <Wifi
+                    className={`h-4 w-4 ${
+                      isOnline
+                        ? 'text-emerald-600 dark:text-emerald-400'
+                        : 'text-amber-600 dark:text-amber-400'
+                    }`}
+                  />
+                  <span className="font-semibold text-slate-700 dark:text-slate-200">
+                    Connectivité réseau
+                  </span>
                 </div>
-                <span className={`rounded-full px-2.5 py-0.5 font-bold ${isOnline ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
-                  {isOnline ? 'En ligne' : 'Hors-ligne (Stockage local)'}
+                <span
+                  className={`rounded-md px-2 py-0.5 text-[11px] font-bold ${
+                    isOnline
+                      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300'
+                      : 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300'
+                  }`}
+                >
+                  {isOnline ? 'En ligne' : 'Hors-ligne'}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
-                <span className="font-semibold text-slate-700">Éléments en attente de sync</span>
-                <span className="font-bold tabular-nums text-slate-900">{pendingSyncCount}</span>
+              <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 p-3">
+                <span className="font-semibold text-slate-700 dark:text-slate-200">
+                  Éléments en attente de sync
+                </span>
+                <span className="font-bold tabular-nums">{pendingSyncCount}</span>
               </div>
 
-              <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
-                <span className="font-semibold text-slate-700">Opérations actives en cours</span>
-                <span className="font-bold tabular-nums text-slate-900">{activeOpsCount}</span>
+              <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 p-3">
+                <span className="font-semibold text-slate-700 dark:text-slate-200">
+                  Opérations actives en cours
+                </span>
+                <span className="font-bold tabular-nums">{activeOpsCount}</span>
               </div>
             </div>
 
             <div className="flex items-center justify-between pt-2">
               <button
                 type="button"
-                onClick={handleSyncNow}
+                onClick={() => void handleSyncNow()}
                 disabled={isSyncingNow}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2 text-xs font-bold text-blue-700 hover:bg-blue-100 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/60 px-3 py-2 text-xs font-bold text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 disabled:opacity-50"
               >
                 <RefreshCw className={`h-3.5 w-3.5 ${isSyncingNow ? 'animate-spin' : ''}`} />
                 <span>{isSyncingNow ? 'Synchronisation...' : 'Synchroniser maintenant'}</span>
@@ -445,7 +452,7 @@ export default function AppLayout({
               <button
                 type="button"
                 onClick={() => setShowNotificationsModal(false)}
-                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800"
+                className="rounded-lg bg-slate-900 dark:bg-slate-100 px-3.5 py-2 text-xs font-bold text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white"
               >
                 Fermer
               </button>
@@ -454,39 +461,40 @@ export default function AppLayout({
         </div>
       )}
 
-      {/* Modal Profil Utilisateur & Paramètres Photo */}
+      {/* Modal Profil Utilisateur */}
       {showProfileModal && user && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/50 p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-[2px]">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl space-y-4 text-slate-900 dark:text-slate-100">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
-                <h3 className="text-base font-bold text-slate-900">Mon Profil & Paramètres</h3>
-                <p className="text-xs text-slate-500">Identité et photo de profil Ets AMANI</p>
+                <h3 className="text-sm font-bold">Mon Profil & Paramètres</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Identité et photo de profil Ets AMANI
+                </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowProfileModal(false)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            {/* Section Avatar & Mise à jour de la photo */}
-            <div className="flex flex-col items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-center">
+            <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/60 p-4 text-center">
               <div className="relative">
                 <UserAvatar
                   user={user}
                   size="xl"
                   statusDot={isOnline ? 'online' : 'offline'}
-                  className="ring-4 ring-white shadow-md"
+                  className="ring-4 ring-white dark:ring-slate-800 shadow-sm"
                 />
                 <button
                   type="button"
                   disabled={isUpdatingPhoto}
                   onClick={() => fileInputRef.current?.click()}
                   title="Modifier ma photo de profil"
-                  className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white shadow-md ring-2 ring-white transition hover:bg-blue-700 disabled:opacity-50"
+                  className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white shadow-md ring-2 ring-white dark:ring-slate-900 transition hover:bg-blue-700 disabled:opacity-50"
                 >
                   {isUpdatingPhoto ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -497,8 +505,10 @@ export default function AppLayout({
               </div>
 
               <div>
-                <p className="text-base font-bold text-slate-900">{user.displayName}</p>
-                <p className="text-xs text-slate-500">{user.email || user.phone || 'Session active'}</p>
+                <p className="text-sm font-bold">{user.displayName}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {user.email || user.phone || 'Session active'}
+                </p>
               </div>
 
               <input
@@ -514,7 +524,7 @@ export default function AppLayout({
                   type="button"
                   disabled={isUpdatingPhoto}
                   onClick={() => fileInputRef.current?.click()}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-slate-800 disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 dark:bg-slate-100 px-3 py-1.5 text-xs font-bold text-white dark:text-slate-900 transition hover:bg-slate-800 disabled:opacity-50"
                 >
                   <Camera className="h-3.5 w-3.5" />
                   {user.photoURL ? 'Changer la photo' : 'Téléverser une photo'}
@@ -523,8 +533,8 @@ export default function AppLayout({
                   <button
                     type="button"
                     disabled={isUpdatingPhoto}
-                    onClick={handleRemovePhoto}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 disabled:opacity-50"
+                    onClick={() => void handleRemovePhoto()}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 dark:border-rose-800 bg-rose-50 dark:bg-rose-950/60 px-3 py-1.5 text-xs font-semibold text-rose-700 dark:text-rose-300 transition hover:bg-rose-100 disabled:opacity-50"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                     Retirer
@@ -533,48 +543,48 @@ export default function AppLayout({
               </div>
 
               {photoFeedback && (
-                <div className="flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 border border-emerald-200">
+                <div className="flex items-center gap-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                   <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
                   <span>{photoFeedback}</span>
                 </div>
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5 text-xs">
-              <div className="rounded-xl bg-slate-50 p-3">
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="rounded-lg bg-slate-50 dark:bg-slate-950/60 p-2.5 border border-slate-100 dark:border-slate-800">
                 <span className="block text-[10px] font-bold uppercase text-slate-400">Rôle</span>
-                <span className="font-bold text-slate-800">{user.role}</span>
+                <span className="font-semibold">{user.role}</span>
               </div>
-              <div className="rounded-xl bg-slate-50 p-3">
+              <div className="rounded-lg bg-slate-50 dark:bg-slate-950/60 p-2.5 border border-slate-100 dark:border-slate-800">
                 <span className="block text-[10px] font-bold uppercase text-slate-400">Statut</span>
-                <span className="font-bold text-emerald-700">{user.status}</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">{user.status}</span>
               </div>
-              <div className="rounded-xl bg-slate-50 p-3">
+              <div className="rounded-lg bg-slate-50 dark:bg-slate-950/60 p-2.5 border border-slate-100 dark:border-slate-800">
                 <span className="block text-[10px] font-bold uppercase text-slate-400">Agence</span>
-                <span className="font-bold text-slate-800">{user.agencyId || 'Siège / Global'}</span>
+                <span className="font-semibold">{user.agencyId || 'Siège / Global'}</span>
               </div>
-              <div className="rounded-xl bg-slate-50 p-3">
+              <div className="rounded-lg bg-slate-50 dark:bg-slate-950/60 p-2.5 border border-slate-100 dark:border-slate-800">
                 <span className="block text-[10px] font-bold uppercase text-slate-400">Fonction</span>
-                <span className="font-bold text-slate-800">{user.function || 'Standard'}</span>
+                <span className="font-semibold">{user.function || 'Standard'}</span>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+            <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => {
                   setShowProfileModal(false);
                   void signOut();
                 }}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-red-50 px-4 py-2 text-xs font-bold text-red-700 hover:bg-red-100"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-red-50 dark:bg-red-950/60 px-3.5 py-2 text-xs font-bold text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/60"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-3.5 w-3.5" />
                 Se déconnecter
               </button>
               <button
                 type="button"
                 onClick={() => setShowProfileModal(false)}
-                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800"
+                className="rounded-lg bg-slate-900 dark:bg-slate-100 px-3.5 py-2 text-xs font-bold text-white dark:text-slate-900 hover:bg-slate-800"
               >
                 Fermer
               </button>
@@ -583,15 +593,13 @@ export default function AppLayout({
         </div>
       )}
 
-      {/* Notification Toast lors du déclenchement d'un raccourci clavier */}
       {shortcutFeedback && (
-        <div className="no-print fixed bottom-16 right-4 sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2 sm:right-auto z-[95] flex items-center gap-2 rounded-2xl border border-emerald-500/50 bg-slate-950/95 px-4 py-2 text-xs font-bold text-white shadow-2xl backdrop-blur-md animate-in fade-in slide-in-from-bottom-2 duration-150">
-          <Command className="h-4 w-4 text-emerald-400" />
-          <span>Raccourci activé : {shortcutFeedback}</span>
+        <div className="no-print fixed bottom-16 right-4 sm:bottom-5 sm:left-1/2 sm:-translate-x-1/2 sm:right-auto z-[95] flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-slate-950/95 px-3.5 py-2 text-xs font-bold text-white shadow-xl backdrop-blur-md">
+          <Command className="h-3.5 w-3.5 text-emerald-400" />
+          <span>Raccourci : {shortcutFeedback}</span>
         </div>
       )}
 
-      {/* Modal d'aide & cartographie des raccourcis clavier */}
       <KeyboardShortcutsModal
         isOpen={showShortcutsModal}
         onClose={() => setShowShortcutsModal(false)}

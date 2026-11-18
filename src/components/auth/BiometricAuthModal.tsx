@@ -329,7 +329,7 @@ export default function BiometricAuthModal({
       aria-modal="true"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200"
     >
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-700/80 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white shadow-2xl shadow-blue-950/50">
+      <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-slate-700/80 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white shadow-2xl shadow-blue-950/50">
         {/* Lueur supérieure */}
         <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-48 w-72 rounded-full bg-cyan-500/15 blur-3xl" />
 
@@ -338,7 +338,7 @@ export default function BiometricAuthModal({
           type="button"
           onClick={onClose}
           aria-label="Fermer la fenêtre biométrique"
-          className="absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800/80 text-slate-400 transition hover:bg-slate-700 hover:text-white"
+          className="absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center rounded-lg bg-slate-800/80 text-slate-400 transition hover:bg-slate-700 hover:text-white"
         >
           <X className="h-4 w-4" />
         </button>
@@ -351,12 +351,12 @@ export default function BiometricAuthModal({
               alt="Ets AMANI"
               className="h-11 w-11 shrink-0 object-contain rounded-xl border border-slate-700 bg-white p-1 shadow-md"
             />
-            <div>
-              <div className="flex items-center gap-2">
+            <div className="pr-8">
+              <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-base font-extrabold tracking-tight text-white">
                   Sécurité Biométrique Ets AMANI
                 </h3>
-                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-300 ring-1 ring-emerald-500/30">
+                <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-300 ring-1 ring-emerald-500/30">
                   Android / FIDO2
                 </span>
               </div>
@@ -390,7 +390,7 @@ export default function BiometricAuthModal({
                   </div>
 
                   {/* Cartouche agent sélectionné */}
-                  <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-3.5 ring-1 ring-white/5">
+                  <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5 ring-1 ring-white/5">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-700 to-cyan-600 text-sm font-black text-white shadow-md">
@@ -442,7 +442,7 @@ export default function BiometricAuthModal({
                 </div>
               ) : (
                 /* État vide quand aucun agent n'a encore associé ce téléphone */
-                <div className="rounded-2xl border border-amber-500/30 bg-amber-950/20 p-4 text-center space-y-3">
+                <div className="rounded-xl border border-amber-500/30 bg-amber-950/20 p-4 text-center space-y-3">
                   <Smartphone className="mx-auto h-8 w-8 text-amber-400" />
                   <div>
                     <p className="text-xs font-bold text-amber-200">
@@ -455,7 +455,7 @@ export default function BiometricAuthModal({
                   <button
                     type="button"
                     onClick={() => setShowEnrollmentTab(true)}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-cyan-600 px-4 py-2 text-xs font-bold text-white hover:bg-cyan-500 transition"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-xs font-bold text-white hover:bg-cyan-500 transition"
                   >
                     <Plus className="h-3.5 w-3.5" />
                     <span>Associer un compte agent à ce téléphone</span>
@@ -486,7 +486,7 @@ export default function BiometricAuthModal({
                       !currentAgent
                     }
                     aria-label="Scanner votre empreinte digitale"
-                    className={`group relative flex h-32 w-32 items-center justify-center rounded-3xl transition-all duration-300 select-none ${
+                    className={`group relative flex h-32 w-32 items-center justify-center rounded-2xl transition-all duration-300 select-none ${
                       lockoutSecondsLeft > 0
                         ? 'border-2 border-red-500/50 bg-red-950/30 cursor-not-allowed opacity-60'
                         : scanStatus === 'scanning'
@@ -526,7 +526,7 @@ export default function BiometricAuthModal({
                       />
                     )}
 
-                    <div className="absolute -bottom-2 rounded-full border border-slate-700 bg-slate-900 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-cyan-300">
+                    <div className="absolute -bottom-2 rounded-md border border-slate-700 bg-slate-900 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-cyan-300 tabular-nums">
                       {lockoutSecondsLeft > 0
                         ? `Bloqué (${lockoutSecondsLeft}s)`
                         : scanStatus === 'scanning' || scanStatus === 'verifying'
@@ -558,7 +558,7 @@ export default function BiometricAuthModal({
                     {statusMessage}
                   </p>
 
-                  <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-slate-800 bg-slate-950 px-2.5 py-0.5 text-[10px] text-slate-400">
+                  <div className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-slate-800 bg-slate-950 px-2.5 py-0.5 text-[10px] text-slate-400">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     <span>{hardwareInfo.type}</span>
                   </div>
@@ -582,7 +582,7 @@ export default function BiometricAuthModal({
                       setScanProgress(0);
                       setStatusMessage('Posez votre empreinte enregistrée sur le capteur pour réessayer.');
                     }}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 py-3 text-xs font-bold text-white transition hover:bg-slate-700 active:scale-[0.99]"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-800 py-3 text-xs font-bold text-white transition hover:bg-slate-700 active:scale-[0.99]"
                   >
                     <RefreshCw className="h-4 w-4" />
                     <span>Réessayer le scan d’empreinte</span>
@@ -593,7 +593,7 @@ export default function BiometricAuthModal({
                       type="button"
                       onClick={handleStartScan}
                       disabled={scanStatus === 'scanning' || scanStatus === 'verifying' || scanStatus === 'success'}
-                      className="flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-cyan-600/20 transition-all hover:brightness-110 active:scale-[0.99] disabled:opacity-60"
+                      className="flex w-full items-center justify-center gap-2.5 rounded-lg bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-lg shadow-cyan-600/20 transition-all hover:brightness-110 active:scale-[0.99] disabled:opacity-60"
                     >
                       {scanStatus === 'scanning' || scanStatus === 'verifying' ? (
                         <>
@@ -620,7 +620,7 @@ export default function BiometricAuthModal({
                 <button
                   type="button"
                   onClick={() => onFallbackToPassword(currentAgent?.email)}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-800 bg-slate-950/60 py-2.5 text-xs font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-800 bg-slate-950/60 py-2.5 text-xs font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white"
                 >
                   <Lock className="h-3.5 w-3.5 text-slate-400" />
                   <span>Se connecter par mot de passe</span>
@@ -661,7 +661,7 @@ export default function BiometricAuthModal({
                     <select
                       value={candidateAgentUid}
                       onChange={(e) => setCandidateAgentUid(e.target.value)}
-                      className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-xs font-medium text-white outline-none focus:border-cyan-500"
+                      className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-xs font-medium text-white outline-none focus:border-cyan-500"
                     >
                       {eligibleAgents.map((ag) => (
                         <option key={ag.uid} value={ag.uid}>
@@ -685,7 +685,7 @@ export default function BiometricAuthModal({
                     value={customTerminalName}
                     onChange={(e) => setCustomTerminalName(e.target.value)}
                     placeholder="Ex: Téléphone Source Vodacom (03220590)"
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs font-medium text-white outline-none focus:border-cyan-500"
+                    className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs font-medium text-white outline-none focus:border-cyan-500"
                   />
                 </div>
 
@@ -702,7 +702,7 @@ export default function BiometricAuthModal({
                   type="button"
                   disabled={enrollingLoading || !candidateAgentUid}
                   onClick={handleEnrollCandidate}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-600 py-3 text-xs font-bold text-white transition hover:bg-cyan-500 disabled:opacity-60"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-cyan-600 py-3 text-xs font-bold text-white transition hover:bg-cyan-500 disabled:opacity-60"
                 >
                   {enrollingLoading ? (
                     <>
@@ -721,7 +721,7 @@ export default function BiometricAuthModal({
               {/* Liste des agents déjà associés sur cet appareil */}
               {enrolledAgents.length > 0 && (
                 <div className="pt-2">
-                  <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+                  <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 tabular-nums">
                     Comptes actuellement associés sur ce téléphone ({enrolledAgents.length}) :
                   </span>
                   <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1">

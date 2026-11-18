@@ -1,11 +1,4 @@
-import {
-  Coins,
-  CreditCard,
-  LayoutDashboard,
-  LogOut,
-  Receipt,
-  User,
-} from 'lucide-react';
+import { Coins, CreditCard, LayoutDashboard, Receipt } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -20,12 +13,12 @@ import type { Operation } from '../../types/operation';
 
 const CLIENT_TABS: WorkspaceTab[] = [
   { id: 'dashboard', label: 'Mes Opérations', icon: LayoutDashboard },
-  { id: 'billetage', label: 'Calculateur Billetage & Devises', icon: Coins },
+  { id: 'billetage', label: 'Calculateur Billetage', icon: Coins },
 ];
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [showBilletage, setShowBilletage] = useState(false);
   const [operations, setOperations] = useState<Operation[]>([]);
 
@@ -67,56 +60,41 @@ export default function ClientDashboard() {
       activeItem={showBilletage ? 'billetage' : 'dashboard'}
       onNavigate={handleSidebarNavigate}
     >
-      <div className="space-y-6">
-        {/* Banner Client */}
-        <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-950 p-6 text-white shadow-xl sm:p-8">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center gap-4 sm:gap-5 min-w-0">
-              <UserAvatar
-                user={user}
-                size="lg"
-                showStatus
-                isOnline={true}
-                className="ring-2 ring-white/30 shadow-lg shrink-0"
-              />
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl truncate">
-                    Bienvenue, {user?.displayName}
-                  </h1>
-                  <span className="rounded-full bg-blue-400/20 px-2.5 py-0.5 text-xs font-bold text-blue-300 shrink-0">
-                    Client Certifié
-                  </span>
-                </div>
-                <p className="mt-1 text-xs sm:text-sm text-slate-300 truncate">
-                  Compte Client Ets AMANI • Accès guichet & services de change
-                </p>
+      <div className="space-y-4">
+        {/* Identité Client compacte */}
+        <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <UserAvatar user={user} size="md" showStatus isOnline className="shrink-0" />
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white truncate">
+                  Bienvenue, {user?.displayName || 'Client'}
+                </h2>
+                <span className="rounded bg-blue-50 dark:bg-blue-950/70 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:text-blue-300 uppercase">
+                  Client Certifié
+                </span>
               </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                Compte Client Ets AMANI · Guichet & services de change
+              </p>
             </div>
+          </div>
 
-            <div className="flex items-center gap-2 self-start lg:self-center">
-              <button
-                type="button"
-                onClick={() => signOut()}
-                className="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-white/20"
-                title="Se déconnecter"
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Déconnexion</span>
-              </button>
+          <div className="flex items-center gap-4 text-xs shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100 dark:border-slate-800">
+            <div>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                Opérations
+              </span>
+              <span className="font-black text-base tabular-nums text-slate-900 dark:text-white">
+                {operations.length}
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Barre de navigation d'espace de travail */}
         <WorkspaceNavigationHeader
           workspaceTitle="Espace Client"
           activeModuleTitle={showBilletage ? 'Calculateur Billetage & Devises' : 'Historique des Opérations'}
-          activeModuleDescription={
-            showBilletage
-              ? 'Simulez et décomptez vos billets en Francs Congolais (CDF) et Dollars Américains (USD)'
-              : 'Consultez le relevé détaillé de vos versements, retraits et transferts en agence'
-          }
           backLabel="Mes Opérations"
           onBack={() => {
             setShowBilletage(false);
@@ -130,42 +108,50 @@ export default function ClientDashboard() {
           }}
         />
 
-        {/* Contenu affiché immédiatement */}
         {showBilletage ? (
-          <div className="animate-in fade-in duration-200">
-            <BilletageModule onClose={() => setShowBilletage(false)} />
-          </div>
+          <BilletageModule onClose={() => setShowBilletage(false)} />
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 animate-in fade-in duration-200">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
-                  <Receipt className="h-5 w-5" />
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
+              <div className="flex items-center gap-2.5 mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">
+                  <Receipt className="h-4 w-4" />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-slate-900">Dernières Opérations</h2>
-                  <p className="text-xs text-slate-500">Historique de vos opérations au guichet</p>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Dernières Opérations
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Historique de vos opérations au guichet
+                  </p>
                 </div>
               </div>
               {operations.length === 0 ? (
-                <p className="text-sm text-slate-400 py-6 text-center">
+                <p className="text-xs text-slate-400 py-6 text-center">
                   Aucune opération récente enregistrée.
                 </p>
               ) : (
-                <div className="divide-y divide-slate-100 text-xs">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
                   {operations.map((op) => (
-                    <div key={op.operationNumber || op.createdAt} className="py-3 flex items-center justify-between gap-2">
+                    <div
+                      key={op.operationNumber || op.createdAt}
+                      className="py-2.5 flex items-center justify-between gap-2"
+                    >
                       <div className="min-w-0">
-                        <p className="font-bold text-slate-900 truncate">{op.title}</p>
-                        <p className="text-slate-500 truncate">{op.operationNumber} • {op.agencyName}</p>
+                        <p className="font-bold text-slate-900 dark:text-white truncate">
+                          {op.title}
+                        </p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate tabular-nums">
+                          {op.operationNumber} · {op.agencyName}
+                        </p>
                       </div>
                       <div className="text-right shrink-0">
                         {op.amount !== undefined && (
-                          <p className="font-bold text-emerald-700">
+                          <p className="font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
                             {op.amount.toLocaleString('fr-FR')} {op.currency}
                           </p>
                         )}
-                        <p className="text-slate-400">
+                        <p className="text-[11px] text-slate-400 tabular-nums">
                           {new Date(op.createdAt).toLocaleDateString('fr-FR')}
                         </p>
                       </div>
@@ -175,20 +161,30 @@ export default function ClientDashboard() {
               )}
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
-                  <CreditCard className="h-5 w-5" />
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
+              <div className="flex items-center gap-2.5 mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+                  <CreditCard className="h-4 w-4" />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-slate-900">Services Disponibles</h2>
-                  <p className="text-xs text-slate-500">Présentez-vous en agence pour vos transactions</p>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Services Disponibles
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Présentez-vous en agence pour vos transactions
+                  </p>
                 </div>
               </div>
-              <ul className="text-xs space-y-2 text-slate-600">
-                <li className="p-3 bg-slate-50 rounded-xl">✓ Change manuel devises USD / CDF aux meilleurs taux</li>
-                <li className="p-3 bg-slate-50 rounded-xl">✓ Dépôts et retraits Mobile Money (Airtel Money, M-Pesa, Orange Money)</li>
-                <li className="p-3 bg-slate-50 rounded-xl">✓ Transferts inter-agences sécurisés avec notification instantanée</li>
+              <ul className="text-xs space-y-2 text-slate-600 dark:text-slate-300">
+                <li className="p-2.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 rounded-lg">
+                  Change manuel devises USD / CDF aux meilleurs taux
+                </li>
+                <li className="p-2.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 rounded-lg">
+                  Dépôts et retraits Mobile Money (Airtel Money, M-Pesa, Orange Money)
+                </li>
+                <li className="p-2.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 rounded-lg">
+                  Transferts inter-agences sécurisés avec notification instantanée
+                </li>
               </ul>
             </div>
           </div>

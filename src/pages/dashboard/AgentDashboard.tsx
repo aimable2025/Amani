@@ -1,25 +1,17 @@
 import {
-  Activity,
-  ArrowDownLeft,
   ArrowLeftRight,
-  ArrowUpRight,
   Bell,
   BellRing,
   Briefcase,
   CheckCircle2,
-  Clock,
   Coins,
   Database,
   Eye,
   FileText,
-  Filter,
-  History,
   LayoutDashboard,
-  LogOut,
   RefreshCw,
   Scale,
   Search,
-  Smartphone,
   Users,
   WalletCards,
   Wifi,
@@ -29,12 +21,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import AppLayout from '../../components/layout/AppLayout';
-import UserAvatar from '../../components/common/UserAvatar';
 import WorkspaceNavigationHeader, {
   type WorkspaceTab,
 } from '../../components/dashboard/WorkspaceNavigationHeader';
 import BilletageModule from './components/BilletageModule';
 import ChatModule from './components/ChatModule';
+import ConnectivityModule from './components/ConnectivityModule';
 import TreasuryTransfersDebtsModule from './components/TreasuryTransfersDebtsModule';
 import SalaryModule from './components/SalaryModule';
 import ReportsModule from './components/ReportsModule';
@@ -57,21 +49,30 @@ import {
 } from '../../services/LocalOperationsCacheService';
 import type { Operation } from '../../types/operation';
 
-type AgentView = 'overview' | 'billetage' | 'salary' | 'transfers' | 'debts' | 'chat' | 'reports';
+type AgentView =
+  | 'overview'
+  | 'billetage'
+  | 'salary'
+  | 'transfers'
+  | 'debts'
+  | 'chat'
+  | 'reports'
+  | 'connectivity';
 
 const AGENT_TABS: WorkspaceTab[] = [
-  { id: 'overview', label: 'Guichet & Missions', icon: LayoutDashboard },
-  { id: 'reports', label: 'Mes Rapports', icon: FileText },
-  { id: 'billetage', label: 'Billetage Caisse', icon: Coins },
+  { id: 'overview', label: 'Missions', icon: LayoutDashboard },
+  { id: 'reports', label: 'Rapports', icon: FileText },
+  { id: 'billetage', label: 'Billetage', icon: Coins },
   { id: 'salary', label: 'Mon Salaire', icon: WalletCards },
-  { id: 'transfers', label: 'Transferts Inter-Agences', icon: ArrowLeftRight },
-  { id: 'debts', label: 'Suivi Dettes', icon: Scale },
-  { id: 'chat', label: 'Messagerie & Annonces', icon: Users },
+  { id: 'transfers', label: 'Transferts', icon: ArrowLeftRight },
+  { id: 'debts', label: 'Dettes', icon: Scale },
+  { id: 'chat', label: 'Messagerie', icon: Users },
+  { id: 'connectivity', label: 'Synchro', icon: Wifi },
 ];
 
 export default function AgentDashboard() {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [activeView, setActiveView] = useState<AgentView>('overview');
   const [assignedOperations, setAssignedOperations] = useState<Operation[]>([]);
   const [loading, setLoading] = useState(false);
@@ -89,7 +90,6 @@ export default function AgentDashboard() {
   } | null>(null);
   const [testNotificationLoading, setTestNotificationLoading] = useState(false);
 
-  // États du cache local IndexedDB (Dexie)
   const [cacheMetadata, setCacheMetadata] = useState<CacheMetadata>(getCacheMetadata());
   const [cacheSummary, setCacheSummary] = useState<{
     total: number;
@@ -123,18 +123,21 @@ export default function AgentDashboard() {
         if (ag?.name) setAgencyLabel(ag.name);
       }
 
-      // Lecture depuis le cache IndexedDB
       const cachedOps = await getCachedOperations({
         agentId: user.uid,
         agencyId: user.agencyId || undefined,
-        status: offlineFilter === 'pending' ? 'cree' : offlineFilter === 'termine' ? 'termine' : undefined,
+        status:
+          offlineFilter === 'pending'
+            ? 'cree'
+            : offlineFilter === 'termine'
+              ? 'termine'
+              : undefined,
         priority: offlineFilter === 'urgent' ? 'urgent' : undefined,
         searchQuery: offlineSearchQuery,
       });
 
       setAssignedOperations(cachedOps);
 
-      // Calcul des métriques de cache
       const summary = await getCachedOperationsSummary(user.uid);
       setCacheSummary(summary);
       setCacheMetadata(getCacheMetadata());
@@ -163,18 +166,16 @@ export default function AgentDashboard() {
   }, []);
 
   useEffect(() => {
-    loadOperations();
+    void loadOperations();
   }, [user, offlineFilter, offlineSearchQuery]);
 
-  // Surveillance en arrière-plan des opérations assignées à cet agent
   useEffect(() => {
     if (!user?.uid) return;
 
     const stopWatcher = startAgentNotificationWatcher(user.uid, (newOp) => {
-      // Déclenche l'alerte visuelle flottante et actualise les listes
       setToastAlert({
-        title: `🚨 ${newOp.title}`,
-        message: `${newOp.operationNumber} · Tâche prioritaire affectée à votre guichet (${newOp.agencyName || 'Agence'}).`,
+        title: `Mission prioritaire : ${newOp.title}`,
+        message: `${newOp.operationNumber} · Affectée à votre guichet (${newOp.agencyName || 'Agence'}).`,
         isUrgent:
           newOp.priority === 'maintenant' ||
           newOp.priority === 'tres_urgent' ||
@@ -194,12 +195,16 @@ export default function AgentDashboard() {
     setNotificationPermission(perm);
     if (perm === 'granted') {
       setToastAlert({
-        title: '🔔 Notifications Push Activées',
-        message: 'Vous recevrez désormais les alertes des opérations urgentes même en arrière-plan.',
+        title: 'Notifications Push Activées',
+        message: 'Vous recevrez désormais les alertes des opérations urgentes.',
         isUrgent: false,
       });
     } else {
-      alert('Veuillez activer les autorisations de notification dans les paramètres de votre navigateur.');
+      setToastAlert({
+        title: 'Autorisation requise',
+        message: 'Veuillez autoriser les notifications dans les paramètres de votre navigateur.',
+        isUrgent: true,
+      });
     }
   };
 
@@ -210,9 +215,9 @@ export default function AgentDashboard() {
       if (ok) {
         setNotificationPermission('granted');
         setToastAlert({
-          title: '🚨 Test Notification Réussi',
-          message: 'Une notification push locale d’opération urgente a été émise avec succès.',
-          isUrgent: true,
+          title: 'Notification locale émise',
+          message: 'Une notification push de test a été envoyée avec succès.',
+          isUrgent: false,
         });
       }
     } finally {
@@ -229,12 +234,17 @@ export default function AgentDashboard() {
       });
       await loadOperations();
       setToastAlert({
-        title: 'Données Locales Synchronisées',
-        message: `${res.syncedCount} opérations synchronisées et disponibles localement sans connexion.`,
+        title: 'Données locales synchronisées',
+        message: `${res.syncedCount} opérations synchronisées et disponibles hors-ligne.`,
         isUrgent: false,
       });
-    } catch (e: any) {
-      alert(`Erreur de synchronisation du cache : ${e?.message || 'Inconnue'}`);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Inconnue';
+      setToastAlert({
+        title: 'Erreur de synchronisation',
+        message: `Synchronisation du cache interrompue : ${msg}`,
+        isUrgent: true,
+      });
     } finally {
       setCacheSyncLoading(false);
     }
@@ -279,7 +289,7 @@ export default function AgentDashboard() {
     }
     if (item === 'reports') {
       handleSelectView('reports');
-    } else if (item === 'billetage' || item === 'accounting') {
+    } else if (item === 'billetage' || item === 'accounting' || item === 'treasury') {
       handleSelectView('billetage');
     } else if (item === 'salaries') {
       handleSelectView('salary');
@@ -289,6 +299,8 @@ export default function AgentDashboard() {
       handleSelectView('debts');
     } else if (item === 'chat') {
       handleSelectView('chat');
+    } else if (item === 'connectivity' || item === 'settings') {
+      handleSelectView('connectivity');
     } else if (item === 'dashboard' || item === 'transactions' || item === 'operations') {
       handleSelectView('overview');
     }
@@ -318,76 +330,60 @@ export default function AgentDashboard() {
       onNavigate={handleSidebarNavigate}
       onNavigateToChat={() => handleSelectView('chat')}
     >
-      <div className="space-y-6">
-        {/* Header Agent aligné sur la maquette */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="space-y-4">
+        {/* En-tête Agent compact */}
+        <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-[11px] font-bold tracking-wider text-amber-700 dark:text-amber-500 uppercase">
-              POSTE OPÉRATIONNEL &bull; {agencyLabel || user?.agencyId || 'AGENCE'}
+            <p className="text-[10px] font-extrabold tracking-widest text-[#C58B39] uppercase">
+              POSTE OPÉRATIONNEL · {agencyLabel || user?.agencyId || 'AGENCE'}
             </p>
-            <h1 className="mt-1 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
               Bonjour, {user?.displayName?.split(' ')[0] || 'Agent'}
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Guichet, opérations courantes et déclarations d'activité
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Guichet, missions affectées, billetage et déclarations d&apos;activité
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
               onClick={() => handleSelectView('transfers')}
-              className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-xs transition"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition whitespace-nowrap"
             >
               Nouveau transfert
             </button>
             <button
               type="button"
-              onClick={() => {
-                handleSelectView('overview');
-                window.scrollTo({ top: 300, behavior: 'smooth' });
-              }}
-              className="rounded-xl bg-[#0B192C] px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 shadow-xs transition"
+              onClick={() => handleSelectView('billetage')}
+              className="rounded-lg bg-[#0B192C] dark:bg-[#C58B39] px-3 py-1.5 text-xs font-bold text-white dark:text-[#0B192C] hover:opacity-95 transition whitespace-nowrap"
             >
-              Nouvelle opération
+              Billetage caisse
             </button>
           </div>
         </div>
 
-        {/* Barre de navigation d'espace de travail avec onglets et fil d'Ariane */}
+        {/* Navigation par onglets */}
         <WorkspaceNavigationHeader
-          workspaceTitle="Espace Agent Guichet"
+          workspaceTitle="Espace Agent"
           category={agencyLabel || 'Guichet Local'}
           activeModuleTitle={
             activeView === 'overview'
               ? 'Missions & Opérations'
               : activeView === 'reports'
-                ? 'Mes Rapports d\'Activité'
+                ? "Mes Rapports d'Activité"
                 : activeView === 'billetage'
                   ? 'Billetage & Tenue de Caisse'
                   : activeView === 'salary'
-                    ? 'Fiche de Rémunération'
+                    ? 'Mon Salaire'
                     : activeView === 'transfers'
                       ? 'Transferts Inter-Agences'
                       : activeView === 'debts'
                         ? 'Engagements & Dettes'
-                        : 'Messagerie & Alertes'
+                        : activeView === 'connectivity'
+                          ? 'Disponibilité & Synchro'
+                          : 'Messagerie & Annonces'
           }
-          activeModuleDescription={
-            activeView === 'overview'
-              ? 'Tâches opérationnelles, exécution de retraits/dépôts et missions locales'
-              : activeView === 'reports'
-                ? 'Formulaires adaptatifs guidés, déclaration d\'activités, brouillons sécurisés et transmission hiérarchique'
-                : activeView === 'billetage'
-                  ? 'Comptage physique des coupures USD et CDF et justification de caisse'
-                  : activeView === 'salary'
-                    ? 'Consultation de vos fiches de paie et historiques de salaires'
-                    : activeView === 'transfers'
-                      ? 'Envoi et réception des transferts inter-agences pour les clients'
-                      : activeView === 'debts'
-                        ? 'Gestion des créances et dettes de votre agence'
-                        : 'Échanges en temps réel avec la Direction et les collègues'
-          }
-          backLabel="Missions & Guichet"
+          backLabel="Missions"
           onBack={() => handleSelectView('overview')}
           tabs={AGENT_TABS.map((tab) => ({
             ...tab,
@@ -402,350 +398,218 @@ export default function AgentDashboard() {
           onTabChange={(id) => handleSelectView(id as AgentView)}
         />
 
-        {/* CONTENU PRINCIPAL DU WORKSPACE : Immédiatement visible selon la vue sélectionnée */}
         {activeView === 'reports' && (
-          <div className="relative animate-in fade-in duration-200">
-            <ReportsModule
-              onClose={() => handleSelectView('overview')}
-              onOpenBilletage={() => handleSelectView('billetage')}
-            />
-          </div>
+          <ReportsModule
+            onClose={() => handleSelectView('overview')}
+            onOpenBilletage={() => handleSelectView('billetage')}
+          />
         )}
-
         {activeView === 'billetage' && (
-          <div className="relative animate-in fade-in duration-200">
-            <BilletageModule onClose={() => handleSelectView('overview')} />
-          </div>
+          <BilletageModule onClose={() => handleSelectView('overview')} />
         )}
-
         {activeView === 'salary' && (
-          <div className="relative animate-in fade-in duration-200">
-            <SalaryModule mode="agent" onClose={() => handleSelectView('overview')} />
-          </div>
+          <SalaryModule mode="agent" onClose={() => handleSelectView('overview')} />
         )}
-
         {activeView === 'transfers' && (
-          <div className="relative animate-in fade-in duration-200">
-            <TreasuryTransfersDebtsModule
-              mode="transfers"
-              onClose={() => handleSelectView('overview')}
-            />
-          </div>
+          <TreasuryTransfersDebtsModule
+            mode="transfers"
+            onClose={() => handleSelectView('overview')}
+          />
         )}
-
         {activeView === 'debts' && (
-          <div className="relative animate-in fade-in duration-200">
-            <TreasuryTransfersDebtsModule
-              mode="debts"
-              onClose={() => handleSelectView('overview')}
-            />
-          </div>
+          <TreasuryTransfersDebtsModule
+            mode="debts"
+            onClose={() => handleSelectView('overview')}
+          />
         )}
-
         {activeView === 'chat' && (
-          <div className="relative animate-in fade-in duration-200">
-            <ChatModule onClose={() => handleSelectView('overview')} />
-          </div>
+          <ChatModule onClose={() => handleSelectView('overview')} />
+        )}
+        {activeView === 'connectivity' && (
+          <ConnectivityModule onClose={() => handleSelectView('overview')} />
         )}
 
-        {/* Vue d'ensemble (Missions & Guichet) */}
         {activeView === 'overview' && (
-          <div className="space-y-6 animate-in fade-in duration-200">
-            {/* Alerte flottante In-App pour nouvelle tâche urgente */}
+          <div className="space-y-4">
             {toastAlert && (
               <div
                 role="alert"
-                className={`flex items-start justify-between gap-3 rounded-2xl p-4 shadow-lg transition-all animate-in slide-in-from-top-4 duration-300 ${
+                className={`flex items-start justify-between gap-3 rounded-xl border p-3.5 text-xs ${
                   toastAlert.isUrgent
-                    ? 'border border-rose-300 bg-rose-50 text-rose-950'
-                    : 'border border-emerald-300 bg-emerald-50 text-emerald-950'
+                    ? 'border-rose-300 dark:border-rose-800 bg-rose-50 dark:bg-rose-950/60 text-rose-950 dark:text-rose-200'
+                    : 'border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-950 dark:text-emerald-200'
                 }`}
               >
-                <div className="flex items-start gap-3 min-w-0">
-                  <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-md ${
-                      toastAlert.isUrgent
-                        ? 'bg-rose-600 shadow-rose-600/30'
-                        : 'bg-emerald-600 shadow-emerald-600/30'
-                    }`}
-                  >
-                    <BellRing className="h-5 w-5 animate-bounce" />
-                  </div>
+                <div className="flex items-start gap-2.5 min-w-0">
+                  <BellRing className="h-4 w-4 shrink-0 mt-0.5" />
                   <div className="min-w-0">
-                    <p className="font-extrabold text-sm">{toastAlert.title}</p>
-                    <p className="text-xs mt-0.5 leading-relaxed text-slate-700">{toastAlert.message}</p>
+                    <p className="font-bold">{toastAlert.title}</p>
+                    <p className="opacity-90 mt-0.5">{toastAlert.message}</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setToastAlert(null)}
-                  className="rounded-lg p-1 text-slate-400 hover:bg-slate-200/50 hover:text-slate-700 transition"
-                  title="Fermer l'alerte"
+                  className="rounded-lg p-1 hover:bg-black/5 dark:hover:bg-white/10"
+                  title="Fermer"
                 >
                   <X className="h-4 w-4" />
                 </button>
               </div>
             )}
 
-            {/* Bannière de Contrôle des Notifications Push Locales (Arrière-plan) */}
-            <div
-              className={`rounded-3xl border p-5 shadow-xs transition-all ${
-                notificationPermission === 'granted'
-                  ? 'border-emerald-200 bg-gradient-to-r from-emerald-50/90 via-teal-50/70 to-slate-50'
-                  : 'border-amber-300 bg-gradient-to-r from-amber-500/10 via-amber-50 to-orange-50'
-              }`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-start gap-3.5">
-                  <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white shadow-md ${
-                      notificationPermission === 'granted'
-                        ? 'bg-emerald-600 shadow-emerald-600/20'
-                        : 'bg-amber-500 shadow-amber-500/30'
+            {/* 4 KPIs Guichet Compacts */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Missions affectées
+                </span>
+                <p className="mt-1 text-xl font-black tabular-nums text-slate-900 dark:text-white">
+                  {pendingOpsCount}
+                </p>
+                <p className="text-[10px] text-amber-600 dark:text-amber-400">À exécuter</p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Urgentes
+                </span>
+                <p className="mt-1 text-xl font-black tabular-nums text-rose-600 dark:text-rose-400">
+                  {urgentOpsCount}
+                </p>
+                <p className="text-[10px] text-slate-400">Priorité immédiate</p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Terminées
+                </span>
+                <p className="mt-1 text-xl font-black tabular-nums text-emerald-600 dark:text-emerald-400">
+                  {cacheSummary.completed}
+                </p>
+                <p className="text-[10px] text-slate-400">Enregistrées</p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Cache local
+                </span>
+                <p className="mt-1 text-xl font-black tabular-nums text-slate-900 dark:text-white">
+                  {cacheSummary.total}
+                </p>
+                <p className="text-[10px] text-slate-400 truncate">
+                  {cacheSummary.totalUsdAmount > 0
+                    ? `${cacheSummary.totalUsdAmount.toLocaleString('fr-FR')} USD`
+                    : isOnline
+                      ? 'En ligne'
+                      : 'Hors-ligne'}
+                </p>
+              </div>
+            </div>
+
+            {/* Barre unique compacte Synchro & Alertes Push */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-slate-600 dark:text-slate-300">
+                <span className="inline-flex items-center gap-1.5 font-semibold">
+                  <Database className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                  <span>
+                    Synchro : {formatRelativeCacheTime(cacheMetadata.lastSyncTimestamp)}
+                  </span>
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Wifi
+                    className={`h-3.5 w-3.5 ${
+                      isOnline ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600'
                     }`}
-                  >
-                    {notificationPermission === 'granted' ? (
-                      <Bell className="h-6 w-6" />
-                    ) : (
-                      <BellRing className="h-6 w-6 animate-pulse" />
-                    )}
-                  </div>
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-sm font-black text-slate-900 tracking-tight">
-                        Système d'Alertes Push Locales & Tâches Urgentes
-                      </h3>
-                      {notificationPermission === 'granted' ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 ring-1 ring-emerald-300/60">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                          Actif en arrière-plan (Service Worker)
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 ring-1 ring-amber-300/60">
-                          Autorisation requise
-                        </span>
-                      )}
-                    </div>
-                    <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                      {notificationPermission === 'granted'
-                        ? 'Le capteur d’arrière-plan vérifie en continu les nouvelles missions et tâches prioritaires assignées à votre guichet.'
-                        : 'Autorisez les notifications push pour être averti immédiatement des opérations urgentes même quand l’application est minimisée.'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0">
-                  {notificationPermission !== 'granted' ? (
-                    <button
-                      type="button"
-                      onClick={handleEnableNotifications}
-                      className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-600/20 hover:brightness-110 transition active:scale-95"
-                    >
-                      <Bell className="h-4 w-4" />
-                      <span>Activer les notifications</span>
-                    </button>
-                  ) : (
-                    <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-100/90 px-3.5 py-2 text-xs font-bold text-emerald-800 border border-emerald-200">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                      <span>Alertes actives</span>
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Actions Rapides Guichet & Indicateurs Clés */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Missions Affectées
-                  </span>
-                  <p className="mt-1 text-2xl font-black text-slate-900">
-                    {pendingOpsCount}
-                  </p>
-                  <p className="text-xs text-amber-600 font-semibold">À exécuter au guichet</p>
-                </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
-                  <Clock className="h-6 w-6" />
-                </div>
+                  />
+                  <span>{isOnline ? 'Réseau actif' : 'Mode hors-ligne'}</span>
+                </span>
               </div>
 
-              <div className="rounded-3xl border border-rose-200 bg-rose-50/50 p-5 shadow-xs flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-rose-500">
-                    Tâches Urgentes
-                  </span>
-                  <p className="mt-1 text-2xl font-black text-rose-700">
-                    {urgentOpsCount}
-                  </p>
-                  <p className="text-xs text-rose-600 font-semibold">Priorité haute / immédiate</p>
-                </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100 text-rose-600">
-                  <BellRing className="h-6 w-6 animate-pulse" />
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Opérations Terminées
-                  </span>
-                  <p className="mt-1 text-2xl font-black text-slate-900">
-                    {assignedOperations.filter((o) => o.status === 'termine').length}
-                  </p>
-                  <p className="text-xs text-emerald-600 font-semibold">Enregistrées avec succès</p>
-                </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-                  <CheckCircle2 className="h-6 w-6" />
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Alertes Arrière-Plan
-                  </span>
-                  <p className="mt-1 text-base font-bold text-slate-900">
-                    {notificationPermission === 'granted' ? 'Système Actif' : 'En veille'}
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    {notificationPermission === 'granted' ? 'Vibreur & sonnerie' : 'Autorisation en attente'}
-                  </p>
-                </div>
-                <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
-                    notificationPermission === 'granted'
-                      ? 'bg-emerald-50 text-emerald-600'
-                      : 'bg-slate-100 text-slate-500'
-                  }`}
-                >
-                  <Bell className="h-6 w-6" />
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Mode Hors-Ligne
-                  </span>
-                  <p className="mt-1 text-base font-bold text-slate-900">100% Fonctionnel</p>
-                  <p className="text-xs text-slate-500">Synchronisation continue</p>
-                </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                  <Wifi className="h-6 w-6" />
-                </div>
-              </div>
-            </div>
-
-            {/* Hub de Stockage Local pour Consultation Hors-Ligne */}
-            <div className="rounded-3xl border border-blue-200/90 bg-gradient-to-br from-blue-50/90 via-slate-50 to-indigo-50/60 p-5 shadow-xs">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex items-start gap-3.5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-md shadow-blue-600/25 ring-1 ring-white/30">
-                    <Database className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-sm font-black text-slate-900 tracking-tight">
-                        Espace Opérationnel Local & Hors-Ligne
-                      </h3>
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 ring-1 ring-emerald-300/60">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        Accessible sans connexion internet
-                      </span>
-                      <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                          isOnline
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-amber-100 text-amber-800 ring-1 ring-amber-300'
-                        }`}
-                      >
-                        <Wifi className="h-3 w-3" />
-                        <span>{isOnline ? 'En ligne' : 'Hors-ligne'}</span>
-                      </span>
-                    </div>
-                    <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                      <strong>{cacheSummary.total} opérations synchronisées</strong> dans votre espace local · Dernière synchro :{' '}
-                      <span className="font-semibold text-slate-800">
-                        {formatRelativeCacheTime(cacheMetadata.lastSyncTimestamp)}
-                      </span>
-                      {cacheSummary.totalUsdAmount > 0 && (
-                        <span> · Volume : <strong>{cacheSummary.totalUsdAmount.toLocaleString('fr-FR')} USD</strong></span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0">
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                {notificationPermission !== 'granted' ? (
                   <button
                     type="button"
-                    onClick={handleManualCacheSync}
-                    disabled={cacheSyncLoading}
-                    className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-blue-600/20 hover:bg-blue-500 transition active:scale-95 disabled:opacity-60"
+                    onClick={() => void handleEnableNotifications()}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/60 px-2.5 py-1.5 text-[11px] font-bold text-amber-800 dark:text-amber-300 hover:bg-amber-100"
                   >
-                    <RefreshCw className={`h-4 w-4 ${cacheSyncLoading ? 'animate-spin' : ''}`} />
-                    <span>{cacheSyncLoading ? 'Synchronisation...' : 'Synchroniser maintenant'}</span>
+                    <Bell className="h-3.5 w-3.5" />
+                    <span>Activer alertes</span>
                   </button>
-                </div>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={testNotificationLoading}
+                    onClick={() => void handleTestNotification()}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-1.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100"
+                  >
+                    <Bell className="h-3.5 w-3.5" />
+                    <span>{testNotificationLoading ? 'Test...' : 'Alertes actives'}</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => void handleManualCacheSync()}
+                  disabled={cacheSyncLoading}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B192C] dark:bg-slate-800 px-3 py-1.5 text-[11px] font-bold text-white hover:opacity-90 disabled:opacity-50"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 ${cacheSyncLoading ? 'animate-spin' : ''}`} />
+                  <span>{cacheSyncLoading ? 'Synchro...' : 'Synchroniser'}</span>
+                </button>
               </div>
             </div>
 
-            {/* Liste des Opérations & Missions affectées avec Recherche & Filtres */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs space-y-4">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-4">
+            {/* Liste des Missions & Opérations */}
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 space-y-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-base font-bold text-slate-900">Missions & Opérations Synchronisées</h2>
-                    <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-700">
-                      Données locales
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500">
-                    Consultez l'historique complet et traitez vos tâches même hors-ligne
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Missions & Opérations au Guichet
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Consultables et clôturables même hors-ligne
                   </p>
                 </div>
                 <button
                   type="button"
-                  onClick={loadOperations}
-                  className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition"
+                  onClick={() => void loadOperations()}
+                  className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
                 >
                   <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
                   <span>Actualiser</span>
                 </button>
               </div>
 
-              {/* Barre de Recherche et Filtres du Cache Local */}
-              <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between pt-1">
+              <div className="flex flex-col md:flex-row gap-2 items-stretch md:items-center justify-between">
                 <div className="relative flex-1">
-                  <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
                   <input
                     type="text"
                     value={offlineSearchQuery}
                     onChange={(e) => setOfflineSearchQuery(e.target.value)}
-                    placeholder="Rechercher dans le cache (N° opération, client, agence, libellé)..."
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-2.5 pl-10 pr-4 text-xs font-medium text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-600/10"
+                    placeholder="Rechercher (N° opération, client, agence, libellé)..."
+                    className="h-9 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/70 pl-9 pr-8 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:bg-white dark:focus:bg-slate-800"
                   />
                   {offlineSearchQuery && (
                     <button
                       type="button"
                       onClick={() => setOfflineSearchQuery('')}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-white"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
                   )}
                 </div>
 
-                {/* Filtres de statut */}
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+                <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
                   <button
                     type="button"
                     onClick={() => setOfflineFilter('all')}
-                    className={`rounded-xl px-3 py-2 text-xs font-bold transition whitespace-nowrap ${
+                    className={`rounded-lg px-2.5 py-1.5 text-xs font-semibold transition whitespace-nowrap shrink-0 ${
                       offlineFilter === 'all'
-                        ? 'bg-slate-900 text-white shadow-xs'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        ? 'bg-[#0B192C] text-white dark:bg-[#C58B39] dark:text-[#0B192C]'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
                     }`}
                   >
                     Toutes ({cacheSummary.total})
@@ -753,10 +617,10 @@ export default function AgentDashboard() {
                   <button
                     type="button"
                     onClick={() => setOfflineFilter('pending')}
-                    className={`rounded-xl px-3 py-2 text-xs font-bold transition whitespace-nowrap ${
+                    className={`rounded-lg px-2.5 py-1.5 text-xs font-semibold transition whitespace-nowrap shrink-0 ${
                       offlineFilter === 'pending'
-                        ? 'bg-amber-500 text-white shadow-xs'
-                        : 'bg-amber-50 text-amber-800 hover:bg-amber-100'
+                        ? 'bg-amber-600 text-white'
+                        : 'bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300'
                     }`}
                   >
                     En attente ({cacheSummary.pending})
@@ -764,10 +628,10 @@ export default function AgentDashboard() {
                   <button
                     type="button"
                     onClick={() => setOfflineFilter('urgent')}
-                    className={`rounded-xl px-3 py-2 text-xs font-bold transition whitespace-nowrap ${
+                    className={`rounded-lg px-2.5 py-1.5 text-xs font-semibold transition whitespace-nowrap shrink-0 ${
                       offlineFilter === 'urgent'
-                        ? 'bg-rose-600 text-white shadow-xs'
-                        : 'bg-rose-50 text-rose-800 hover:bg-rose-100'
+                        ? 'bg-rose-600 text-white'
+                        : 'bg-rose-50 dark:bg-rose-950/50 text-rose-800 dark:text-rose-300'
                     }`}
                   >
                     Urgentes ({cacheSummary.urgent})
@@ -775,10 +639,10 @@ export default function AgentDashboard() {
                   <button
                     type="button"
                     onClick={() => setOfflineFilter('termine')}
-                    className={`rounded-xl px-3 py-2 text-xs font-bold transition whitespace-nowrap ${
+                    className={`rounded-lg px-2.5 py-1.5 text-xs font-semibold transition whitespace-nowrap shrink-0 ${
                       offlineFilter === 'termine'
-                        ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300'
                     }`}
                   >
                     Terminées ({cacheSummary.completed})
@@ -787,17 +651,19 @@ export default function AgentDashboard() {
               </div>
 
               {assignedOperations.length === 0 ? (
-                <div className="py-12 text-center text-slate-400">
-                  <Briefcase className="mx-auto h-8 w-8 text-slate-300 mb-2" />
-                  <p className="font-semibold text-slate-700">Aucune opération trouvée</p>
-                  <p className="text-xs text-slate-500">
+                <div className="py-10 text-center text-slate-400">
+                  <Briefcase className="mx-auto h-7 w-7 text-slate-300 dark:text-slate-600 mb-2" />
+                  <p className="text-xs font-semibold text-slate-700 dark:text-slate-200">
+                    Aucune opération trouvée
+                  </p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     {offlineSearchQuery
-                      ? 'Aucun résultat ne correspond à votre recherche dans le cache local.'
-                      : 'Le cache local est à jour et ne contient aucune tâche en attente.'}
+                      ? 'Aucun résultat ne correspond à votre recherche.'
+                      : 'Aucune tâche en attente dans votre cache local.'}
                   </p>
                 </div>
               ) : (
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
                   {assignedOperations.map((op) => {
                     const isUrgent =
                       op.priority === 'maintenant' ||
@@ -807,54 +673,48 @@ export default function AgentDashboard() {
                     return (
                       <div
                         key={op.id}
-                        className="py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs"
+                        className="py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 text-xs"
                       >
-                        <div className="space-y-1.5 min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="font-mono font-bold text-slate-900">{op.operationNumber}</span>
-                            <span className="rounded-md bg-blue-50 px-2 py-0.5 font-bold uppercase text-blue-700 text-[10px]">
+                        <div className="space-y-1 min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="font-mono font-bold text-slate-900 dark:text-white tabular-nums">
+                              {op.operationNumber}
+                            </span>
+                            <span className="rounded bg-blue-50 dark:bg-blue-950/60 px-1.5 py-0.5 font-bold uppercase text-blue-700 dark:text-blue-300 text-[10px]">
                               {op.type}
                             </span>
                             <span
-                              className={`rounded-full px-2.5 py-0.5 font-semibold text-[10px] ${
+                              className={`rounded px-2 py-0.5 font-semibold text-[10px] ${
                                 op.status === 'termine'
-                                  ? 'bg-emerald-100 text-emerald-800'
-                                  : 'bg-amber-100 text-amber-800'
+                                  ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300'
+                                  : 'bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300'
                               }`}
                             >
-                              {op.status === 'termine' ? '✓ Terminé' : 'En attente d\'exécution'}
+                              {op.status === 'termine' ? 'Terminé' : 'En attente'}
                             </span>
                             {isUrgent && (
-                              <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700 uppercase animate-pulse">
+                              <span className="rounded bg-rose-100 dark:bg-rose-950/70 px-1.5 py-0.5 text-[10px] font-bold text-rose-700 dark:text-rose-300 uppercase">
                                 {op.priority === 'maintenant'
-                                  ? '⚡ Immédiat'
+                                  ? 'Immédiat'
                                   : op.priority === 'tres_urgent'
-                                  ? '🚨 Très urgent'
-                                  : '⚠️ Urgent'}
+                                    ? 'Très urgent'
+                                    : 'Urgent'}
                               </span>
                             )}
-                            <span className="rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[9px] font-semibold text-slate-500 flex items-center gap-1">
-                              <Database className="h-2.5 w-2.5 text-blue-500" />
-                              <span>En cache</span>
-                            </span>
                           </div>
 
-                          <p className="font-bold text-sm text-slate-900">{op.title}</p>
-                          <p className="text-slate-600 line-clamp-2 text-xs leading-relaxed">{op.description}</p>
-
-                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500 pt-0.5">
+                          <p className="font-bold text-slate-900 dark:text-white truncate">
+                            {op.title}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-slate-500 dark:text-slate-400">
                             {op.amount !== undefined && (
-                              <span className="font-bold text-emerald-700">
-                                Montant : {op.amount.toLocaleString('fr-FR')} {op.currency}
+                              <span className="font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
+                                {op.amount.toLocaleString('fr-FR')} {op.currency}
                               </span>
                             )}
-                            {op.operatorName && (
-                              <span>Opérateur : <strong className="text-slate-700">{op.operatorName}</strong></span>
-                            )}
-                            {op.accountNumber && (
-                              <span>Compte : <strong className="text-slate-700">{op.accountNumber}</strong></span>
-                            )}
-                            <span>Agence : <strong>{op.agencyName || 'Locale'}</strong></span>
+                            {op.operatorName && <span>Opérateur : {op.operatorName}</span>}
+                            {op.accountNumber && <span>Compte : {op.accountNumber}</span>}
+                            <span>Agence : {op.agencyName || 'Locale'}</span>
                           </div>
                         </div>
 
@@ -862,10 +722,9 @@ export default function AgentDashboard() {
                           <button
                             type="button"
                             onClick={() => setSelectedOperationDetail(op)}
-                            className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition"
-                            title="Consulter les détails hors-ligne"
+                            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
                           >
-                            <Eye className="h-3.5 w-3.5 text-slate-500" />
+                            <Eye className="h-3.5 w-3.5" />
                             <span>Détails</span>
                           </button>
 
@@ -873,10 +732,10 @@ export default function AgentDashboard() {
                             <button
                               type="button"
                               disabled={completingId === op.id}
-                              onClick={() => handleMarkComplete(op.id)}
-                              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2 font-bold text-white transition hover:bg-slate-800 disabled:opacity-50"
+                              onClick={() => void handleMarkComplete(op.id)}
+                              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B192C] dark:bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:opacity-90 disabled:opacity-50"
                             >
-                              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 dark:text-white" />
                               <span>{completingId === op.id ? 'Clôture...' : 'Valider'}</span>
                             </button>
                           )}
@@ -888,107 +747,108 @@ export default function AgentDashboard() {
               )}
             </div>
 
-            {/* Modal d'inspection détaillée d'une opération en cache (100% Hors-Ligne) */}
+            {/* Modal d'inspection détaillée */}
             {selectedOperationDetail && (
               <div
                 role="dialog"
                 aria-modal="true"
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-[2px]"
               >
-                <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl text-slate-900 space-y-4">
-                  <div className="flex items-start justify-between border-b border-slate-100 pb-3">
+                <div className="relative w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl text-slate-900 dark:text-slate-100 space-y-4">
+                  <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                     <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-xs bg-slate-100 px-2.5 py-1 rounded-lg text-slate-800">
-                          {selectedOperationDetail.operationNumber}
-                        </span>
-                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
-                          Données locales
-                        </span>
-                      </div>
-                      <h3 className="text-base font-black text-slate-900 mt-2">
+                      <span className="font-mono font-bold text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-800 dark:text-slate-200">
+                        {selectedOperationDetail.operationNumber}
+                      </span>
+                      <h3 className="text-base font-bold mt-1.5">
                         {selectedOperationDetail.title}
                       </h3>
                     </div>
                     <button
                       type="button"
                       onClick={() => setSelectedOperationDetail(null)}
-                      className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-800 transition"
+                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                     >
-                      <X className="h-5 w-5" />
+                      <X className="h-4 w-4" />
                     </button>
                   </div>
 
                   <div className="space-y-3 text-xs">
                     <div className="grid grid-cols-2 gap-2">
-                      <div className="rounded-xl bg-slate-50 p-3 border border-slate-100">
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Type d'opération</span>
-                        <span className="font-bold text-slate-800 uppercase">{selectedOperationDetail.type}</span>
+                      <div className="rounded-lg bg-slate-50 dark:bg-slate-950/60 p-2.5 border border-slate-100 dark:border-slate-800">
+                        <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                          Type
+                        </span>
+                        <span className="font-bold uppercase">
+                          {selectedOperationDetail.type}
+                        </span>
                       </div>
-                      <div className="rounded-xl bg-slate-50 p-3 border border-slate-100">
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Priorité</span>
-                        <span className="font-bold text-slate-800 uppercase">{selectedOperationDetail.priority}</span>
+                      <div className="rounded-lg bg-slate-50 dark:bg-slate-950/60 p-2.5 border border-slate-100 dark:border-slate-800">
+                        <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                          Priorité
+                        </span>
+                        <span className="font-bold uppercase">
+                          {selectedOperationDetail.priority}
+                        </span>
                       </div>
                     </div>
 
                     {selectedOperationDetail.amount !== undefined && (
-                      <div className="rounded-2xl bg-emerald-50/80 border border-emerald-200 p-4 text-emerald-900">
-                        <span className="text-[10px] uppercase font-bold text-emerald-700 block">Montant opération</span>
-                        <span className="text-xl font-black">
-                          {selectedOperationDetail.amount.toLocaleString('fr-FR')} {selectedOperationDetail.currency}
+                      <div className="rounded-xl bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 p-3 text-emerald-900 dark:text-emerald-200">
+                        <span className="text-[10px] uppercase font-bold block">
+                          Montant opération
+                        </span>
+                        <span className="text-lg font-black tabular-nums">
+                          {selectedOperationDetail.amount.toLocaleString('fr-FR')}{' '}
+                          {selectedOperationDetail.currency}
                         </span>
                       </div>
                     )}
 
-                    <div className="rounded-xl bg-slate-50 p-3.5 border border-slate-100 space-y-2">
+                    <div className="rounded-lg bg-slate-50 dark:bg-slate-950/60 p-3 border border-slate-100 dark:border-slate-800 space-y-2">
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Description</span>
-                        <p className="text-slate-700 mt-0.5 leading-relaxed">
+                        <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                          Description
+                        </span>
+                        <p className="mt-0.5 leading-relaxed">
                           {selectedOperationDetail.description || 'Aucune description détaillée.'}
                         </p>
                       </div>
-
                       {selectedOperationDetail.comments && (
                         <div>
-                          <span className="text-[10px] uppercase font-bold text-slate-400 block">Commentaires / Notes</span>
-                          <p className="text-slate-700 mt-0.5 italic">{selectedOperationDetail.comments}</p>
+                          <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                            Commentaires
+                          </span>
+                          <p className="mt-0.5 italic">{selectedOperationDetail.comments}</p>
                         </div>
                       )}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-slate-600">
+                    <div className="grid grid-cols-2 gap-2 text-slate-600 dark:text-slate-300">
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Agence</span>
-                        <span className="font-semibold">{selectedOperationDetail.agencyName || 'Locale'}</span>
-                      </div>
-                      <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Opérateur / Compte</span>
+                        <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                          Agence
+                        </span>
                         <span className="font-semibold">
-                          {selectedOperationDetail.operatorName || '-'} {selectedOperationDetail.accountNumber ? `(${selectedOperationDetail.accountNumber})` : ''}
+                          {selectedOperationDetail.agencyName || 'Locale'}
                         </span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Statut synchronisation</span>
-                        <span className="font-semibold text-emerald-700">✓ Synchronisé en cache local</span>
-                      </div>
-                      <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Enregistré le</span>
-                        <span className="font-semibold">
+                        <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                          Enregistré le
+                        </span>
+                        <span className="font-semibold tabular-nums">
                           {new Date(selectedOperationDetail.createdAt).toLocaleString('fr-FR')}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="border-t border-slate-100 pt-3 flex items-center justify-between">
-                    <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                      <Database className="h-3 w-3 text-blue-500" />
-                      Consultable hors-ligne à tout moment
-                    </span>
+                  <div className="border-t border-slate-100 dark:border-slate-800 pt-3 flex justify-end">
                     <button
                       type="button"
                       onClick={() => setSelectedOperationDetail(null)}
-                      className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
+                      className="rounded-lg bg-slate-900 dark:bg-slate-100 px-4 py-1.5 text-xs font-bold text-white dark:text-slate-900"
                     >
                       Fermer
                     </button>

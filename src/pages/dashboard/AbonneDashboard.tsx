@@ -1,11 +1,4 @@
-import {
-  Coins,
-  LayoutDashboard,
-  LogOut,
-  Receipt,
-  ShieldCheck,
-  Star,
-} from 'lucide-react';
+import { Coins, LayoutDashboard, Receipt, ShieldCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -26,7 +19,7 @@ const ABONNE_TABS: WorkspaceTab[] = [
 
 export default function AbonneDashboard() {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [showBilletage, setShowBilletage] = useState(false);
   const [operations, setOperations] = useState<Operation[]>([]);
   const [agencyName, setAgencyName] = useState<string>('');
@@ -76,57 +69,44 @@ export default function AbonneDashboard() {
       activeItem={showBilletage ? 'billetage' : 'dashboard'}
       onNavigate={handleSidebarNavigate}
     >
-      <div className="space-y-6">
-        {/* Banner Abonné */}
-        <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 p-6 text-white shadow-xl sm:p-8">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center gap-4 sm:gap-5 min-w-0">
-              <UserAvatar
-                user={user}
-                size="lg"
-                showStatus
-                isOnline={true}
-                className="ring-2 ring-purple-400/50 shadow-lg shrink-0"
-              />
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl truncate">
-                    Espace Abonné
-                  </h1>
-                  <span className="rounded-full bg-purple-400/20 px-2.5 py-0.5 text-xs font-bold text-purple-300 ring-1 ring-purple-400/30 shrink-0">
-                    Partenaire VIP
-                  </span>
-                </div>
-                <p className="mt-1 text-xs sm:text-sm text-slate-300 truncate">
-                  Titulaire : <strong>{user?.displayName}</strong> • Agence :{' '}
-                  <span className="font-semibold">{agencyName || user?.agencyId || 'Centrale'}</span>
-                </p>
+      <div className="space-y-4">
+        {/* Identité Abonné compacte */}
+        <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <UserAvatar user={user} size="md" showStatus isOnline className="shrink-0" />
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white truncate">
+                  {user?.displayName || 'Abonné'}
+                </h2>
+                <span className="rounded bg-amber-50 dark:bg-amber-950/70 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:text-amber-300 uppercase">
+                  Partenaire VIP
+                </span>
               </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                Agence de rattachement :{' '}
+                <strong className="text-slate-700 dark:text-slate-200">
+                  {agencyName || user?.agencyId || 'Centrale'}
+                </strong>
+              </p>
             </div>
+          </div>
 
-            <div className="flex items-center gap-2 self-start lg:self-center">
-              <button
-                type="button"
-                onClick={() => signOut()}
-                className="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-white/20"
-                title="Se déconnecter"
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Déconnexion</span>
-              </button>
+          <div className="flex items-center gap-4 text-xs shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100 dark:border-slate-800">
+            <div>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                Opérations
+              </span>
+              <span className="font-black text-base tabular-nums text-slate-900 dark:text-white">
+                {operations.length}
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Barre de navigation d'espace de travail */}
         <WorkspaceNavigationHeader
           workspaceTitle="Espace Partenaire VIP"
           activeModuleTitle={showBilletage ? 'Calculateur Billetage & Devises' : 'Avantages & Historique'}
-          activeModuleDescription={
-            showBilletage
-              ? 'Dénombrement physique et calcul instantané de coupures USD et CDF'
-              : 'Gestion des facilités de caisse, avantages VIP et historique des transactions'
-          }
           backLabel="Mon Compte Abonné"
           onBack={() => {
             setShowBilletage(false);
@@ -140,59 +120,77 @@ export default function AbonneDashboard() {
           }}
         />
 
-        {/* Contenu affiché immédiatement */}
         {showBilletage ? (
-          <div className="animate-in fade-in duration-200">
-            <BilletageModule onClose={() => setShowBilletage(false)} />
-          </div>
+          <BilletageModule onClose={() => setShowBilletage(false)} />
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 animate-in fade-in duration-200">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-700">
-                  <ShieldCheck className="h-5 w-5" />
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
+              <div className="flex items-center gap-2.5 mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">
+                  <ShieldCheck className="h-4 w-4" />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-slate-900">Avantages Abonné</h2>
-                  <p className="text-xs text-slate-500">Conditions préférentielles sur le réseau</p>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Avantages Abonné
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Conditions préférentielles sur le réseau
+                  </p>
                 </div>
               </div>
-              <ul className="text-xs space-y-2 text-slate-600">
-                <li className="p-3 bg-slate-50 rounded-xl">★ Taux de change préférentiels négociés avec la Direction</li>
-                <li className="p-3 bg-slate-50 rounded-xl">★ Traitement prioritaire au guichet de votre agence de rattachement</li>
-                <li className="p-3 bg-slate-50 rounded-xl">★ Ligne directe avec le responsable d'agence et assistance personnalisée</li>
+              <ul className="text-xs space-y-2 text-slate-600 dark:text-slate-300">
+                <li className="p-2.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 rounded-lg">
+                  Taux de change préférentiels négociés avec la Direction
+                </li>
+                <li className="p-2.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 rounded-lg">
+                  Traitement prioritaire au guichet de votre agence de rattachement
+                </li>
+                <li className="p-2.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 rounded-lg">
+                  Ligne directe avec le responsable d&apos;agence et assistance personnalisée
+                </li>
               </ul>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
-                  <Receipt className="h-5 w-5" />
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
+              <div className="flex items-center gap-2.5 mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">
+                  <Receipt className="h-4 w-4" />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-slate-900">Activité Récente</h2>
-                  <p className="text-xs text-slate-500">Mouvements de fonds enregistrés</p>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Activité Récente
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Mouvements de fonds enregistrés
+                  </p>
                 </div>
               </div>
               {operations.length === 0 ? (
-                <p className="text-sm text-slate-400 py-6 text-center">
+                <p className="text-xs text-slate-400 py-6 text-center">
                   Aucun mouvement récent enregistré sur votre compte abonné.
                 </p>
               ) : (
-                <div className="divide-y divide-slate-100 text-xs">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
                   {operations.map((op) => (
-                    <div key={op.operationNumber || op.createdAt} className="py-3 flex items-center justify-between gap-2">
+                    <div
+                      key={op.operationNumber || op.createdAt}
+                      className="py-2.5 flex items-center justify-between gap-2"
+                    >
                       <div className="min-w-0">
-                        <p className="font-bold text-slate-900 truncate">{op.title}</p>
-                        <p className="text-slate-500 truncate">{op.operationNumber} • {op.agencyName}</p>
+                        <p className="font-bold text-slate-900 dark:text-white truncate">
+                          {op.title}
+                        </p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate tabular-nums">
+                          {op.operationNumber} · {op.agencyName}
+                        </p>
                       </div>
                       <div className="text-right shrink-0">
                         {op.amount !== undefined && (
-                          <p className="font-bold text-emerald-700">
+                          <p className="font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
                             {op.amount.toLocaleString('fr-FR')} {op.currency}
                           </p>
                         )}
-                        <p className="text-slate-400">
+                        <p className="text-[11px] text-slate-400 tabular-nums">
                           {new Date(op.createdAt).toLocaleDateString('fr-FR')}
                         </p>
                       </div>

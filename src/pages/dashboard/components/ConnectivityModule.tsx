@@ -216,22 +216,26 @@ export default function ConnectivityModule({ onClose }: ConnectivityModuleProps)
   };
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${isOnline ? 'bg-emerald-600 text-white' : 'bg-amber-600 text-white'} shadow-sm`}>
-              {isOnline ? <Wifi className="h-6 w-6" /> : <WifiOff className="h-6 w-6" />}
+    <div className="space-y-4">
+      <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${isOnline ? 'bg-emerald-600 text-white' : 'bg-amber-600 text-white'}`}>
+              {isOnline ? <Wifi className="h-5 w-5" /> : <WifiOff className="h-5 w-5" />}
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-slate-900">Disponibilité & Synchronisation</h1>
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${isOnline ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
-                  {isOnline ? 'Connecté au serveur central' : 'Mode autonome hors-ligne actif'}
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-lg font-bold text-slate-900 dark:text-white">Disponibilité & Synchronisation</h1>
+                <span className={`rounded-md px-2 py-0.5 text-[11px] font-semibold ${
+                  isOnline
+                    ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
+                    : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
+                }`}>
+                  {isOnline ? 'Connecté au serveur central' : 'Mode autonome hors-ligne'}
                 </span>
               </div>
-              <p className="mt-1 text-sm text-slate-500">
-                Superviser le fonctionnement continu du stockage local autonome et la transmission vers le serveur central.
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                Superviser le stockage local autonome et la transmission vers le serveur central.
               </p>
             </div>
           </div>
@@ -240,137 +244,137 @@ export default function ConnectivityModule({ onClose }: ConnectivityModuleProps)
               type="button"
               onClick={handleTriggerSync}
               disabled={isSyncing}
-              className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-lg bg-slate-900 dark:bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 dark:hover:bg-emerald-500 disabled:opacity-50"
             >
-              {isSyncing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
+              {isSyncing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
               Synchroniser
             </button>
             {onClose && (
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
                 aria-label="Fermer"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             )}
           </div>
         </div>
 
         {syncFeedback && (
-          <div className="mt-4 flex items-center gap-2 rounded-xl bg-slate-100 p-3 text-sm text-slate-700">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          <div className="mt-3 flex items-center gap-2 rounded-lg bg-slate-100 dark:bg-slate-800 p-2.5 text-xs text-slate-700 dark:text-slate-200">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <p>{syncFeedback}</p>
           </div>
         )}
 
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-xs font-semibold text-slate-500 uppercase">État Réseau</p>
-            <div className="mt-2 flex items-center gap-2">
-              <span className={`h-3 w-3 rounded-full ${isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
-              <p className="text-lg font-bold text-slate-900">
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3.5">
+            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">État Réseau</p>
+            <div className="mt-1.5 flex items-center gap-2">
+              <span className={`h-2.5 w-2.5 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+              <p className="text-base font-bold text-slate-900 dark:text-white">
                 {isOnline ? 'Connectivité normale' : 'Connexion coupée'}
               </p>
             </div>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
               {isOnline ? 'Liaison avec le serveur central opérationnelle.' : 'Enregistrement local autonome sécurisé.'}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+          <div className="rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3.5">
             <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold text-slate-500 uppercase">Latence Serveur</p>
+              <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Latence Serveur</p>
               <button
                 type="button"
                 onClick={testLatency}
                 disabled={isTestingLatency || !isOnline}
-                className="text-xs text-blue-600 hover:underline disabled:opacity-50"
+                className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50"
               >
                 {isTestingLatency ? 'Test en cours...' : 'Tester'}
               </button>
             </div>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
+            <p className="mt-1.5 text-xl font-bold tabular-nums text-slate-900 dark:text-white">
               {latencyMs !== null ? `${latencyMs} ms` : isOnline ? '—' : 'N/A'}
             </p>
-            <p className="mt-1 text-xs text-slate-500">
-              Temps de réponse moyen avec le serveur central.
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+              Temps de réponse avec le serveur central.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-xs font-semibold text-slate-500 uppercase">File de synchronisation</p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
+          <div className="rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3.5">
+            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">File de synchronisation</p>
+            <p className="mt-1.5 text-xl font-bold tabular-nums text-slate-900 dark:text-white">
               {dbStats.syncQueuePending + dbStats.smsSyncQueuePending} en attente
             </p>
-            <p className="mt-1 text-xs text-slate-500">
-              {dbStats.syncQueueFailed + dbStats.smsSyncQueueFailed} éléments en échec
+            <p className="mt-0.5 text-xs tabular-nums text-slate-500 dark:text-slate-400">
+              {dbStats.syncQueueFailed + dbStats.smsSyncQueueFailed} élément(s) en échec
             </p>
           </div>
         </div>
       </div>
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+      <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
-              <Database className="h-5 w-5" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400">
+              <Database className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">Espaces de stockage locaux</h2>
-              <p className="text-xs text-slate-500">Volumétrie des tables locales sur l'appareil</p>
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white">Espaces de stockage locaux</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Volumétrie des tables locales sur l'appareil</p>
             </div>
           </div>
           <button
             type="button"
             onClick={loadStats}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
           >
             <RefreshCw className="h-3.5 w-3.5" />
             Rafraîchir
           </button>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-xs font-medium text-slate-500">Billetages en caisse</p>
-            <p className="mt-1 text-2xl font-bold text-slate-900">{dbStats.billetagesTotal}</p>
-            <p className="mt-0.5 text-xs text-amber-600">{dbStats.billetagesPending} à synchroniser</p>
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3.5">
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Billetages caisse</p>
+            <p className="mt-1 text-xl font-bold tabular-nums text-slate-900 dark:text-white">{dbStats.billetagesTotal}</p>
+            <p className="mt-0.5 text-[11px] tabular-nums text-amber-600 dark:text-amber-400">{dbStats.billetagesPending} à synchroniser</p>
           </div>
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-xs font-medium text-slate-500">Opérations agence</p>
-            <p className="mt-1 text-2xl font-bold text-slate-900">{dbStats.operationsTotal}</p>
-            <p className="mt-0.5 text-xs text-amber-600">{dbStats.operationsPending} à synchroniser</p>
+          <div className="rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3.5">
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Opérations agence</p>
+            <p className="mt-1 text-xl font-bold tabular-nums text-slate-900 dark:text-white">{dbStats.operationsTotal}</p>
+            <p className="mt-0.5 text-[11px] tabular-nums text-amber-600 dark:text-amber-400">{dbStats.operationsPending} à synchroniser</p>
           </div>
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-xs font-medium text-slate-500">Numéros internes</p>
-            <p className="mt-1 text-2xl font-bold text-slate-900">{dbStats.internalNumbersCount}</p>
-            <p className="mt-0.5 text-xs text-slate-400">En cache local</p>
+          <div className="rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3.5">
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Numéros internes</p>
+            <p className="mt-1 text-xl font-bold tabular-nums text-slate-900 dark:text-white">{dbStats.internalNumbersCount}</p>
+            <p className="mt-0.5 text-[11px] text-slate-400">En cache local</p>
           </div>
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-xs font-medium text-slate-500">Opérations SMS</p>
-            <p className="mt-1 text-2xl font-bold text-slate-900">{dbStats.smsOperationsCount}</p>
-            <p className="mt-0.5 text-xs text-slate-400">Capturées sur flotte</p>
+          <div className="rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-3.5">
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Opérations SMS</p>
+            <p className="mt-1 text-xl font-bold tabular-nums text-slate-900 dark:text-white">{dbStats.smsOperationsCount}</p>
+            <p className="mt-0.5 text-[11px] text-slate-400">Capturées sur flotte</p>
           </div>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between border-b border-slate-100 p-6">
+      <div className="overflow-hidden rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 p-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-700">
-              <HardDrive className="h-5 w-5" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-400">
+              <HardDrive className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">Éléments récents dans la file de synchronisation</h2>
-              <p className="text-xs text-slate-500">File d'attente Offline-First vers le cloud</p>
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white">Éléments récents dans la file</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">File d'attente Offline-First vers le serveur central</p>
             </div>
           </div>
           <button
             type="button"
             onClick={handlePurgeCompleted}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
           >
             <Trash2 className="h-3.5 w-3.5 text-slate-400" />
             Purger les terminés
@@ -379,38 +383,38 @@ export default function ConnectivityModule({ onClose }: ConnectivityModuleProps)
 
         {syncQueueItems.length === 0 ? (
           <div className="p-8 text-center">
-            <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-500" />
-            <p className="mt-2 font-semibold text-slate-800">Toutes les données sont synchronisées</p>
-            <p className="text-xs text-slate-500">La file d'attente locale est actuellement vide.</p>
+            <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-500" />
+            <p className="mt-2 text-sm font-semibold text-slate-800 dark:text-slate-100">Toutes les données sont synchronisées</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">La file d'attente locale est actuellement vide.</p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {syncQueueItems.map((item, idx) => (
-              <div key={item.id || idx} className="flex items-center justify-between p-4 text-sm">
-                <div className="flex items-center gap-3">
-                  <span className={`h-2.5 w-2.5 rounded-full ${
+              <div key={item.id || idx} className="flex items-center justify-between gap-3 px-4 py-3 text-xs">
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className={`h-2 w-2 rounded-full shrink-0 ${
                     item.status === 'completed'
                       ? 'bg-emerald-500'
                       : item.status === 'failed'
                       ? 'bg-red-500'
-                      : 'bg-amber-500 animate-pulse'
+                      : 'bg-amber-500'
                   }`} />
-                  <div>
-                    <p className="font-semibold text-slate-800">
-                      Entité : {item.entity} — ID : {item.entityId}
+                  <div className="min-w-0">
+                    <p className="font-semibold text-slate-800 dark:text-slate-100 truncate">
+                      Entité : {item.entity} — ID : <span className="font-mono">{item.entityId}</span>
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-[11px] tabular-nums text-slate-500 dark:text-slate-400">
                       Action : {item.operation} | Tentatives : {item.attempts || 0}
-                      {item.lastError && <span className="ml-2 text-red-600">({item.lastError})</span>}
+                      {item.lastError && <span className="ml-2 text-red-600 dark:text-red-400">({item.lastError})</span>}
                     </p>
                   </div>
                 </div>
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                <span className={`rounded-md px-2 py-0.5 text-[11px] font-semibold shrink-0 ${
                   item.status === 'completed'
-                    ? 'bg-emerald-100 text-emerald-700'
+                    ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
                     : item.status === 'failed'
-                    ? 'bg-red-100 text-red-700'
-                    : 'bg-amber-100 text-amber-700'
+                    ? 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300'
+                    : 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
                 }`}>
                   {item.status}
                 </span>

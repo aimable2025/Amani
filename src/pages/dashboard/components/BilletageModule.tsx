@@ -691,14 +691,14 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
 
   if (!canAccessBilletage) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
-            <Calculator className="h-5 w-5 text-slate-600" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+            <Calculator className="h-5 w-5 text-slate-600 dark:text-slate-300" />
           </div>
           <div>
-            <h2 className="font-semibold text-slate-900">Billetage</h2>
-            <p className="text-sm text-slate-500">Connectez-vous pour utiliser le billetage.</p>
+            <h2 className="font-semibold text-slate-900 dark:text-white">Billetage</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Connectez-vous pour utiliser le billetage.</p>
           </div>
         </div>
       </div>
@@ -706,30 +706,30 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
   }
 
   return (
-    <div className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
+    <div className="w-full overflow-hidden rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
       {/* Header */}
-      <div className="border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
+      <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-4 sm:px-5">
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-              <Coins className="h-5 w-5 text-slate-600" />
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              <Coins className="h-5 w-5 text-slate-600 dark:text-slate-300" />
             </div>
             <div className="min-w-0">
-              <h2 className="truncate text-lg font-bold text-slate-900">
+              <h2 className="truncate text-lg font-bold text-slate-900 dark:text-white">
                 Billetage & Caisse
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Ets AMANI — Comptage et contrôle des liquidités USD / CDF
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 shrink-0">
             {user && (
-              <div className="hidden sm:flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs">
+              <div className="hidden sm:flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2.5 py-1.5 text-xs">
                 <UserAvatar user={user} size="xs" />
                 <div className="min-w-0">
-                  <p className="truncate font-bold text-slate-800">{user.displayName}</p>
-                  <p className="truncate text-[10px] text-slate-500">Agent émetteur</p>
+                  <p className="truncate font-bold text-slate-800 dark:text-slate-100">{user.displayName}</p>
+                  <p className="truncate text-[10px] text-slate-500 dark:text-slate-400">Agent émetteur</p>
                 </div>
               </div>
             )}
@@ -737,24 +737,24 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
                 aria-label="Fermer le billetage"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             )}
           </div>
         </div>
 
         {/* Switcher Mode: Calculateur direct vs Supervision & Historique */}
-        <div className="mt-4 flex border-b border-slate-200">
+        <div className="mt-4 flex overflow-x-auto scrollbar-none border-b border-slate-200 dark:border-slate-800">
           <button
             type="button"
             onClick={() => setActiveModuleMode('calculator')}
-            className={`flex items-center gap-2 border-b-2 px-5 py-2.5 text-xs font-bold transition ${
+            className={`flex items-center gap-2 whitespace-nowrap shrink-0 border-b-2 px-4 py-2.5 text-xs font-bold transition ${
               activeModuleMode === 'calculator'
-                ? 'border-slate-900 text-slate-950'
-                : 'border-transparent text-slate-500 hover:text-slate-900'
+                ? 'border-slate-900 dark:border-emerald-500 text-slate-950 dark:text-white'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <Calculator className="h-4 w-4" />
@@ -766,20 +766,20 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
               setActiveModuleMode('supervision');
               void loadBilletageHistory();
             }}
-            className={`flex items-center gap-2 border-b-2 px-5 py-2.5 text-xs font-bold transition ${
+            className={`flex items-center gap-2 whitespace-nowrap shrink-0 border-b-2 px-4 py-2.5 text-xs font-bold transition ${
               activeModuleMode === 'supervision'
-                ? 'border-slate-900 text-slate-950'
-                : 'border-transparent text-slate-500 hover:text-slate-900'
+                ? 'border-slate-900 dark:border-emerald-500 text-slate-950 dark:text-white'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <History className="h-4 w-4" />
-            Supervision & Historique des Billetages ({recordedBilletages.length})
+            <span className="tabular-nums">Supervision & Historique des Billetages ({recordedBilletages.length})</span>
           </button>
         </div>
 
         {activeModuleMode === 'calculator' && (
           /* Tabs */
-          <div className="mt-4 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
+          <div className="mt-4 grid grid-cols-2 gap-2 rounded-lg bg-slate-100 dark:bg-slate-800 p-1">
             <button
               type="button"
               onClick={() => {
@@ -788,10 +788,10 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                 setError(null);
                 setMessage(null);
               }}
-              className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
+              className={`rounded-md px-3 py-2 text-xs sm:text-sm font-semibold transition ${
                 !showBusiness
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Billetage personnel
@@ -803,10 +803,10 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                 setError(null);
                 setMessage(null);
               }}
-              className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
+              className={`rounded-md px-3 py-2 text-xs sm:text-sm font-semibold transition ${
                 showBusiness
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Billetage professionnel
@@ -818,9 +818,9 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
       {activeModuleMode === 'calculator' && (
         <>
           {/* Toolbar */}
-      <div className="border-b border-slate-200 bg-slate-50 px-4 py-3 sm:px-6">
+      <div className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 px-4 py-3 sm:px-5">
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex rounded-lg border border-slate-200 bg-white p-1">
+          <div className="flex rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1">
             <button
               type="button"
               onClick={() => {
@@ -829,10 +829,10 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                 setError(null);
                 setMessage(null);
               }}
-              className={`rounded-md px-3 py-1.5 text-sm font-semibold ${
+              className={`rounded-md px-3 py-1 text-xs sm:text-sm font-semibold ${
                 currency === 'USD'
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-slate-900 dark:bg-emerald-600 text-white'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
             >
               USD
@@ -845,10 +845,10 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                 setError(null);
                 setMessage(null);
               }}
-              className={`rounded-md px-3 py-1.5 text-sm font-semibold ${
+              className={`rounded-md px-3 py-1 text-xs sm:text-sm font-semibold ${
                 currency === 'CDF'
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-slate-900 dark:bg-emerald-600 text-white'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
             >
               CDF
@@ -857,51 +857,51 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
           <button
             type="button"
             onClick={resetBilletage}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-3.5 w-3.5" />
             Réinitialiser
           </button>
           <button
             type="button"
             onClick={copyTotal}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
           >
-            <Copy className="h-4 w-4" />
+            <Copy className="h-3.5 w-3.5" />
             Copier
           </button>
           <button
             type="button"
             onClick={shareBilletage}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
           >
-            <Share2 className="h-4 w-4" />
+            <Share2 className="h-3.5 w-3.5" />
             Partager
           </button>
           <button
             type="button"
             onClick={exportAsPdf}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 dark:bg-emerald-600 px-3 py-1.5 text-xs sm:text-sm font-semibold text-white hover:bg-slate-800 dark:hover:bg-emerald-500"
           >
-            <Download className="h-4 w-4" />
+            <Download className="h-3.5 w-3.5" />
             Imprimer / PDF
           </button>
-          <div className="ml-auto flex items-center gap-1">
+          <div className="ml-auto flex items-center gap-1.5">
             <button
               type="button"
               onClick={() => setShowAdjustmentSettings((v) => !v)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
             >
-              <Settings2 className="h-4 w-4" />
+              <Settings2 className="h-3.5 w-3.5" />
               Ajustement
             </button>
             {showBusiness && (
               <button
                 type="button"
                 onClick={() => setShowHistory((v) => !v)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
-                <History className="h-4 w-4" />
+                <History className="h-3.5 w-3.5" />
                 Historique
               </button>
             )}
@@ -909,28 +909,28 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
         </div>
 
         {showAdjustmentSettings && (
-          <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3">
+          <div className="mt-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-slate-900">
-                  Boutons d ajustement rapide
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                  Boutons d'ajustement rapide
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   + ou - ouvre une saisie numérique pour ajouter ou retirer des billets.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={toggleAdjustment}
-                className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold ${
+                className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold ${
                   adjustmentEnabled
                     ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                    : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600'
                 }`}
               >
                 <span
                   className={`h-2 w-2 rounded-full ${
-                    adjustmentEnabled ? 'bg-white' : 'bg-slate-500'
+                    adjustmentEnabled ? 'bg-white' : 'bg-slate-500 dark:bg-slate-400'
                   }`}
                 />
                 {adjustmentEnabled ? 'ON' : 'OFF'}
@@ -942,12 +942,12 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
 
       {/* Business Setup */}
       {showBusiness && (
-        <div className="border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
+        <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-4 sm:px-5">
           <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
             <div>
               <label
                 htmlFor="expected-amount"
-                className="mb-1.5 block text-sm font-semibold text-slate-800"
+                className="mb-1.5 block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200"
               >
                 Montant attendu en caisse
               </label>
@@ -963,7 +963,7 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                   setError(null);
                 }}
                 placeholder={currency === 'USD' ? 'Ex. 1250' : 'Ex. 250000'}
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base font-semibold text-slate-900 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2.5 text-base font-semibold tabular-nums text-slate-900 dark:text-white outline-none transition focus:border-slate-500 dark:focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:focus:ring-slate-700"
               />
             </div>
             <div className="flex items-end">
@@ -973,7 +973,7 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                   setCdfInput(cdfDenominations.join(', '));
                   setShowCdfSettings((v) => !v);
                 }}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 <Settings2 className="h-4 w-4" />
                 Coupures CDF
@@ -982,10 +982,10 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
           </div>
 
           {showCdfSettings && (
-            <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <div className="mt-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-3">
               <label
                 htmlFor="cdf-denominations"
-                className="mb-1.5 block text-sm font-semibold text-slate-800"
+                className="mb-1.5 block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200"
               >
                 Coupures CDF disponibles (séparées par des virgules)
               </label>
@@ -995,23 +995,23 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                 value={cdfInput}
                 onChange={(e) => setCdfInput(e.target.value)}
                 placeholder="20000, 10000, 5000, 1000, 500, 200, 100, 50"
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white tabular-nums outline-none"
               />
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 La coupure 2 000 CDF est automatiquement exclue.
               </p>
               <div className="mt-2 flex gap-2">
                 <button
                   type="button"
                   onClick={saveCdfConfiguration}
-                  className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white"
+                  className="rounded-lg bg-slate-900 dark:bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:hover:bg-emerald-500"
                 >
                   Appliquer
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowCdfSettings(false)}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700"
+                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200"
                 >
                   Annuler
                 </button>
@@ -1023,15 +1023,15 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
 
       {/* Messages */}
       {(message || error) && (
-        <div className="px-4 pt-4 sm:px-6">
+        <div className="px-4 pt-4 sm:px-5">
           {message && (
-            <div className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm text-emerald-800">
+            <div className="flex items-start gap-2 rounded-lg border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-2.5 text-xs sm:text-sm text-emerald-800 dark:text-emerald-300">
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
               <span>{message}</span>
             </div>
           )}
           {error && (
-            <div className="mt-2 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-800">
+            <div className="mt-2 flex items-start gap-2 rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 px-3 py-2.5 text-xs sm:text-sm text-red-800 dark:text-red-300">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
               <span>{error}</span>
             </div>
@@ -1041,27 +1041,27 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
 
       {/* Gap status */}
       {showBusiness && gapStatus && (
-        <div className="px-4 pt-4 sm:px-6">
+        <div className="px-4 pt-4 sm:px-5">
           <div
             className={`rounded-xl border px-4 py-3 ${
               gapStatus.status === 'EQUILIBRE'
-                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                ? 'border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300'
                 : gapStatus.status === 'MANQUANT'
-                ? 'border-red-200 bg-red-50 text-red-800'
-                : 'border-amber-200 bg-amber-50 text-amber-800'
+                ? 'border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-300'
+                : 'border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300'
             }`}
           >
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <p className="text-sm font-bold">{gapStatus.label}</p>
-                <p className="text-xs mt-0.5 opacity-90">
+                <p className="text-sm font-bold tabular-nums">{gapStatus.label}</p>
+                <p className="text-xs mt-0.5 opacity-90 tabular-nums">
                   Compté : {formatMoney(totalCounted, currency)} | Attendu : {formatMoney(parsedExpectedAmount ?? 0, currency)}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={saveGapHistory}
-                className="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Historiser
               </button>
@@ -1071,14 +1071,14 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
       )}
 
       {/* Denominations table */}
-      <div className="px-3 py-4 sm:px-6">
-        <div className="overflow-hidden rounded-2xl border border-slate-200">
-          <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2 bg-slate-50 px-3 py-2.5 text-xs font-bold uppercase tracking-wide text-slate-500 sm:grid-cols-[minmax(0,1fr)_150px_120px] sm:px-4">
+      <div className="px-3 py-4 sm:px-5">
+        <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2 bg-slate-50 dark:bg-slate-950/50 px-3 py-2.5 text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400 sm:grid-cols-[minmax(0,1fr)_150px_120px] sm:px-4">
             <span>Coupure</span>
             <span className="text-center">Quantité</span>
             <span className="text-right">Sous-total</span>
           </div>
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {activeRows.map((row) => {
               const subtotal = row.value * (row.quantity ?? 0);
               return (
@@ -1087,17 +1087,17 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                   className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2 px-3 py-2.5 sm:grid-cols-[minmax(0,1fr)_150px_120px] sm:px-4"
                 >
                   <div>
-                    <p className="text-sm font-bold text-slate-900 sm:text-base">
+                    <p className="text-sm font-bold tabular-nums text-slate-900 dark:text-white sm:text-base">
                       {formatMoney(row.value, currency)}
                     </p>
-                    <p className="text-[11px] text-slate-400">coupure</p>
+                    <p className="text-[11px] text-slate-400 dark:text-slate-500">coupure</p>
                   </div>
                   <div className="flex items-center justify-center">
                     {adjustmentEnabled && (
                       <button
                         type="button"
                         onClick={() => openAdjustment('remove', row)}
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-red-50 hover:text-red-600"
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-l-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400"
                       >
                         <Minus className="h-4 w-4" />
                       </button>
@@ -1109,20 +1109,20 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                       inputMode="numeric"
                       value={row.quantity ?? ''}
                       onChange={(event) => updateQuantity(row.id, event.target.value)}
-                      className={`h-8 ${adjustmentEnabled ? 'w-12' : 'w-16'} border-y border-slate-200 bg-white px-1 text-center text-sm font-bold text-slate-900 outline-none`}
+                      className={`h-8 ${adjustmentEnabled ? 'w-12' : 'w-16 rounded-lg border-x'} border-y border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-1 text-center text-sm font-bold tabular-nums text-slate-900 dark:text-white outline-none`}
                     />
                     {adjustmentEnabled && (
                       <button
                         type="button"
                         onClick={() => openAdjustment('add', row)}
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-emerald-50 hover:text-emerald-600"
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-r-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-600 dark:hover:text-emerald-400"
                       >
                         <Plus className="h-4 w-4" />
                       </button>
                     )}
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold tabular-nums text-slate-900 sm:text-base">
+                    <p className="text-sm font-bold tabular-nums text-slate-900 dark:text-white sm:text-base">
                       {formatMoney(subtotal, currency)}
                     </p>
                   </div>
@@ -1134,13 +1134,13 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
       </div>
 
       {/* Summary footer */}
-      <div className="border-t border-slate-200 bg-slate-50 px-4 py-4 sm:px-6">
+      <div className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 px-4 py-4 sm:px-5">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
               {showBusiness ? 'Total compté en caisse' : 'Total calculé'}
             </p>
-            <p className="mt-1 text-2xl font-black tabular-nums text-slate-900 sm:text-3xl">
+            <p className="mt-1 text-2xl font-black tabular-nums text-slate-900 dark:text-white sm:text-3xl">
               {formatMoney(totalCounted, currency)}
             </p>
           </div>
@@ -1152,7 +1152,7 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                 void loadBilletageHistory();
               }}
               disabled={isSaving}
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-emerald-600 px-4 py-2.5 text-xs sm:text-sm font-bold text-white transition hover:bg-slate-800 dark:hover:bg-emerald-500 disabled:opacity-50"
             >
               <Save className="h-4 w-4" />
               {isSaving ? 'Enregistrement...' : 'Enregistrer le billetage'}
@@ -1165,18 +1165,18 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
 
       {/* SUPERVISION & HISTORIQUE DES BILLETAGES */}
       {activeModuleMode === 'supervision' && (
-        <div className="p-4 sm:p-6 space-y-6">
+        <div className="p-4 sm:p-5 space-y-5">
           {/* Messages */}
           {(message || error) && (
             <div>
               {message && (
-                <div className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3 text-xs text-emerald-800">
+                <div className="flex items-start gap-2 rounded-lg border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-2.5 text-xs text-emerald-800 dark:text-emerald-300">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
                   <span>{message}</span>
                 </div>
               )}
               {error && (
-                <div className="mt-2 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-xs text-red-800">
+                <div className="mt-2 flex items-start gap-2 rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 px-3 py-2.5 text-xs text-red-800 dark:text-red-300">
                   <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
                   <span>{error}</span>
                 </div>
@@ -1186,36 +1186,36 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
 
           {/* Synthèse des liquidités réelles */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 p-3.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Total USD en Caisse
               </span>
-              <p className="mt-1 text-xl font-black text-slate-900">
+              <p className="mt-1 text-lg sm:text-xl font-black tabular-nums text-slate-900 dark:text-white">
                 ${kpis.totalUsd.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 p-3.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Total CDF en Caisse
               </span>
-              <p className="mt-1 text-xl font-black text-slate-900">
+              <p className="mt-1 text-lg sm:text-xl font-black tabular-nums text-slate-900 dark:text-white">
                 {kpis.totalCdf.toLocaleString('fr-FR')} CDF
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 p-3.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Billetages Validés
               </span>
-              <p className="mt-1 text-xl font-black text-emerald-700">
+              <p className="mt-1 text-lg sm:text-xl font-black tabular-nums text-emerald-700 dark:text-emerald-400">
                 {kpis.validatedCount}
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 p-3.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 En Attente / Écarts
               </span>
-              <p className="mt-1 text-xl font-black text-amber-700">
-                {kpis.pendingCount} <span className="text-xs font-normal text-slate-500">({kpis.discrepancyCount} écarts)</span>
+              <p className="mt-1 text-lg sm:text-xl font-black tabular-nums text-amber-700 dark:text-amber-400">
+                {kpis.pendingCount} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">({kpis.discrepancyCount} écarts)</span>
               </p>
             </div>
           </div>
@@ -1223,13 +1223,13 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
           {/* Filtres & Recherche */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 value={historySearch}
                 onChange={(e) => setHistorySearch(e.target.value)}
                 placeholder="Rechercher par référence, caissier ou agence..."
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-xs text-slate-900 outline-none focus:bg-white focus:border-slate-400"
+                className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 py-2 pl-9 pr-4 text-xs text-slate-900 dark:text-white outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-slate-400 dark:focus:border-slate-500"
               />
             </div>
 
@@ -1237,7 +1237,7 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
               <select
                 value={filterCurrency}
                 onChange={(e) => setFilterCurrency(e.target.value as 'all' | 'USD' | 'CDF')}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 font-semibold text-slate-700 outline-none"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-semibold text-slate-700 dark:text-slate-200 outline-none"
               >
                 <option value="all">Toutes devises</option>
                 <option value="USD">USD ($)</option>
@@ -1247,7 +1247,7 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
               <select
                 value={filterAgency}
                 onChange={(e) => setFilterAgency(e.target.value)}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 font-semibold text-slate-700 outline-none"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-semibold text-slate-700 dark:text-slate-200 outline-none"
               >
                 <option value="all">Toutes les agences</option>
                 {agenciesList.map((a) => (
@@ -1260,7 +1260,7 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 font-semibold text-slate-700 outline-none"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-semibold text-slate-700 dark:text-slate-200 outline-none"
               >
                 <option value="all">Tous les statuts</option>
                 <option value="validated">Validés</option>
@@ -1272,7 +1272,7 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                 type="button"
                 onClick={loadBilletageHistory}
                 disabled={loadingHistory}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50"
               >
                 <RefreshCw className={`h-3.5 w-3.5 ${loadingHistory ? 'animate-spin' : ''}`} />
                 Actualiser
@@ -1281,9 +1281,9 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
           </div>
 
           {/* Table des Billetages */}
-          <div className="overflow-hidden rounded-2xl border border-slate-200">
+          <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-200 bg-slate-50 font-bold uppercase tracking-wider text-slate-500">
+              <thead className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="p-3.5">Date & Réf</th>
                   <th className="p-3.5">Agence & Caissier</th>
@@ -1294,10 +1294,10 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                   <th className="p-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
                 {filteredBilletages.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="p-8 text-center text-slate-500">
+                    <td colSpan={7} className="p-8 text-center text-slate-500 dark:text-slate-400">
                       Aucun billetage enregistré dans le système correspondant aux filtres.
                     </td>
                   </tr>
@@ -1308,59 +1308,61 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                     const hasDiscrepancy = b.discrepancy !== null && b.discrepancy !== undefined && b.discrepancy !== 0;
 
                     return (
-                      <tr key={b.id} className="transition hover:bg-slate-50">
+                      <tr key={b.id} className="transition hover:bg-slate-50 dark:hover:bg-slate-800/40">
                         <td className="p-3.5">
-                          <p className="font-bold text-slate-900">{b.reference || b.id.slice(0, 12)}</p>
-                          <p className="text-[11px] text-slate-400 font-mono">
+                          <p className="font-bold text-slate-900 dark:text-white">{b.reference || b.id.slice(0, 12)}</p>
+                          <p className="text-[11px] text-slate-400 dark:text-slate-500 font-mono tabular-nums">
                             {new Date(b.createdAt).toLocaleString()}
                           </p>
                         </td>
                         <td className="p-3.5">
-                          <p className="font-bold text-slate-800">{agency?.name || 'Siège / Non spécifiée'}</p>
+                          <p className="font-bold text-slate-800 dark:text-slate-100">{agency?.name || 'Siège / Non spécifiée'}</p>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             <UserAvatar name={agent?.displayName || 'Caissier'} photoURL={agent?.photoURL} size="xs" />
-                            <span className="text-[11px] text-slate-500">{agent?.displayName || b.userId}</span>
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400">{agent?.displayName || b.userId}</span>
                           </div>
                         </td>
                         <td className="p-3.5">
                           <span
                             className={`rounded px-1.5 py-0.5 font-bold ${
-                              b.currency === 'USD' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
+                              b.currency === 'USD'
+                                ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
+                                : 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300'
                             }`}
                           >
                             {b.currency}
                           </span>
-                          <span className="ml-1.5 text-[11px] text-slate-500">
+                          <span className="ml-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                             {b.type === 'business' ? 'Professionnel' : 'Personnel'}
                           </span>
                         </td>
-                        <td className="p-3.5 text-right font-black text-slate-900">
+                        <td className="p-3.5 text-right font-black tabular-nums text-slate-900 dark:text-white">
                           {formatMoney(b.calculatedTotal, b.currency)}
                         </td>
-                        <td className="p-3.5 text-right">
+                        <td className="p-3.5 text-right tabular-nums">
                           {b.declaredAmount !== null && b.declaredAmount !== undefined ? (
                             <div>
-                              <p className="font-bold text-slate-700">{formatMoney(b.declaredAmount, b.currency)}</p>
+                              <p className="font-bold text-slate-700 dark:text-slate-200">{formatMoney(b.declaredAmount, b.currency)}</p>
                               {hasDiscrepancy ? (
-                                <span className={`inline-block text-[10px] font-bold ${b.discrepancy! > 0 ? 'text-blue-700' : 'text-red-600'}`}>
+                                <span className={`inline-block text-[10px] font-bold ${b.discrepancy! > 0 ? 'text-blue-700 dark:text-blue-400' : 'text-red-600 dark:text-red-400'}`}>
                                   {b.discrepancy! > 0 ? `+${formatMoney(b.discrepancy!, b.currency)}` : formatMoney(b.discrepancy!, b.currency)}
                                 </span>
                               ) : (
-                                <span className="text-[10px] font-semibold text-emerald-700">Équilibré</span>
+                                <span className="text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">Équilibré</span>
                               )}
                             </div>
                           ) : (
-                            <span className="text-slate-400">—</span>
+                            <span className="text-slate-400 dark:text-slate-500">—</span>
                           )}
                         </td>
                         <td className="p-3.5 text-center">
                           <span
-                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase ${
+                            className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold uppercase ${
                               b.status === 'validated'
-                                ? 'bg-emerald-100 text-emerald-800'
+                                ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                                 : b.status === 'completed'
-                                ? 'bg-blue-100 text-blue-800'
-                                : 'bg-amber-100 text-amber-800'
+                                ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300'
+                                : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
                             }`}
                           >
                             {b.status === 'validated' ? 'Validé' : b.status === 'completed' ? 'Finalisé' : 'Brouillon'}
@@ -1371,7 +1373,7 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                             <button
                               type="button"
                               onClick={() => setDetailBilletage(b)}
-                              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-100"
+                              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1 text-[11px] font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 whitespace-nowrap"
                             >
                               <Eye className="h-3 w-3" />
                               Coupures
@@ -1381,7 +1383,7 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                                 type="button"
                                 disabled={validatingId === b.id}
                                 onClick={() => void handleValidateBilletage(b)}
-                                className="inline-flex items-center gap-1 rounded-lg bg-emerald-700 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-emerald-800 disabled:opacity-50"
+                                className="inline-flex items-center gap-1 rounded-lg bg-emerald-700 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-emerald-800 disabled:opacity-50 whitespace-nowrap"
                               >
                                 {validatingId === b.id ? (
                                   <Loader2 className="h-3 w-3 animate-spin" />
@@ -1403,31 +1405,31 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
 
           {/* Section Écarts consignés en séance */}
           {gapHistory.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold text-slate-800">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 p-4 space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-xs font-bold text-slate-800 dark:text-slate-100 tabular-nums">
                   Écarts consignés en séance locale ({gapHistory.length})
                 </h3>
                 <button
                   type="button"
                   onClick={clearGapHistory}
-                  className="text-[11px] font-semibold text-red-600 hover:text-red-800"
+                  className="text-[11px] font-semibold text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
                 >
                   Effacer l'historique local
                 </button>
               </div>
-              <div className="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
                 {gapHistory.map((entry) => (
-                  <div key={entry.id} className="flex items-center justify-between p-3 text-xs">
+                  <div key={entry.id} className="flex flex-wrap items-center justify-between gap-2 p-3 text-xs">
                     <div>
-                      <p className="font-bold text-slate-900">
+                      <p className="font-bold text-slate-900 dark:text-white">
                         {entry.statut === 'EQUILIBRE' ? 'Équilibré' : entry.statut === 'MANQUANT' ? 'Manquant en caisse' : 'Excédent en caisse'}
                       </p>
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
                         {new Date(entry.date).toLocaleString()} • Attendu : {formatMoney(entry.montantAttendu, entry.devise)} • Compté : {formatMoney(entry.montantCompte, entry.devise)} • {entry.auteur}
                       </p>
                     </div>
-                    <span className="font-mono font-bold text-slate-700">
+                    <span className="font-mono font-bold tabular-nums text-slate-700 dark:text-slate-200">
                       Écart : {formatMoney(entry.ecart, entry.devise)}
                     </span>
                   </div>
@@ -1440,20 +1442,20 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
 
       {/* Modal Détails des coupures d'un billetage */}
       {detailBilletage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
-          <div className="w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-3 min-w-0">
                 <img
                   src="/logo.png"
                   alt="Ets AMANI"
-                  className="h-10 w-10 object-contain rounded-xl border border-slate-200 bg-white p-1"
+                  className="h-10 w-10 object-contain rounded-lg border border-slate-200 dark:border-slate-700 bg-white p-1 shrink-0"
                 />
-                <div>
-                  <h3 className="text-base font-bold text-slate-900">
+                <div className="min-w-0">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">
                     Fiche Officielle de Billetage ({detailBilletage.currency})
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 tabular-nums truncate">
                     Réf : {detailBilletage.reference || detailBilletage.id} • {new Date(detailBilletage.createdAt).toLocaleString('fr-FR')}
                   </p>
                 </div>
@@ -1461,7 +1463,7 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
               <button
                 type="button"
                 onClick={() => setDetailBilletage(null)}
-                className="text-slate-400 hover:text-slate-600"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -1469,23 +1471,23 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
 
             <div className="mt-4 max-h-[60vh] overflow-y-auto">
               <table className="w-full text-left text-xs">
-                <thead className="border-b border-slate-100 bg-slate-50 font-bold uppercase text-slate-500">
+                <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 font-bold uppercase text-slate-500 dark:text-slate-400">
                   <tr>
                     <th className="p-2.5">Coupure</th>
                     <th className="p-2.5 text-center">Quantité</th>
                     <th className="p-2.5 text-right">Sous-total</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {detailBilletage.lines.map((line) => (
                     <tr key={line.denominationId}>
-                      <td className="p-2.5 font-bold text-slate-800">
+                      <td className="p-2.5 font-bold tabular-nums text-slate-800 dark:text-slate-200">
                         {formatMoney(line.denomination, detailBilletage.currency)}
                       </td>
-                      <td className="p-2.5 text-center font-mono font-bold text-slate-700">
+                      <td className="p-2.5 text-center font-mono font-bold tabular-nums text-slate-700 dark:text-slate-300">
                         {line.quantity}
                       </td>
-                      <td className="p-2.5 text-right font-mono font-bold text-slate-900">
+                      <td className="p-2.5 text-right font-mono font-bold tabular-nums text-slate-900 dark:text-white">
                         {formatMoney(line.subtotal, detailBilletage.currency)}
                       </td>
                     </tr>
@@ -1494,10 +1496,10 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
               </table>
             </div>
 
-            <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800 pt-3">
               <div>
-                <span className="text-[11px] text-slate-500">Total calculé :</span>
-                <p className="text-lg font-black text-slate-900">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400">Total calculé :</span>
+                <p className="text-lg font-black tabular-nums text-slate-900 dark:text-white">
                   {formatMoney(detailBilletage.calculatedTotal, detailBilletage.currency)}
                 </p>
               </div>
@@ -1505,15 +1507,15 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
                 >
-                  <FileText className="h-4 w-4 text-blue-600" />
+                  <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   <span>Imprimer</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setDetailBilletage(null)}
-                  className="rounded-xl bg-slate-900 px-5 py-2 text-xs font-bold text-white hover:bg-slate-800"
+                  className="rounded-lg bg-slate-900 dark:bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-emerald-500"
                 >
                   Fermer
                 </button>
@@ -1525,27 +1527,27 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
 
       {/* Adjustment modal */}
       {adjustment && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/40 p-4">
-          <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h3 className="font-bold text-slate-900">
+                <h3 className="font-bold text-slate-900 dark:text-white">
                   {adjustment.mode === 'add' ? 'Ajouter des billets' : 'Retirer des billets'}
                 </h3>
-                <p className="text-xs text-slate-500">
-                  Coupure : <strong>{formatMoney(adjustment.denomination, currency)}</strong>
+                <p className="text-xs text-slate-500 dark:text-slate-400 tabular-nums">
+                  Coupure : <strong className="text-slate-800 dark:text-slate-200">{formatMoney(adjustment.denomination, currency)}</strong>
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setAdjustment(null)}
-                className="text-slate-400 hover:text-slate-600"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
             <div className="mt-4">
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 Quantité de billets
               </label>
               <input
@@ -1561,21 +1563,21 @@ export default function BilletageModule({ onClose }: BilletageModuleProps) {
                   })
                 }
                 placeholder="Ex. 5"
-                className="w-full rounded-xl border border-slate-300 p-3 text-center text-xl font-bold"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 text-center text-xl font-bold tabular-nums text-slate-900 dark:text-white outline-none"
               />
             </div>
             <div className="mt-5 grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setAdjustment(null)}
-                className="rounded-xl border border-slate-200 p-3 text-sm font-semibold text-slate-700"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Annuler
               </button>
               <button
                 type="button"
                 onClick={applyAdjustment}
-                className={`rounded-xl p-3 text-sm font-bold text-white ${
+                className={`rounded-lg p-2.5 text-xs sm:text-sm font-bold text-white ${
                   adjustment.mode === 'add' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-red-600 hover:bg-red-700'
                 }`}
               >

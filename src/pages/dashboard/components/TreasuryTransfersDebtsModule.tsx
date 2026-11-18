@@ -254,13 +254,13 @@ export default function TreasuryTransfersDebtsModule({
   }, [debts]);
 
   return (
-    <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm space-y-6">
-      <div className="flex flex-col gap-4 border-b border-slate-100 dark:border-slate-800 pb-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-5">
+      <div className="flex flex-col gap-3 border-b border-slate-100 dark:border-slate-800 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-500">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
             {mode === 'transfers' ? 'FLUX & CAISSE' : mode === 'debts' ? 'ENGAGEMENTS' : 'TRÉSORERIE RÉSEAU'}
           </p>
-          <h2 className="mt-0.5 text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h2 className="mt-0.5 text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
             {mode === 'transfers'
               ? 'Transferts'
               : mode === 'debts'
@@ -278,37 +278,38 @@ export default function TreasuryTransfersDebtsModule({
 
         <div className="flex flex-wrap items-center gap-2">
           {mode === 'both' && (
-            <>
+            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
               <button
                 type="button"
                 onClick={() => setActiveTab('transfers')}
-                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+                className={`whitespace-nowrap shrink-0 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
                   activeTab === 'transfers'
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 <ArrowLeftRight className="h-3.5 w-3.5" />
-                Transferts Inter-Agences ({transfers.length})
+                Transferts ({transfers.length})
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab('debts')}
-                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+                className={`whitespace-nowrap shrink-0 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
                   activeTab === 'debts'
                     ? 'bg-amber-500 text-slate-950'
-                    : 'bg-amber-50 text-amber-800 hover:bg-amber-100'
+                    : 'bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-950'
                 }`}
               >
                 <Scale className="h-3.5 w-3.5" />
                 Dettes & Créances ({debts.filter((d) => d.status !== 'rembourse').length})
               </button>
-            </>
+            </div>
           )}
           <button
             type="button"
             onClick={loadData}
-            className="rounded-xl border border-slate-200 p-2 text-slate-600 hover:bg-slate-50"
+            className="rounded-lg border border-slate-200 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+            aria-label="Actualiser"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -316,7 +317,8 @@ export default function TreasuryTransfersDebtsModule({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-slate-200 p-2 text-slate-500 hover:bg-slate-100"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+              aria-label="Fermer"
             >
               <X className="h-4 w-4" />
             </button>
@@ -325,7 +327,7 @@ export default function TreasuryTransfersDebtsModule({
       </div>
 
       {feedback && (
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-900 flex items-center justify-between">
+        <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/40 px-3.5 py-2.5 text-xs font-semibold text-emerald-900 dark:text-emerald-300 flex items-center justify-between">
           <span>{feedback}</span>
           <button type="button" onClick={() => setFeedback(null)}>
             <X className="h-4 w-4" />
@@ -334,7 +336,7 @@ export default function TreasuryTransfersDebtsModule({
       )}
 
       {errorMsg && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-800 flex items-center justify-between">
+        <div className="rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 px-3.5 py-2.5 text-xs font-semibold text-red-800 dark:text-red-300 flex items-center justify-between">
           <span>{errorMsg}</span>
           <button type="button" onClick={() => setErrorMsg(null)}>
             <X className="h-4 w-4" />
@@ -345,16 +347,16 @@ export default function TreasuryTransfersDebtsModule({
       {/* ONGLET 1 : TRANSFERTS INTER-AGENCES */}
       {activeTab === 'transfers' && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <p className="text-xs text-slate-500">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Traçabilité complète des transferts d'espèces, monnaie virtuelle et ravitaillements entre agences.
             </p>
             <button
               type="button"
               onClick={() => setShowTransferForm((v) => !v)}
-              className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500"
+              className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-emerald-500"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-3.5 w-3.5" />
               {showTransferForm ? 'Fermer' : 'Initier un Transfert'}
             </button>
           </div>
@@ -362,11 +364,11 @@ export default function TreasuryTransfersDebtsModule({
           {showTransferForm && (
             <form
               onSubmit={handleCreateTransfer}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-4"
+              className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-4 space-y-3.5"
             >
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Nature du transfert
                   </label>
                   <select
@@ -376,7 +378,7 @@ export default function TreasuryTransfersDebtsModule({
                         e.target.value as LocalInterAgencyTransfer['transferType']
                       )
                     }
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white"
                   >
                     <option value="argent_physique">Argent Physique (Caisse/Coffre)</option>
                     <option value="argent_virtuel">Argent Virtuel (Flotte Mobile Money)</option>
@@ -385,14 +387,14 @@ export default function TreasuryTransfersDebtsModule({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Agence Source (Émettrice)
                   </label>
                   <select
                     value={isGlobalRole ? sourceAgencyId : user?.agencyId || sourceAgencyId}
                     disabled={!isGlobalRole && Boolean(user?.agencyId)}
                     onChange={(e) => setSourceAgencyId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold disabled:bg-slate-100"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white disabled:bg-slate-100 dark:disabled:bg-slate-800"
                   >
                     <option value="">Sélectionner l'agence source</option>
                     {agencies.map((a) => (
@@ -404,14 +406,14 @@ export default function TreasuryTransfersDebtsModule({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Agence Destinataire (Bénéficiaire)
                   </label>
                   <select
                     required
                     value={targetAgencyId}
                     onChange={(e) => setTargetAgencyId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white"
                   >
                     <option value="">Sélectionner l'agence cible</option>
                     {agencies.map((a) => (
@@ -425,7 +427,7 @@ export default function TreasuryTransfersDebtsModule({
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Montant
                   </label>
                   <input
@@ -436,24 +438,24 @@ export default function TreasuryTransfersDebtsModule({
                     value={trfAmount}
                     onChange={(e) => setTrfAmount(e.target.value)}
                     placeholder="Ex: 5000"
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold tabular-nums"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold tabular-nums text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Devise
                   </label>
                   <select
                     value={trfCurrency}
                     onChange={(e) => setTrfCurrency(e.target.value as 'USD' | 'CDF')}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold text-slate-900 dark:text-white"
                   >
                     <option value="USD">USD ($)</option>
                     <option value="CDF">CDF (Franc Congolais)</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Canal / Opérateur
                   </label>
                   <input
@@ -461,13 +463,13 @@ export default function TreasuryTransfersDebtsModule({
                     value={trfChannel}
                     onChange={(e) => setTrfChannel(e.target.value)}
                     placeholder="Ex: M-Pesa, Airtel Money, Convoyeur..."
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Motif justificatif
                 </label>
                 <input
@@ -476,7 +478,7 @@ export default function TreasuryTransfersDebtsModule({
                   value={trfReason}
                   onChange={(e) => setTrfReason(e.target.value)}
                   placeholder="Ex: Ravitaillement liquidités guichet principal..."
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-900 dark:text-white"
                 />
               </div>
 
@@ -484,13 +486,13 @@ export default function TreasuryTransfersDebtsModule({
                 <button
                   type="button"
                   onClick={() => setShowTransferForm(false)}
-                  className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-slate-900 px-5 py-2 text-xs font-bold text-white hover:bg-slate-800"
+                  className="rounded-lg bg-slate-900 dark:bg-emerald-600 px-4 py-1.5 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-emerald-500"
                 >
                   Enregistrer le transfert
                 </button>
@@ -498,47 +500,47 @@ export default function TreasuryTransfersDebtsModule({
             </form>
           )}
 
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {transfers.length === 0 ? (
-              <p className="py-10 text-center text-xs text-slate-500">
+              <p className="py-10 text-center text-xs text-slate-500 dark:text-slate-400">
                 Aucun transfert inter-agences enregistré.
               </p>
             ) : (
               transfers.map((trf) => (
                 <div
                   key={trf.id}
-                  className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between text-xs"
+                  className="flex flex-col gap-3 py-3.5 sm:flex-row sm:items-center sm:justify-between text-xs"
                 >
                   <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-mono font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md">
                         {trf.reference}
                       </span>
-                      <span className="rounded bg-slate-100 px-2 py-0.5 font-semibold uppercase text-[10px]">
+                      <span className="rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 font-semibold uppercase text-[10px]">
                         {trf.transferType.replace('_', ' ')}
                       </span>
                       <span
-                        className={`rounded-full px-2.5 py-0.5 font-bold ${
+                        className={`rounded-md px-2 py-0.5 text-[11px] font-bold ${
                           trf.status === 'recu'
-                            ? 'bg-emerald-100 text-emerald-800'
+                            ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                             : trf.status === 'valide'
-                              ? 'bg-blue-100 text-blue-800'
+                              ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300'
                               : trf.status === 'rejete'
-                                ? 'bg-red-100 text-red-800'
-                                : 'bg-amber-100 text-amber-800'
+                                ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300'
+                                : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
                         }`}
                       >
                         {trf.status.replace(/_/g, ' ')}
                       </span>
                     </div>
-                    <p className="text-sm font-black text-slate-900 tabular-nums">
+                    <p className="text-sm font-bold text-slate-900 dark:text-white tabular-nums">
                       {trf.amount.toLocaleString('fr-FR')} {trf.currency} •{' '}
-                      <span className="font-semibold text-slate-700">
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">
                         {trf.sourceAgencyName} → {trf.targetAgencyName}
                       </span>
                     </p>
-                    <p className="text-slate-600">{trf.reason}</p>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-slate-600 dark:text-slate-300">{trf.reason}</p>
+                    <p className="text-[11px] tabular-nums text-slate-400">
                       Initié par {trf.initiatedByName} le{' '}
                       {new Date(trf.createdAt).toLocaleString('fr-FR')}
                     </p>
@@ -549,7 +551,7 @@ export default function TreasuryTransfersDebtsModule({
                       <button
                         type="button"
                         onClick={() => handleTransferAction(trf.id, 'valide')}
-                        className="rounded-xl bg-blue-600 px-3 py-1.5 font-bold text-white hover:bg-blue-500"
+                        className="rounded-lg bg-blue-600 px-3 py-1.5 font-bold text-white hover:bg-blue-500"
                       >
                         Valider (DG)
                       </button>
@@ -559,7 +561,7 @@ export default function TreasuryTransfersDebtsModule({
                         <button
                           type="button"
                           onClick={() => handleTransferAction(trf.id, 'recu')}
-                          className="flex items-center gap-1 rounded-xl bg-emerald-600 px-3 py-1.5 font-bold text-white hover:bg-emerald-500"
+                          className="flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 font-bold text-white hover:bg-emerald-500"
                         >
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           Confirmer Réception
@@ -569,7 +571,7 @@ export default function TreasuryTransfersDebtsModule({
                       <button
                         type="button"
                         onClick={() => handleTransferAction(trf.id, 'rejete')}
-                        className="rounded-xl border border-red-200 bg-red-50 px-3 py-1.5 font-bold text-red-700 hover:bg-red-100"
+                        className="rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 px-3 py-1.5 font-bold text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-950"
                       >
                         Rejeter
                       </button>
@@ -586,19 +588,19 @@ export default function TreasuryTransfersDebtsModule({
       {activeTab === 'debts' && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
-              <span className="text-xs font-bold uppercase text-amber-800">
+            <div className="rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/70 dark:bg-amber-950/30 p-3.5">
+              <span className="text-[11px] font-bold uppercase text-amber-800 dark:text-amber-300">
                 Encours Total USD à recouvrer
               </span>
-              <p className="mt-1 text-xl font-black tabular-nums text-amber-950">
+              <p className="mt-1 text-lg font-bold tabular-nums text-amber-950 dark:text-amber-100">
                 ${debtTotals.usd.toLocaleString('fr-FR', { minimumFractionDigits: 2 })}
               </p>
             </div>
-            <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
-              <span className="text-xs font-bold uppercase text-amber-800">
+            <div className="rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/70 dark:bg-amber-950/30 p-3.5">
+              <span className="text-[11px] font-bold uppercase text-amber-800 dark:text-amber-300">
                 Encours Total CDF à recouvrer
               </span>
-              <p className="mt-1 text-xl font-black tabular-nums text-amber-950">
+              <p className="mt-1 text-lg font-bold tabular-nums text-amber-950 dark:text-amber-100">
                 {debtTotals.cdf.toLocaleString('fr-FR')} CDF
               </p>
             </div>
@@ -606,9 +608,9 @@ export default function TreasuryTransfersDebtsModule({
               <button
                 type="button"
                 onClick={() => setShowDebtForm((v) => !v)}
-                className="flex items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800"
+                className="flex items-center gap-1.5 rounded-lg bg-slate-900 dark:bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-emerald-500"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-3.5 w-3.5" />
                 {showDebtForm ? 'Fermer' : 'Enregistrer une Dette / Créance'}
               </button>
             </div>
@@ -617,17 +619,17 @@ export default function TreasuryTransfersDebtsModule({
           {showDebtForm && (
             <form
               onSubmit={handleCreateDebt}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3"
+              className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-4 space-y-3"
             >
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Catégorie de débiteur
                   </label>
                   <select
                     value={debtCategory}
                     onChange={(e) => setDebtCategory(e.target.value as LocalDebt['category'])}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white"
                   >
                     <option value="client">Client / Abonné</option>
                     <option value="agent">Agent (Manquant caisse / Avance)</option>
@@ -635,7 +637,7 @@ export default function TreasuryTransfersDebtsModule({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Nom complet du débiteur
                   </label>
                   <input
@@ -644,11 +646,11 @@ export default function TreasuryTransfersDebtsModule({
                     value={debtorName}
                     onChange={(e) => setDebtorName(e.target.value)}
                     placeholder="Nom du client, agent ou société"
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Téléphone
                   </label>
                   <input
@@ -656,14 +658,14 @@ export default function TreasuryTransfersDebtsModule({
                     value={debtorPhone}
                     onChange={(e) => setDebtorPhone(e.target.value)}
                     placeholder="+243..."
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs tabular-nums text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Montant initial
                   </label>
                   <input
@@ -673,24 +675,24 @@ export default function TreasuryTransfersDebtsModule({
                     required
                     value={debtAmount}
                     onChange={(e) => setDebtAmount(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold tabular-nums"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold tabular-nums text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Devise
                   </label>
                   <select
                     value={debtCurrency}
                     onChange={(e) => setDebtCurrency(e.target.value as 'USD' | 'CDF')}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold text-slate-900 dark:text-white"
                   >
                     <option value="USD">USD ($)</option>
                     <option value="CDF">CDF</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Échéance
                   </label>
                   <input
@@ -698,18 +700,18 @@ export default function TreasuryTransfersDebtsModule({
                     required
                     value={debtDueDate}
                     onChange={(e) => setDebtDueDate(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs tabular-nums text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Agence de rattachement
                   </label>
                   <select
                     value={isGlobalRole ? debtAgencyId : user?.agencyId || debtAgencyId}
                     disabled={!isGlobalRole && Boolean(user?.agencyId)}
                     onChange={(e) => setDebtAgencyId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold disabled:bg-slate-100"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white disabled:bg-slate-100 dark:disabled:bg-slate-800"
                   >
                     {agencies.map((a) => (
                       <option key={a.id} value={a.id}>
@@ -726,20 +728,20 @@ export default function TreasuryTransfersDebtsModule({
                 value={debtReason}
                 onChange={(e) => setDebtReason(e.target.value)}
                 placeholder="Motif de la dette ou référence d'opération..."
-                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-900 dark:text-white"
               />
 
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowDebtForm(false)}
-                  className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-bold"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white hover:bg-emerald-500"
+                  className="rounded-lg bg-emerald-600 px-4 py-1.5 text-xs font-bold text-white hover:bg-emerald-500"
                 >
                   Enregistrer la Dette
                 </button>
@@ -751,14 +753,14 @@ export default function TreasuryTransfersDebtsModule({
           {repayingDebtId && (
             <form
               onSubmit={handleRepayDebt}
-              className="rounded-2xl border border-emerald-300 bg-emerald-50/80 p-4 space-y-3"
+              className="rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50/80 dark:bg-emerald-950/30 p-4 space-y-3"
             >
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-black text-emerald-950">
+                <h4 className="text-xs font-bold text-emerald-950 dark:text-emerald-200">
                   Enregistrer un remboursement (partiel ou total)
                 </h4>
                 <button type="button" onClick={() => setRepayingDebtId(null)}>
-                  <X className="h-4 w-4 text-emerald-800" />
+                  <X className="h-4 w-4 text-emerald-800 dark:text-emerald-300" />
                 </button>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -770,18 +772,18 @@ export default function TreasuryTransfersDebtsModule({
                   value={repaymentAmount}
                   onChange={(e) => setRepaymentAmount(e.target.value)}
                   placeholder="Montant encaissé"
-                  className="rounded-xl border border-emerald-300 bg-white px-3 py-2 text-xs font-bold tabular-nums"
+                  className="rounded-lg border border-emerald-300 dark:border-emerald-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold tabular-nums text-slate-900 dark:text-white"
                 />
                 <input
                   type="text"
                   value={repaymentNote}
                   onChange={(e) => setRepaymentNote(e.target.value)}
                   placeholder="Référence reçu / Observation"
-                  className="rounded-xl border border-emerald-300 bg-white px-3 py-2 text-xs"
+                  className="rounded-lg border border-emerald-300 dark:border-emerald-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-900 dark:text-white"
                 />
                 <button
                   type="submit"
-                  className="rounded-xl bg-emerald-700 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-600"
+                  className="rounded-lg bg-emerald-700 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-600"
                 >
                   Valider l'encaissement
                 </button>
@@ -789,50 +791,50 @@ export default function TreasuryTransfersDebtsModule({
             </form>
           )}
 
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {debts.length === 0 ? (
-              <p className="py-10 text-center text-xs text-slate-500">
+              <p className="py-10 text-center text-xs text-slate-500 dark:text-slate-400">
                 Aucune dette ou créance enregistrée.
               </p>
             ) : (
               debts.map((d) => (
                 <div
                   key={d.id}
-                  className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between text-xs"
+                  className="flex flex-col gap-3 py-3.5 sm:flex-row sm:items-center sm:justify-between text-xs"
                 >
                   <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-mono font-bold text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">
                         {d.reference}
                       </span>
-                      <span className="rounded bg-blue-50 px-2 py-0.5 font-bold uppercase text-[10px] text-blue-700">
+                      <span className="rounded-md bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 font-bold uppercase text-[10px] text-blue-700 dark:text-blue-300">
                         {d.category}
                       </span>
                       <span
-                        className={`rounded-full px-2.5 py-0.5 font-bold ${
+                        className={`rounded-md px-2 py-0.5 text-[11px] font-bold ${
                           d.status === 'rembourse'
-                            ? 'bg-emerald-100 text-emerald-800'
+                            ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                             : d.status === 'en_retard'
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-amber-100 text-amber-800'
+                              ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300'
+                              : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
                         }`}
                       >
                         {d.status.replace('_', ' ')}
                       </span>
                       <span className="text-[11px] text-slate-400">• {d.agencyName}</span>
                     </div>
-                    <p className="text-sm font-black text-slate-900">
+                    <p className="text-sm font-bold text-slate-900 dark:text-white">
                       {d.debtorName}{' '}
-                      <span className="font-normal text-slate-500">
+                      <span className="font-normal text-slate-500 dark:text-slate-400">
                         — Reste à payer :{' '}
-                        <strong className="text-amber-700 tabular-nums">
+                        <strong className="text-amber-700 dark:text-amber-400 tabular-nums">
                           {d.remainingAmount.toLocaleString('fr-FR')} {d.currency}
                         </strong>{' '}
-                        (sur {d.initialAmount.toLocaleString('fr-FR')} {d.currency})
+                        (sur <span className="tabular-nums">{d.initialAmount.toLocaleString('fr-FR')} {d.currency}</span>)
                       </span>
                     </p>
-                    <p className="text-slate-600">{d.reason}</p>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-slate-600 dark:text-slate-300">{d.reason}</p>
+                    <p className="text-[11px] tabular-nums text-slate-400">
                       Échéance : {new Date(d.dueDate).toLocaleDateString('fr-FR')} •{' '}
                       {d.repayments?.length || 0} remboursement(s) enregistré(s)
                     </p>
@@ -845,7 +847,7 @@ export default function TreasuryTransfersDebtsModule({
                         setRepayingDebtId(d.id);
                         setRepaymentAmount(String(d.remainingAmount));
                       }}
-                      className="rounded-xl bg-slate-900 px-3.5 py-2 font-bold text-white hover:bg-slate-800 shrink-0"
+                      className="rounded-lg bg-slate-900 dark:bg-slate-100 px-3.5 py-2 text-xs font-bold text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white shrink-0"
                     >
                       Enregistrer Remboursement
                     </button>

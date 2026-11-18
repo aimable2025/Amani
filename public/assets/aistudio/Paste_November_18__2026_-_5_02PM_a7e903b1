@@ -1,0 +1,1372 @@
+ETS AMANI — RESTRUCTURATION COMPLÈTE DE L'INTERFACE UI/UX
+
+Plateforme institutionnelle de gestion, supervision, coordination et contrôle opérationnel
+
+MISSION
+
+L'application Ets AMANI est une plateforme institutionnelle déjà largement développée. Elle a pour objectif de centraliser la gestion de l'institution, faciliter la communication interne, superviser les employés et les agences, organiser les opérations, suivre les activités, gérer les tâches et permettre au Directeur général ainsi qu'à l'Administrateur système de disposer d'une vision globale et maîtrisée de l'organisation.
+
+Interviens comme un Senior UI/UX Designer, Product Designer, Senior Frontend Engineer et spécialiste des plateformes de gestion institutionnelle, de supervision opérationnelle et d'administration centralisée.
+
+Ta mission est d'effectuer un audit réel et une restructuration complète de l'interface UI/UX de l'application Ets AMANI.
+
+Il ne s'agit pas de modifier simplement les couleurs, les bordures, les ombres ou les cartes.
+
+Je veux une véritable réorganisation de l'interface, de la navigation, des espaces de travail, des fonctionnalités, des outils, des tableaux de bord et de l'utilisation de l'espace disponible.
+
+L'application doit donner l'impression d'une plateforme institutionnelle moderne, intelligente, structurée et capable de centraliser efficacement les activités d'Ets AMANI.
+
+---
+
+1. COMPRENDRE LA VÉRITABLE MISSION D'ETS AMANI
+
+Ets AMANI n'est pas une application de gestion commerciale, de stock, d'achats, de ventes ou de caisse.
+
+C'est une plateforme de gestion de l'institution, de supervision, de coordination, de communication, de suivi opérationnel et de contrôle.
+
+Les domaines fonctionnels concernés comprennent notamment :
+
+- Supervision des utilisateurs, employés et agents.
+- Gestion des tâches.
+- Attribution et suivi des tâches.
+- Communication interne.
+- Billetage.
+- Rapports.
+- Suivi et supervision des transactions liées aux numéros internes, notamment par l'exploitation des SMS reçus.
+- Gestion des employés.
+- Gestion des salaires des employés.
+- Création et affectation des agences.
+- Supervision des agences.
+- Services à la clientèle dans le cadre des transactions.
+- Transferts de fonds interagences.
+- Gestion des abonnés et des membres.
+- Automatisation des tâches et processus.
+- Notifications.
+- Suivi des activités.
+- Coordination institutionnelle.
+- Contrôle opérationnel.
+- Administration système.
+- Supervision générale de l'institution.
+
+Cette liste doit être rapprochée des fonctionnalités réellement présentes dans le code. Ne crée pas de nouveaux modules simplement parce qu'ils figurent dans cette description.
+
+Vision principale
+
+Faire d'Ets AMANI un espace de travail institutionnel centralisé permettant au Directeur général de superviser l'ensemble de l'organisation et à l'Administrateur système de gérer, contrôler, maintenir et administrer efficacement la plateforme.
+
+L'application doit permettre de passer d'une gestion dispersée des informations et des activités à une organisation centralisée, structurée, visible et maîtrisable.
+
+---
+
+2. OBJECTIF PRINCIPAL DE LA RESTRUCTURATION
+
+Transformer l'interface actuelle en une application :
+
+- Moderne et professionnelle.
+- Compacte et intelligente.
+- Centralisée.
+- Facile à comprendre.
+- Rapide à utiliser.
+- Adaptée aux différents profils d'utilisateurs.
+- Responsive sur mobile, tablette et PC.
+- Organisée autour de véritables espaces fonctionnels.
+- Dotée d'une navigation intuitive.
+- Sans éléments mal positionnés.
+- Sans longues pages inutilement encombrées.
+- Sans accumulation de cartes verticales.
+- Sans scroll excessif pour accéder aux fonctions essentielles.
+- Avec une hiérarchie visuelle claire.
+- Avec des grilles compactes de 3 ou 4 colonnes.
+- Avec un accès rapide aux fonctions importantes.
+- Avec une séparation claire entre supervision, administration, opérations, communication et gestion.
+
+Je privilégie fortement une interface qui exploite intelligemment l'espace disponible et permet d'accéder à plusieurs fonctionnalités depuis un seul écran.
+
+L'application doit être dense, mais pas étouffante.
+
+Professionnelle, mais pas compliquée.
+
+Riche en fonctionnalités, mais simple à utiliser.
+
+---
+
+3. PRIORITÉ : UNE INTERFACE COMPACTE EN GRILLES DE 3 OU 4 COLONNES
+
+Sur les écrans qui présentent des modules, des outils, des fonctionnalités, des commandes, des raccourcis ou des espaces de travail, privilégie les grilles compactes plutôt que les longues listes verticales de cartes.
+
+Disposition souhaitée
+
+- 3 colonnes pour les fonctionnalités nécessitant davantage de lisibilité.
+- 4 colonnes pour les outils, raccourcis et fonctions simples.
+- Boîtes compactes, carrées ou presque carrées.
+- Taille visuelle proche des touches d'une calculatrice ou des icônes d'un lanceur d'applications.
+- Icône au-dessus.
+- Libellé court en dessous.
+- Alignement uniforme.
+- Espacement horizontal et vertical régulier.
+- Marges réduites et intelligentes.
+- Suppression des bordures internes inutiles.
+- Fonds subtils et discrets.
+- Pas de cartes géantes pour une simple commande.
+- Pas de longues cartes horizontales lorsque le contenu peut tenir dans une petite boîte.
+- Pas de descriptions longues sur les raccourcis.
+
+Exemple de disposition
+
+<code>
+┌──────────┬──────────┬──────────┬──────────┐
+│    👥    │    📋    │    💬    │    🏢    │
+│ Employés │  Tâches  │ Messages │ Agences  │
+├──────────┼──────────┼──────────┼──────────┤
+│    📊    │    💰    │    📱    │    🔔    │
+│ Rapports │ Salaires │  SMS     │ Alertes  │
+└──────────┴──────────┴──────────┴──────────┘
+</code>Cet exemple sert uniquement à illustrer la densité et la disposition souhaitées.
+
+Ne reproduis pas nécessairement les bordures.
+
+Le résultat doit être une grille légère, harmonieuse, visuellement propre et facile à utiliser.
+
+Règle de densité
+
+Sur mobile, les fonctions les plus importantes doivent être visibles simultanément autant que possible.
+
+Ne force pas le scroll lorsque les fonctionnalités peuvent être regroupées intelligemment dans une grille.
+
+Cependant, ne réduis pas excessivement les éléments au point de rendre les icônes, les libellés ou les zones tactiles difficiles à utiliser.
+
+---
+
+4. RESTRUCTURER LE TABLEAU DE BORD DU DIRECTEUR GÉNÉRAL
+
+Le tableau de bord du Directeur général est l'un des espaces les plus importants de l'application.
+
+Il doit être conçu comme un véritable centre de supervision institutionnelle.
+
+Le Directeur général doit pouvoir comprendre rapidement la situation de l'institution sans devoir ouvrir plusieurs modules pour obtenir une vue générale.
+
+Informations prioritaires
+
+Selon les fonctionnalités réellement existantes et les permissions :
+
+- Vue globale de l'institution.
+- État des agences.
+- Nombre d'employés et d'agents.
+- Activité des agents.
+- Tâches en cours.
+- Tâches en retard.
+- Tâches terminées.
+- Activités récentes.
+- Rapports reçus.
+- Notifications importantes.
+- État des opérations.
+- Transactions suivies.
+- Transferts interagences.
+- Situation des abonnés ou membres.
+- Informations relatives au billetage.
+- Alertes opérationnelles.
+- État des services.
+- État de synchronisation.
+- Activités nécessitant une intervention.
+- Informations importantes pour la prise de décision.
+
+Ne présente pas toutes les informations simultanément si cela surcharge le tableau de bord.
+
+Organisation souhaitée
+
+Le tableau de bord doit comporter une hiérarchie claire :
+
+Niveau 1 — Situation générale
+
+Les indicateurs les plus importants, dans des blocs compacts.
+
+Niveau 2 — Alertes et interventions
+
+Les situations qui nécessitent l'attention du Directeur général.
+
+Niveau 3 — Activités et suivi
+
+Les dernières opérations, rapports, tâches et activités pertinentes.
+
+Niveau 4 — Accès rapide
+
+Les modules et espaces les plus fréquemment utilisés.
+
+Le tableau de bord doit être un centre de décision, pas une longue page de statistiques décoratives.
+
+---
+
+5. ESPACE ADMINISTRATEUR SYSTÈME
+
+L'Administrateur système doit disposer d'un espace adapté à la gestion technique et opérationnelle de la plateforme.
+
+Cet espace doit être organisé selon les fonctionnalités réellement présentes.
+
+Il peut notamment regrouper :
+
+- Gestion des utilisateurs.
+- Gestion des rôles.
+- Gestion des permissions.
+- Gestion des agences.
+- Paramètres système.
+- Configuration.
+- Notifications.
+- Supervision des services.
+- Synchronisation.
+- Journal d'activité.
+- Contrôle des accès.
+- Gestion des fonctionnalités.
+- Suivi des erreurs, si disponible.
+- Maintenance, si disponible.
+
+Organisation de l'interface
+
+Ne présente pas l'ensemble des fonctions administratives dans une longue liste.
+
+Organise-les en catégories logiques et utilise des grilles compactes pour les accès aux modules.
+
+Les paramètres détaillés, formulaires et informations techniques peuvent être présentés dans des pages dédiées, des onglets ou des panneaux contextuels.
+
+L'Administrateur système doit pouvoir retrouver rapidement un outil, comprendre son état et effectuer les actions autorisées.
+
+Ne modifie pas les mécanismes de sécurité existants.
+
+---
+
+6. GESTION DES EMPLOYÉS ET SUPERVISION DES AGENTS
+
+La gestion du personnel est une composante centrale de l'application.
+
+Restructure les écrans concernés pour faciliter :
+
+- La consultation des employés.
+- La recherche.
+- Le filtrage.
+- La gestion des profils.
+- La visualisation des informations.
+- Le suivi des agents.
+- La supervision de l'activité.
+- La consultation des affectations.
+- La gestion des statuts.
+- L'accès aux détails d'un employé.
+- La gestion des salaires, si autorisée.
+- La consultation des historiques.
+
+Présentation
+
+Privilégie une liste ou un tableau compact pour afficher plusieurs employés simultanément.
+
+Évite de présenter chaque employé dans une grande carte verticale.
+
+Utilise des indicateurs visuels sobres pour les états réellement existants.
+
+Les actions principales doivent être accessibles rapidement sans encombrer chaque ligne.
+
+Supervision
+
+Lorsque les données sont disponibles, facilite la compréhension :
+
+- Des agents actifs.
+- Des agents inactifs.
+- Des affectations.
+- Des activités.
+- Des tâches en cours.
+- Des retards.
+- Des situations nécessitant une intervention.
+
+Ne crée pas de données fictives ou de statistiques artificielles.
+
+---
+
+7. GESTION DES TÂCHES ET ATTRIBUTIONS
+
+Le module de tâches doit être organisé pour permettre une gestion claire du travail au sein de l'institution.
+
+L'interface doit faciliter :
+
+- La création des tâches.
+- L'attribution aux employés.
+- L'attribution aux agences, lorsque cela est prévu.
+- La consultation des tâches.
+- Le suivi de l'avancement.
+- La gestion des priorités.
+- Les échéances.
+- La consultation des tâches terminées.
+- Les tâches en attente.
+- Les tâches en retard.
+- Les commentaires ou échanges liés aux tâches, s'ils existent.
+- Les notifications liées aux tâches.
+
+Organisation recommandée
+
+Lorsque les fonctionnalités existantes le permettent, utilise des onglets ou filtres tels que :
+
+- Toutes.
+- À faire.
+- En cours.
+- Terminées.
+- En retard.
+
+Ces catégories doivent correspondre aux véritables statuts utilisés par le système.
+
+Interface
+
+- Affichage compact.
+- Tâches clairement identifiées.
+- Priorités visibles.
+- Dates lisibles.
+- Affectation identifiable.
+- Actions rapides.
+- Filtres accessibles.
+- Recherche simple.
+
+Évite les grandes cartes qui obligent à faire défiler plusieurs écrans pour consulter quelques tâches.
+
+La gestion des tâches doit être rapide et efficace.
+
+---
+
+8. COMMUNICATION INTERNE ET CHAT
+
+Le module de communication interne doit permettre aux utilisateurs de communiquer efficacement sans rendre l'interface encombrante.
+
+Restructure si nécessaire :
+
+- La liste des conversations.
+- Les contacts.
+- Les discussions.
+- Les messages.
+- Les notifications.
+- Les échanges ciblés.
+- Les espaces de communication, s'ils existent.
+- Les pièces jointes, si disponibles.
+
+Interface mobile
+
+Privilégie une organisation intuitive :
+
+- Liste des conversations.
+- Accès rapide aux discussions.
+- Interface de chat claire.
+- Zone de saisie compacte.
+- Messages lisibles.
+- Actions accessibles.
+
+Interface PC
+
+Utilise intelligemment l'espace disponible, par exemple :
+
+- Une colonne pour les conversations.
+- Une zone principale pour la discussion.
+- Un panneau complémentaire uniquement lorsque nécessaire.
+
+Ne surcharge pas la communication interne avec des cartes ou des éléments décoratifs.
+
+Préserve intégralement les fonctionnalités existantes de communication et les règles de livraison des messages.
+
+---
+
+9. BILLETAGE
+
+Le module Billetage doit conserver sa fonctionnalité tout en bénéficiant d'une meilleure organisation visuelle.
+
+Il doit être facile à consulter, comprendre et utiliser.
+
+Optimise :
+
+- Le positionnement des éléments.
+- Les zones de saisie.
+- Les informations affichées.
+- Les montants.
+- Les regroupements.
+- Les boutons.
+- Les actions.
+- La lisibilité sur mobile.
+
+Utilise une disposition compacte lorsque cela est adapté.
+
+Les informations importantes doivent être visibles rapidement.
+
+Ne modifie pas les règles de calcul, la logique métier ou les fonctionnalités du billetage.
+
+---
+
+10. SUPERVISION DES TRANSACTIONS DE NUMÉROS INTERNES ET EXPLOITATION DES SMS
+
+Ets AMANI dispose de fonctionnalités liées à la supervision des transactions de numéros internes, notamment à partir des SMS reçus.
+
+Cette partie doit être particulièrement bien organisée.
+
+L'interface doit faciliter :
+
+- La consultation des SMS reçus.
+- Le suivi des transactions détectées.
+- La compréhension des informations extraites.
+- La consultation des opérations.
+- Le rapprochement des informations, lorsque cette fonctionnalité existe.
+- La recherche.
+- Le filtrage.
+- Le suivi des statuts.
+- La détection d'informations importantes.
+- La consultation des historiques.
+- La supervision des opérations.
+- L'identification des situations nécessitant une vérification.
+
+Interface souhaitée
+
+Utilise une présentation compacte, structurée et claire.
+
+Lorsque cela est pertinent, privilégie :
+
+- Un résumé des activités.
+- Des indicateurs compacts.
+- Une liste ou un tableau de transactions.
+- Des filtres.
+- Une recherche.
+- Des détails consultables sans encombrer l'écran principal.
+- Des statuts visuellement identifiables.
+
+Lisibilité et traçabilité
+
+Les informations extraites des SMS doivent rester facilement consultables et compréhensibles.
+
+Les données sources et les informations interprétées ne doivent pas être confondues.
+
+Ne modifie pas le mécanisme de lecture des SMS, les permissions Android, les règles d'extraction, les mécanismes de traitement ou la logique de supervision dans le cadre de cette mission UI/UX, sauf nécessité technique clairement justifiée et sans compromettre les fonctionnalités existantes.
+
+Respecte la confidentialité des SMS et des informations sensibles.
+
+Ne crée pas de transactions fictives pour améliorer visuellement l'interface.
+
+---
+
+11. GESTION DES AGENCES ET SUPERVISION INTERAGENCES
+
+L'application permet notamment la création et l'affectation des agences ainsi que la gestion et la supervision de leurs activités.
+
+Restructure les écrans pour faciliter :
+
+- La consultation des agences.
+- La création d'agence.
+- L'affectation.
+- La gestion des responsables.
+- La consultation des employés.
+- Le suivi des activités.
+- Les rapports.
+- Les notifications.
+- La supervision.
+- Les transferts interagences, selon les droits.
+
+Vue générale
+
+Lorsque les données existent, le Directeur général doit pouvoir comprendre rapidement :
+
+- Les agences disponibles.
+- Les agences actives.
+- Leur situation.
+- Le personnel affecté.
+- Les activités.
+- Les tâches.
+- Les rapports.
+- Les opérations en attente.
+- Les alertes.
+
+Transferts interagences
+
+Les interfaces de transferts interagences doivent être organisées pour rendre clairement visibles :
+
+- L'agence concernée.
+- L'origine.
+- La destination.
+- Les informations du transfert.
+- Le statut.
+- Les éléments de suivi.
+- Les actions autorisées.
+- L'historique.
+
+Les informations sensibles et les actions de validation doivent être clairement différenciées.
+
+Ne modifie pas la logique des transferts ni les règles de validation.
+
+---
+
+12. SERVICE À LA CLIENTÈLE DANS LES TRANSACTIONS
+
+Les fonctionnalités de service à la clientèle liées aux transactions doivent être organisées de manière à faciliter l'accompagnement, le suivi et la compréhension des opérations.
+
+Selon les modules existants, optimise :
+
+- Les informations du client.
+- Les transactions concernées.
+- Le suivi.
+- Les états.
+- Les recherches.
+- Les actions disponibles.
+- Les historiques.
+- Les informations nécessaires à l'assistance.
+
+L'interface doit permettre de trouver rapidement les informations utiles au traitement d'une situation.
+
+Évite de surcharger l'écran avec des données secondaires.
+
+Ne crée pas de nouveaux processus de transaction ni de fonctions de paiement.
+
+La mission reste une restructuration UI/UX.
+
+---
+
+13. GESTION DES ABONNÉS ET DES MEMBRES
+
+Le module de gestion des abonnés ou membres doit permettre une consultation et une gestion simples.
+
+Optimise les interfaces liées à :
+
+- La liste des abonnés ou membres.
+- La recherche.
+- Les filtres.
+- Les profils.
+- Les informations essentielles.
+- Les statuts.
+- Les historiques.
+- Les activités.
+- Les actions disponibles.
+
+Privilégie une liste compacte et une consultation détaillée sur demande.
+
+Évite les grandes cartes répétitives.
+
+La présentation doit permettre de retrouver rapidement une personne et de consulter les informations nécessaires.
+
+Préserve les données et les mécanismes existants.
+
+---
+
+14. GESTION DES SALAIRES ET DES EMPLOYÉS
+
+Les modules liés aux employés et aux salaires doivent être présentés avec rigueur.
+
+Optimise :
+
+- La liste des employés.
+- Les informations essentielles.
+- Les états.
+- Les périodes.
+- Les montants.
+- Les historiques.
+- Les détails.
+- Les actions autorisées.
+- Les filtres.
+- La consultation.
+
+Présentation financière
+
+- Montants lisibles.
+- Alignement cohérent.
+- Informations essentielles prioritaires.
+- États clairement identifiés.
+- Actions sensibles distinctes.
+- Réduction des éléments décoratifs.
+- Présentation compacte.
+
+Respecte les permissions existantes.
+
+Les informations salariales ne doivent être visibles que par les profils autorisés.
+
+Ne modifie aucune règle de calcul, de paiement, de validation ou de gestion des salaires.
+
+---
+
+15. RAPPORTS, ACTIVITÉS ET HISTORIQUE
+
+Les rapports et les activités constituent une source importante de supervision.
+
+Restructure les interfaces pour faciliter :
+
+- La consultation des rapports.
+- La recherche.
+- Le filtrage.
+- La sélection des périodes.
+- La consultation des détails.
+- Le suivi des activités.
+- La visualisation des historiques.
+- L'identification des informations importantes.
+- La navigation entre les différents rapports.
+
+Présentation
+
+Utilise des listes et tableaux compacts.
+
+Les informations doivent être hiérarchisées.
+
+Les éléments les plus importants doivent ressortir sans utiliser excessivement les couleurs.
+
+Évite de transformer les rapports en grandes cartes.
+
+Lorsque des filtres ou des périodes sont disponibles, organise-les dans une zone compacte.
+
+Les détails doivent pouvoir être consultés sans encombrer l'écran principal.
+
+Préserve les mécanismes de génération, d'exportation et de consultation existants.
+
+---
+
+16. NOTIFICATIONS ET ALERTES
+
+Le système de notifications doit être intégré de manière cohérente.
+
+Optimise :
+
+- L'accès aux notifications.
+- Les notifications non lues.
+- Les alertes importantes.
+- Les notifications liées aux tâches.
+- Les notifications liées aux activités.
+- Les notifications administratives.
+- Les notifications opérationnelles.
+- Les actions disponibles.
+
+Évite les notifications permanentes et encombrantes sur l'écran principal.
+
+Utilise des indicateurs compacts et des états visuels sobres.
+
+Les alertes importantes doivent être visibles sans rendre l'ensemble de l'application anxiogène ou surchargé.
+
+Préserve les mécanismes de notification existants.
+
+---
+
+17. AUTOMATISATION DES TÂCHES ET PROCESSUS
+
+Ets AMANI dispose ou peut disposer de fonctionnalités d'automatisation liées à ses opérations institutionnelles.
+
+Lorsqu'un module d'automatisation est déjà présent, restructure son interface pour faciliter :
+
+- La consultation des automatisations.
+- Leur identification.
+- Leur état.
+- Les tâches concernées.
+- Le suivi de leur exécution.
+- Les résultats.
+- Les erreurs, si disponibles.
+- Les actions autorisées.
+- Les paramètres.
+
+Utilise une présentation compacte et structurée.
+
+Ne modifie pas les mécanismes d'exécution, les règles, les déclencheurs ou les services d'automatisation dans le cadre de cette refonte, sauf nécessité technique clairement identifiée.
+
+Ne crée pas d'automatisation fictive.
+
+Ne crée pas de commandes qui ne fonctionnent pas réellement.
+
+---
+
+18. UTILISER LES ONGLETS POUR ORGANISER LES ESPACES
+
+Lorsque certaines pages contiennent de nombreuses fonctionnalités, regroupe-les intelligemment dans des onglets.
+
+Exemples possibles :
+
+- Général.
+- Activités.
+- Gestion.
+- Suivi.
+- Historique.
+- Rapports.
+- Paramètres.
+
+Ces onglets doivent être adaptés au contenu réel de chaque espace.
+
+Ne reproduis pas la même structure partout.
+
+Dans chaque onglet
+
+- Affiche uniquement les éléments pertinents.
+- Utilise une grille compacte pour les outils.
+- Utilise une liste pour les activités.
+- Utilise un tableau pour les données structurées.
+- Utilise des formulaires lorsque nécessaire.
+- Évite les longues sections inutiles.
+- Permets un changement rapide.
+- Maintiens une hiérarchie visuelle claire.
+
+Les onglets doivent être légers, intuitifs et adaptés au tactile.
+
+---
+
+19. RESTRUCTURER LA NAVIGATION GÉNÉRALE
+
+Analyse l'ensemble de la navigation actuelle.
+
+L'objectif est de permettre à chaque utilisateur de retrouver rapidement son espace de travail, selon ses permissions.
+
+Navigation supérieure
+
+Elle peut contenir selon le contexte :
+
+- Logo Ets AMANI.
+- Titre de l'espace.
+- Agence actuelle.
+- Recherche.
+- Notifications.
+- Actions contextuelles.
+- Profil.
+
+Elle doit rester compacte.
+
+Navigation inférieure mobile
+
+Privilégie une barre inférieure fixe lorsque cela améliore l'expérience.
+
+Les destinations doivent être définies selon les véritables espaces existants.
+
+Par exemple, selon le profil :
+
+- Accueil.
+- Activités.
+- Espaces.
+- Profil.
+
+Ne crée pas de destination artificielle.
+
+Navigation PC
+
+Sur ordinateur :
+
+- Utilise l'espace horizontal.
+- Privilégie une sidebar compacte si elle est pertinente.
+- Organise les modules.
+- Maintiens un accès rapide.
+- Évite les menus interminables.
+- Permets de visualiser efficacement les informations.
+
+Règle fondamentale
+
+La navigation ne doit pas devenir un deuxième tableau de bord.
+
+Chaque élément de navigation doit avoir une fonction claire.
+
+Évite les doublons entre navigation supérieure, navigation inférieure, sidebar, menus et raccourcis.
+
+---
+
+20. CORRIGER TOUS LES PROBLÈMES DE POSITIONNEMENT
+
+Effectue une inspection complète des écrans et corrige :
+
+- Éléments mal alignés.
+- Boutons mal positionnés.
+- Espacements irréguliers.
+- Marges excessives.
+- Composants trop larges.
+- Composants trop hauts.
+- Contenus qui débordent.
+- Composants qui se chevauchent.
+- Cartes de tailles incohérentes.
+- Titres mal placés.
+- Icônes désalignées.
+- Textes mal dimensionnés.
+- Zones vides excessives.
+- En-têtes trop encombrants.
+- Navigations trop hautes.
+- Sections trop longues.
+- Mauvaise utilisation de l'espace horizontal.
+- Formulaires mal organisés.
+- Éléments difficiles à trouver.
+- Tableaux mal adaptés aux mobiles.
+- Boutons trop nombreux.
+- Composants flottants qui gênent.
+- Écrans qui nécessitent plusieurs scrolls inutilement.
+
+Chaque écran doit avoir une structure visuelle claire, équilibrée et cohérente.
+
+---
+
+21. ADAPTER L'INTERFACE À CHAQUE TYPE DE CONTENU
+
+Ne cherche pas à imposer une grille partout.
+
+Grilles compactes
+
+À utiliser pour :
+
+- Modules.
+- Outils.
+- Actions rapides.
+- Commandes.
+- Raccourcis.
+- Catégories.
+- Espaces de travail.
+- Fonctionnalités simples.
+
+Listes
+
+À conserver pour :
+
+- Employés.
+- Agents.
+- Abonnés.
+- Membres.
+- Tâches.
+- Conversations.
+- Notifications.
+- Activités.
+- Historique.
+- Rapports.
+- Résultats de recherche.
+
+Tableaux
+
+À utiliser lorsqu'une comparaison ou une consultation structurée est nécessaire :
+
+- Suivi des opérations.
+- Transactions.
+- Billetage.
+- Transferts.
+- Rapports.
+- Salaires.
+- Activités.
+- Données de supervision.
+
+Formulaires
+
+À optimiser pour :
+
+- Saisie rapide.
+- Champs bien alignés.
+- Groupements logiques.
+- Libellés visibles.
+- Espacements cohérents.
+- Utilisation confortable sur mobile.
+- Réduction des étapes inutiles.
+
+Tableaux de bord
+
+À organiser autour :
+
+- Des informations essentielles.
+- Des indicateurs prioritaires.
+- Des alertes.
+- Des activités.
+- Des actions fréquentes.
+- Des données de supervision.
+
+Évite les longues successions de cartes.
+
+---
+
+22. DESIGN SYSTEM GLOBAL
+
+Mets en place ou harmonise un système de design cohérent sur toute l'application.
+
+Espacements et dimensions
+
+Définis des règles communes pour :
+
+- Marges.
+- Espacements.
+- Hauteurs des en-têtes.
+- Taille des icônes.
+- Dimensions des boutons.
+- Dimensions des grilles.
+- Arrondis.
+- Taille des textes.
+- Alignement.
+- Hauteur des champs.
+- Densité des tableaux.
+- Espacement des listes.
+
+Évite les valeurs arbitraires différentes sur chaque écran.
+
+Couleurs
+
+Respecte l'identité visuelle existante d'Ets AMANI, sauf si elle présente des incohérences majeures.
+
+Utilise :
+
+- Une couleur principale.
+- Des couleurs secondaires contrôlées.
+- Des fonds subtils.
+- Des contrastes lisibles.
+- Des couleurs fonctionnelles.
+- Des états visuels cohérents.
+
+Les couleurs doivent aider à comprendre les informations.
+
+Ne transforme pas chaque module en carte multicolore.
+
+Bordures
+
+Privilégie une interface légère.
+
+Évite les bordures internes visibles autour de chaque élément.
+
+Utilise plutôt :
+
+- Des fonds légèrement différenciés.
+- Des espacements.
+- Des séparations discrètes.
+- Une hiérarchie typographique.
+
+Utilise les bordures uniquement lorsqu'elles apportent une réelle utilité.
+
+Typographie
+
+Harmonise :
+
+- Titres.
+- Sous-titres.
+- Libellés.
+- Descriptions.
+- Boutons.
+- Informations secondaires.
+- Montants.
+- Dates.
+- Statuts.
+
+Évite les textes trop grands, les libellés excessivement longs et les tailles incohérentes.
+
+---
+
+23. RESPONSIVE DESIGN — MOBILE, TABLETTE ET PC
+
+La refonte doit être réellement responsive et non simplement adaptée à la largeur de l'écran.
+
+Mobile
+
+- Grilles de 3 ou 4 colonnes lorsque cela est pertinent.
+- Accès rapide aux fonctionnalités.
+- Navigation confortable.
+- Boîtes compactes.
+- Scroll réduit.
+- Zones tactiles suffisamment grandes.
+- En-têtes compacts.
+- Navigation peu encombrante.
+- Textes lisibles.
+- Tableaux adaptés.
+- Aucun débordement horizontal involontaire.
+- Formulaires faciles à remplir.
+
+Tablette
+
+- Exploite l'espace disponible.
+- Augmente intelligemment le nombre de colonnes.
+- Adapte la taille des composants.
+- Maintient une bonne lisibilité.
+- Évite les interfaces mobiles simplement étirées.
+
+PC
+
+- Exploite pleinement la largeur disponible.
+- Utilise des grilles plus larges.
+- Organise les espaces de travail.
+- Utilise une navigation latérale si pertinente.
+- Facilite la supervision.
+- Optimise les tableaux.
+- Évite les contenus concentrés dans une colonne étroite.
+- Maintient une bonne hiérarchie visuelle.
+
+---
+
+24. RESPECTER LES RÔLES ET PERMISSIONS
+
+Ets AMANI possède des profils utilisateurs et des permissions.
+
+La refonte doit respecter intégralement le système de contrôle d'accès existant.
+
+Les rôles peuvent notamment inclure, selon le code actuel :
+
+- Administrateur système.
+- Directeur général.
+- Administrateur d'agence.
+- Agent.
+- Abonné.
+- Client.
+
+Ne modifie pas les rôles existants dans le cadre de la refonte.
+
+Exigences
+
+- Affiche uniquement les fonctionnalités autorisées.
+- Respecte les permissions.
+- Ne crée pas de sélecteur artificiel de rôles.
+- Ne contourne pas les contrôles d'accès.
+- Ne modifie pas les mécanismes d'authentification.
+- Ne donne pas accès à une fonction sensible simplement parce qu'un bouton est visible.
+- Adapte l'interface aux responsabilités de chaque profil.
+
+Le Directeur général et l'Administrateur système doivent bénéficier d'une expérience de supervision adaptée à leurs responsabilités respectives, sans exposer des fonctionnalités à des profils non autorisés.
+
+---
+
+25. PRÉSERVER LE FONCTIONNEMENT EXISTANT
+
+Cette mission concerne l'interface UI/UX.
+
+Elle ne constitue pas une réécriture de l'application.
+
+Interdictions
+
+- Ne supprime aucune fonctionnalité existante.
+- Ne supprime aucun module.
+- Ne désactive aucune commande.
+- Ne modifie pas inutilement la logique métier.
+- Ne modifie pas les rôles ou permissions.
+- Ne casse pas l'authentification.
+- Ne modifie pas inutilement les API.
+- Ne change pas les structures de données.
+- Ne supprime pas les données locales.
+- Ne modifie pas la base de données sans nécessité absolue.
+- Ne casse pas les fonctionnalités hors ligne.
+- Ne casse pas la synchronisation.
+- Ne modifie pas inutilement Firebase.
+- Ne modifie pas les mécanismes de lecture et d'exploitation des SMS.
+- Ne casse pas les notifications.
+- Ne modifie pas les mécanismes de communication interne.
+- Ne casse pas les transferts interagences.
+- Ne modifie pas les règles de gestion des salaires.
+- Ne modifie pas les règles de billetage.
+- Ne remplace pas les composants fonctionnels par de simples éléments visuels.
+- Ne crée pas de fonctionnalités fictives.
+- Ne crée pas de boutons sans action.
+- Ne remplace pas une vraie fonctionnalité par une maquette.
+- Ne réécris pas entièrement le projet pour des raisons esthétiques.
+
+Préserve au maximum :
+
+- Architecture.
+- Composants réutilisables.
+- Technologies.
+- Services.
+- Hooks.
+- Routes.
+- Modèles de données.
+- Fonctionnalités.
+- Permissions.
+- Authentification.
+- Données locales.
+- Synchronisation.
+- Notifications.
+- SMS.
+- Communication.
+- Fonctionnement offline.
+
+Si un composant doit être restructuré, adapte-le proprement en conservant son comportement.
+
+---
+
+26. AUDIT ET EXÉCUTION OBLIGATOIRES
+
+Ne te contente pas de proposer des recommandations.
+
+Tu dois réellement intervenir dans le code.
+
+ÉTAPE 1 — AUDIT COMPLET
+
+Inspecte réellement :
+
+- La structure du projet.
+- Tous les écrans.
+- Les routes.
+- Le système de navigation.
+- Les composants réutilisables.
+- Les styles globaux.
+- Les grilles existantes.
+- Les cartes.
+- Les boutons.
+- Les menus.
+- Les onglets.
+- Les tableaux.
+- Les formulaires.
+- Le responsive design.
+- Les tableaux de bord.
+- Les modules de supervision.
+- Les interfaces selon les rôles.
+- Les modules de communication.
+- Les modules de tâches.
+- Les modules de rapports.
+- Les interfaces de gestion des agences.
+- Les écrans de gestion des employés.
+- Les modules liés aux SMS et aux transactions.
+- Les interfaces liées aux transferts.
+- Les modules d'abonnés ou membres.
+- Les fonctionnalités d'automatisation.
+
+Identifie les problèmes réels avant d'effectuer les modifications.
+
+Ne fais pas un audit limité à quelques fichiers.
+
+ÉTAPE 2 — ARCHITECTURE VISUELLE
+
+Détermine :
+
+- Les écrans qui doivent utiliser des grilles compactes.
+- Les écrans qui doivent utiliser des onglets.
+- Les écrans qui doivent utiliser des listes.
+- Les écrans qui nécessitent des tableaux.
+- Les espaces qui nécessitent une navigation supérieure.
+- Les espaces qui nécessitent une navigation inférieure.
+- Les espaces qui nécessitent une navigation latérale.
+- Les composants communs à harmoniser.
+- Les composants à restructurer.
+- Les problèmes de responsive design.
+- Les zones nécessitant une meilleure densité d'information.
+- Les fonctionnalités à regrouper.
+- Les éléments à rendre plus accessibles.
+
+Prends des décisions de design professionnelles et cohérentes.
+
+Ne demande pas mon avis sur chaque détail.
+
+ÉTAPE 3 — IMPLEMENTATION
+
+Effectue réellement les modifications dans le projet.
+
+Priorité :
+
+1. Corriger la structure générale.
+2. Corriger la navigation.
+3. Corriger les positionnements.
+4. Revoir la disposition des espaces.
+5. Mettre en place les grilles compactes.
+6. Optimiser les tableaux et les listes.
+7. Harmoniser les onglets.
+8. Corriger les dimensions des composants.
+9. Optimiser le responsive design.
+10. Harmoniser les styles.
+11. Améliorer les tableaux de bord.
+12. Améliorer l'accès aux fonctionnalités.
+13. Corriger les détails visuels.
+
+Ne te limite pas à un seul écran si les problèmes sont présents dans toute l'application.
+
+ÉTAPE 4 — VÉRIFICATION
+
+Après les modifications :
+
+- Vérifie que le projet compile.
+- Corrige les erreurs TypeScript éventuelles.
+- Vérifie les imports.
+- Vérifie les routes.
+- Vérifie la navigation.
+- Vérifie les boutons.
+- Vérifie les onglets.
+- Vérifie les formulaires.
+- Vérifie les permissions.
+- Vérifie que toutes les fonctionnalités existantes restent accessibles.
+- Vérifie les débordements sur mobile.
+- Vérifie que les grilles ne sont pas cassées.
+- Vérifie plusieurs tailles d'écran.
+- Vérifie les composants qui se superposent.
+- Vérifie qu'aucune modification UI n'a cassé les fonctionnalités existantes.
+
+Si des tests ou outils de vérification sont disponibles, utilise-les réellement.
+
+Ne prétends pas avoir effectué une vérification qui n'a pas été réalisée.
+
+---
+
+27. RÉSULTAT ATTENDU
+
+Je veux qu'Ets AMANI donne immédiatement l'impression d'une institution structurée, maîtrisée, connectée et organisée.
+
+L'application doit faire ressentir que les activités de l'institution sont centralisées et que les différents espaces sont coordonnés.
+
+Lorsqu'un utilisateur ouvre un écran, il doit comprendre rapidement :
+
+- Où il se trouve.
+- Quel espace il consulte.
+- Quelles fonctionnalités sont disponibles.
+- Quelles informations sont importantes.
+- Quelle action il peut effectuer.
+- Comment consulter les activités.
+- Comment retrouver une tâche.
+- Comment communiquer.
+- Comment accéder à un autre espace.
+
+Les fonctions simples doivent être présentées sous forme de boîtes compactes en grille.
+
+Les fonctions complexes doivent être organisées à l'aide d'onglets, de tableaux, de listes ou de sections adaptées.
+
+La navigation doit être rapide, cohérente et intuitive.
+
+L'application doit être :
+
+- Visuellement propre.
+- Dense sans être étouffante.
+- Moderne sans être excessive.
+- Professionnelle sans être compliquée.
+- Facile à utiliser sur mobile.
+- Efficace sur PC.
+- Adaptée aux activités institutionnelles.
+- Optimisée pour la supervision.
+- Organisée pour faciliter la communication et la coordination.
+
+---
+
+28. LIBERTÉ DE CONCEPTION
+
+Tu as la liberté de revoir profondément :
+
+- La disposition des éléments.
+- La structure des pages.
+- Les grilles.
+- Les onglets.
+- La navigation.
+- Les espacements.
+- Les dimensions.
+- Les composants visuels.
+- Les regroupements de fonctionnalités.
+- Les tableaux de bord.
+- Les espaces de travail.
+- L'organisation des informations.
+
+Tant que tu respectes :
+
+- Les fonctionnalités existantes.
+- L'identité Ets AMANI.
+- Les rôles et permissions.
+- Les données.
+- L'architecture.
+- Les mécanismes de fonctionnement.
+
+Ne t'attache pas à la disposition actuelle si elle est mauvaise.
+
+Si une page est mal organisée, restructure-la complètement.
+
+Si un système de cartes est inadapté, remplace-le par une grille compacte.
+
+Si la navigation actuelle est confuse, repense-la.
+
+Si plusieurs fonctionnalités sont dispersées, regroupe-les intelligemment.
+
+Prends des décisions de design professionnelles au lieu de demander mon avis sur chaque détail.
+
+---
+
+29. DIRECTIVE FINALE
+
+Travaille directement sur le projet Ets AMANI existant.
+
+Réalise une véritable refonte UI/UX de la plateforme institutionnelle.
+
+Ne te limite pas :
+
+- À un audit.
+- À des suggestions.
+- À une maquette.
+- À un plan.
+- À des recommandations.
+- À la modification de quelques couleurs.
+
+Je veux des modifications concrètes dans le code :
+
+- Une interface restructurée.
+- Des espaces mieux organisés.
+- Une navigation améliorée.
+- Des grilles compactes.
+- Des composants harmonisés.
+- Des écrans mieux positionnés.
+- Des fonctionnalités mieux regroupées.
+- Des tableaux de bord plus intelligents.
+- Une expérience utilisateur nettement plus professionnelle.
+- Une interface responsive réellement optimisée.
+
+Préserve tout ce qui fonctionne.
+
+Corrige ce qui est mal organisé.
+
+Optimise ce qui peut être amélioré.
+
+Ne détruis aucune fonctionnalité au nom du design.
+
+Ne considère pas la mission terminée tant que l'interface n'a pas réellement été améliorée dans le code et que les vérifications essentielles n'ont pas été réalisées.
+
+---
+
+30. COMPTE RENDU FINAL OBLIGATOIRE
+
+À la fin de la mission, fournis un rapport précis comprenant :
+
+A. Interface
+
+- Les écrans restructurés.
+- Les problèmes de positionnement corrigés.
+- Les nouvelles dispositions en grille.
+- Les composants visuels harmonisés.
+- Les améliorations apportées aux tableaux de bord.
+
+B. Navigation
+
+- Les navigations modifiées.
+- Les espaces réorganisés.
+- Les onglets ajoutés ou réorganisés.
+- Les accès simplifiés.
+- Les doublons éventuels supprimés.
+
+C. Modules institutionnels
+
+- Les améliorations apportées à la supervision.
+- Les améliorations apportées à la gestion des employés.
+- Les améliorations apportées aux tâches.
+- Les améliorations apportées à la communication.
+- Les améliorations apportées au billetage.
+- Les améliorations apportées à la supervision SMS et transactions.
+- Les améliorations apportées à la gestion des agences.
+- Les améliorations apportées aux transferts interagences.
+- Les améliorations apportées aux rapports.
+- Les améliorations apportées aux abonnés ou membres.
+- Les améliorations apportées aux salaires.
+- Les améliorations apportées aux automatisations.
+
+Ne cite que les modules réellement modifiés.
+
+D. Responsive design
+
+- Optimisations mobiles.
+- Optimisations tablettes.
+- Optimisations PC.
+
+E. Préservation fonctionnelle
+
+- Fonctionnalités préservées.
+- Vérifications effectuées.
+- Tests réellement exécutés.
+- Régressions détectées et corrigées.
+- Éventuelles limitations.
+
+F. Problèmes restants
+
+- Problèmes non résolus.
+- Limitations.
+- Éléments nécessitant une intervention supplémentaire.
+
+Le compte rendu doit être honnête, concret et basé sur les modifications réellement réalisées.
+
+---
+
+OBJECTIF FINAL
+
+Faire d'Ets AMANI une véritable plateforme institutionnelle centralisée, au service de la Direction générale, de l'Administrateur système, des agences et de l'ensemble des employés.
+
+Une institution mieux organisée.
+
+Une gestion centralisée.
+
+Une supervision claire.
+
+Des agents suivis.
+
+Des tâches coordonnées.
+
+Une communication fluide.
+
+Des opérations visibles.
+
+Des rapports accessibles.
+
+Des agences connectées.
+
+Un espace de travail professionnel.
+
+Audit réel → Architecture UI/UX cohérente → Restructuration complète → Modifications concrètes dans le code → Vérification → Rapport final.

@@ -604,40 +604,40 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
     switch (status) {
       case 'confirme':
         return (
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800">
+          <span className="inline-flex items-center gap-1 rounded-md border border-emerald-200 dark:border-emerald-900/60 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 text-[11px] font-bold text-emerald-800 dark:text-emerald-300">
             <CheckCircle2 className="h-3 w-3" /> Payé & Confirmé par l'agent
           </span>
         );
       case 'paye':
         return (
-          <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-0.5 text-[11px] font-bold text-blue-800">
+          <span className="inline-flex items-center gap-1 rounded-md border border-blue-200 dark:border-blue-900/60 bg-blue-100 dark:bg-blue-950/60 px-2 py-0.5 text-[11px] font-bold text-blue-800 dark:text-blue-300">
             <Clock className="h-3 w-3" /> Payé (Attente confirmation agent)
           </span>
         );
       case 'en_attente_de_paiement':
       case 'autorise':
         return (
-          <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-2.5 py-0.5 text-[11px] font-bold text-indigo-800">
+          <span className="inline-flex items-center gap-1 rounded-md border border-indigo-200 dark:border-indigo-900/60 bg-indigo-100 dark:bg-indigo-950/60 px-2 py-0.5 text-[11px] font-bold text-indigo-800 dark:text-indigo-300">
             Autorisé au paiement
           </span>
         );
       case 'couvert_par_avance':
         return (
-          <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-0.5 text-[11px] font-bold text-purple-800">
+          <span className="inline-flex items-center gap-1 rounded-md border border-purple-200 dark:border-purple-900/60 bg-purple-100 dark:bg-purple-950/60 px-2 py-0.5 text-[11px] font-bold text-purple-800 dark:text-purple-300">
             Couvert par Avance
           </span>
         );
       case 'en_retard':
       case 'reclame':
         return (
-          <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-0.5 text-[11px] font-bold text-red-800">
+          <span className="inline-flex items-center gap-1 rounded-md border border-red-200 dark:border-red-900/60 bg-red-100 dark:bg-red-950/60 px-2 py-0.5 text-[11px] font-bold text-red-800 dark:text-red-300">
             <AlertTriangle className="h-3 w-3" />{' '}
             {status === 'reclame' ? 'Réclamé (En retard)' : 'En retard'}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-800">
+          <span className="inline-flex items-center gap-1 rounded-md border border-amber-200 dark:border-amber-900/60 bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 text-[11px] font-bold text-amber-800 dark:text-amber-300">
             À payer
           </span>
         );
@@ -645,28 +645,28 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* EN-TÊTE PRINCIPAL DU MODULE SALAIRE */}
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+      <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-3.5">
             <img
               src="/logo.png"
               alt="Ets AMANI"
-              className="h-12 w-12 shrink-0 object-contain rounded-2xl border border-slate-200 bg-white p-1 shadow-xs"
+              className="h-11 w-11 shrink-0 object-contain rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-1 shadow-xs"
             />
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-xl font-black text-slate-900">
+                <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
                   {effectiveMode === 'dg'
                     ? 'Gestion des Salaires Mensuels, Avances & Réclamations (DG)'
                     : 'Mon Salaire, Confirmations & Demandes d’Avance'}
                 </h2>
-                <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
+                <span className="rounded-md border border-emerald-200 dark:border-emerald-900/60 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 text-[11px] font-bold text-emerald-800 dark:text-emerald-300">
                   Traçabilité & Audit Actifs
                 </span>
               </div>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 {effectiveMode === 'dg'
                   ? 'Autorité décisionnelle Direction Générale : fixation par période, autorisation, désignation du payeur, réclamations et contrôle des avances.'
                   : 'Consultez votre salaire par période, confirmez la réception effective de votre paie et suivez vos demandes.'}
@@ -675,18 +675,18 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
           </div>
 
           {/* Contrôle critique DG : ACTIVER / DÉSACTIVER les demandes d'avance */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
             {isDgOrSys && (
-              <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2">
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/70 px-3.5 py-2">
                 <div>
-                  <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Demandes d'avance Agents
                   </span>
                   <span
                     className={`text-xs font-black ${
                       settings.advanceRequestsEnabled
-                        ? 'text-emerald-700'
-                        : 'text-red-600'
+                        ? 'text-emerald-700 dark:text-emerald-400'
+                        : 'text-red-600 dark:text-red-400'
                     }`}
                   >
                     {settings.advanceRequestsEnabled ? 'ACTIVÉ' : 'DÉSACTIVÉ'}
@@ -695,10 +695,10 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                 <button
                   type="button"
                   onClick={handleToggleAdvances}
-                  className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition ${
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
                     settings.advanceRequestsEnabled
                       ? 'bg-emerald-600 text-white hover:bg-emerald-500'
-                      : 'bg-slate-900 text-white hover:bg-slate-800'
+                      : 'bg-slate-900 dark:bg-slate-700 text-white hover:bg-slate-800 dark:hover:bg-slate-600'
                   }`}
                 >
                   {settings.advanceRequestsEnabled ? (
@@ -719,7 +719,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             <button
               type="button"
               onClick={loadAll}
-              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+              className="flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
               Actualiser
@@ -728,7 +728,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-xl border border-slate-200 p-2 text-slate-500 hover:bg-slate-100"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -737,18 +737,18 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
         </div>
 
         {feedback && (
-          <div className="flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-900">
+          <div className="flex items-center justify-between rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/60 px-4 py-3 text-xs font-semibold text-emerald-900 dark:text-emerald-200">
             <span>{feedback}</span>
-            <button type="button" onClick={() => setFeedback(null)}>
+            <button type="button" onClick={() => setFeedback(null)} className="rounded-md p-0.5 hover:bg-emerald-100 dark:hover:bg-emerald-900/40">
               <X className="h-4 w-4" />
             </button>
           </div>
         )}
 
         {errorMsg && (
-          <div className="flex items-center justify-between rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-800">
+          <div className="flex items-center justify-between rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/60 px-4 py-3 text-xs font-semibold text-red-800 dark:text-red-300">
             <span>{errorMsg}</span>
-            <button type="button" onClick={() => setErrorMsg(null)}>
+            <button type="button" onClick={() => setErrorMsg(null)} className="rounded-md p-0.5 hover:bg-red-100 dark:hover:bg-red-900/40">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -756,14 +756,14 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
         {/* Navigation par onglets selon le rôle */}
         {effectiveMode === 'dg' ? (
-          <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+          <div className="flex items-center gap-2 border-t border-slate-100 dark:border-slate-800 pt-3.5 overflow-x-auto scrollbar-none">
             <button
               type="button"
               onClick={() => setDgTab('overview')}
-              className={`rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition whitespace-nowrap shrink-0 tabular-nums ${
                 dgTab === 'overview'
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-slate-900 dark:bg-emerald-600 text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               Vue Générale & Paie ({salaries.length})
@@ -771,10 +771,10 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             <button
               type="button"
               onClick={() => setDgTab('define')}
-              className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+              className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-bold transition whitespace-nowrap shrink-0 ${
                 dgTab === 'define'
                   ? 'bg-emerald-600 text-white'
-                  : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+                  : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/50'
               }`}
             >
               <Plus className="h-3.5 w-3.5" />
@@ -783,10 +783,10 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             <button
               type="button"
               onClick={() => setDgTab('claims')}
-              className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+              className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-bold transition whitespace-nowrap shrink-0 tabular-nums ${
                 dgTab === 'claims'
                   ? 'bg-red-600 text-white'
-                  : 'bg-red-50 text-red-800 hover:bg-red-100'
+                  : 'bg-red-50 dark:bg-red-950/60 text-red-800 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/50'
               }`}
             >
               Réclamations ({dgStats.pendingClaims})
@@ -794,10 +794,10 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             <button
               type="button"
               onClick={() => setDgTab('advances')}
-              className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+              className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-bold transition whitespace-nowrap shrink-0 tabular-nums ${
                 dgTab === 'advances'
                   ? 'bg-purple-700 text-white'
-                  : 'bg-purple-50 text-purple-800 hover:bg-purple-100'
+                  : 'bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50'
               }`}
             >
               Avances sur Salaire ({dgStats.pendingAdvances} en attente)
@@ -805,10 +805,10 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             <button
               type="button"
               onClick={() => setDgTab('payer_desk')}
-              className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+              className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-bold transition whitespace-nowrap shrink-0 tabular-nums ${
                 dgTab === 'payer_desk'
                   ? 'bg-blue-600 text-white'
-                  : 'bg-blue-50 text-blue-800 hover:bg-blue-100'
+                  : 'bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50'
               }`}
             >
               Guichet Payeur ({assignedSalariesToPay.length + assignedAdvancesToPay.length})
@@ -816,10 +816,10 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             <button
               type="button"
               onClick={() => setDgTab('history')}
-              className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+              className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-bold transition whitespace-nowrap shrink-0 ${
                 dgTab === 'history'
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-slate-900 dark:bg-emerald-600 text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               <History className="h-3.5 w-3.5" />
@@ -827,14 +827,14 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             </button>
           </div>
         ) : (
-          <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+          <div className="flex items-center gap-2 border-t border-slate-100 dark:border-slate-800 pt-3.5 overflow-x-auto scrollbar-none">
             <button
               type="button"
               onClick={() => setAgentTab('my_salaries')}
-              className={`rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition whitespace-nowrap shrink-0 tabular-nums ${
                 agentTab === 'my_salaries'
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-slate-900 dark:bg-emerald-600 text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               Mon Salaire & Historique ({myPersonalSalaries.length})
@@ -842,10 +842,10 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             <button
               type="button"
               onClick={() => setAgentTab('my_claims')}
-              className={`rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition whitespace-nowrap shrink-0 tabular-nums ${
                 agentTab === 'my_claims'
                   ? 'bg-amber-500 text-slate-950'
-                  : 'bg-amber-50 text-amber-800 hover:bg-amber-100'
+                  : 'bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50'
               }`}
             >
               Mes Réclamations ({claims.filter((c) => c.agentId === user?.uid).length})
@@ -853,10 +853,10 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             <button
               type="button"
               onClick={() => setAgentTab('my_advances')}
-              className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+              className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-bold transition whitespace-nowrap shrink-0 tabular-nums ${
                 agentTab === 'my_advances'
                   ? 'bg-purple-700 text-white'
-                  : 'bg-purple-50 text-purple-800 hover:bg-purple-100'
+                  : 'bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50'
               }`}
             >
               {!settings.advanceRequestsEnabled && <Lock className="h-3.5 w-3.5" />}
@@ -868,10 +868,10 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
               <button
                 type="button"
                 onClick={() => setAgentTab('payer_desk')}
-                className={`rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+                className={`rounded-lg px-3.5 py-2 text-xs font-bold transition whitespace-nowrap shrink-0 tabular-nums ${
                   agentTab === 'payer_desk'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-blue-50 text-blue-800 hover:bg-blue-100'
+                    : 'bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50'
                 }`}
               >
                 Paiements Assignés ({assignedSalariesToPay.length + assignedAdvancesToPay.length})
@@ -888,51 +888,51 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
         <>
           {/* KPIs DG */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-              <span className="text-[11px] font-bold uppercase text-slate-400">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs">
+              <span className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400">
                 À payer / Autorisés
               </span>
-              <p className="mt-1 text-2xl font-black tabular-nums text-slate-900">
+              <p className="mt-1 text-2xl font-black tabular-nums text-slate-900 dark:text-white">
                 {dgStats.toPay}
               </p>
             </div>
-            <div className="rounded-2xl border border-blue-200 bg-blue-50/60 p-4 shadow-xs">
-              <span className="text-[11px] font-bold uppercase text-blue-700">
+            <div className="rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/60 dark:bg-blue-950/40 p-4 shadow-xs">
+              <span className="text-[11px] font-bold uppercase text-blue-700 dark:text-blue-400">
                 Payés (Non confirmés)
               </span>
-              <p className="mt-1 text-2xl font-black tabular-nums text-blue-950">
+              <p className="mt-1 text-2xl font-black tabular-nums text-blue-950 dark:text-blue-200">
                 {dgStats.paidUnconfirmed}
               </p>
             </div>
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4 shadow-xs">
-              <span className="text-[11px] font-bold uppercase text-emerald-700">
+            <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/40 p-4 shadow-xs">
+              <span className="text-[11px] font-bold uppercase text-emerald-700 dark:text-emerald-400">
                 Payés & Confirmés
               </span>
-              <p className="mt-1 text-2xl font-black tabular-nums text-emerald-950">
+              <p className="mt-1 text-2xl font-black tabular-nums text-emerald-950 dark:text-emerald-200">
                 {dgStats.confirmed}
               </p>
             </div>
-            <div className="rounded-2xl border border-purple-200 bg-purple-50/60 p-4 shadow-xs">
-              <span className="text-[11px] font-bold uppercase text-purple-700">
+            <div className="rounded-xl border border-purple-200 dark:border-purple-900/60 bg-purple-50/60 dark:bg-purple-950/40 p-4 shadow-xs">
+              <span className="text-[11px] font-bold uppercase text-purple-700 dark:text-purple-400">
                 Mois couverts / Avance
               </span>
-              <p className="mt-1 text-2xl font-black tabular-nums text-purple-950">
+              <p className="mt-1 text-2xl font-black tabular-nums text-purple-950 dark:text-purple-200">
                 {dgStats.coveredByAdvance}
               </p>
             </div>
-            <div className="rounded-2xl border border-red-200 bg-red-50/60 p-4 shadow-xs">
-              <span className="text-[11px] font-bold uppercase text-red-700">
+            <div className="rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50/60 dark:bg-red-950/40 p-4 shadow-xs">
+              <span className="text-[11px] font-bold uppercase text-red-700 dark:text-red-400">
                 En retard / Réclamés
               </span>
-              <p className="mt-1 text-2xl font-black tabular-nums text-red-950">
+              <p className="mt-1 text-2xl font-black tabular-nums text-red-950 dark:text-red-200">
                 {dgStats.lateOrClaimed}
               </p>
             </div>
-            <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4 shadow-xs">
-              <span className="text-[11px] font-bold uppercase text-amber-800">
+            <div className="rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/60 dark:bg-amber-950/40 p-4 shadow-xs">
+              <span className="text-[11px] font-bold uppercase text-amber-800 dark:text-amber-400">
                 Avances à examiner
               </span>
-              <p className="mt-1 text-2xl font-black tabular-nums text-amber-950">
+              <p className="mt-1 text-2xl font-black tabular-nums text-amber-950 dark:text-amber-200">
                 {dgStats.pendingAdvances}
               </p>
             </div>
@@ -940,7 +940,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
           {/* DG ONGLET 1 : VUE GENERALE DES SALAIRES PAR PERIODE */}
           {dgTab === 'overview' && (
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-4">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div className="relative">
                   <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -949,13 +949,13 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Rechercher un agent, mois, référence..."
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-3 text-xs"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 py-2 pl-10 pr-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-emerald-500"
                   />
                 </div>
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold"
+                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white outline-none"
                 >
                   <option value="all">Tous les statuts salariaux</option>
                   <option value="a_payer">À payer</option>
@@ -969,7 +969,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                 <select
                   value={agencyFilter}
                   onChange={(e) => setAgencyFilter(e.target.value)}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold"
+                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white outline-none"
                 >
                   <option value="all">Toutes les agences</option>
                   {agencies.map((a) => (
@@ -981,11 +981,11 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
               </div>
 
               {filteredSalaries.length === 0 ? (
-                <div className="py-12 text-center text-xs text-slate-500">
+                <div className="py-12 text-center text-xs text-slate-500 dark:text-slate-400">
                   Aucune période de salaire enregistrée pour ces critères. Cliquez sur « Définir un Salaire (Période) » pour préparer la paie d'un agent.
                 </div>
               ) : (
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
                   {filteredSalaries.map((sal) => (
                     <div
                       key={sal.id}
@@ -993,30 +993,30 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                     >
                       <div className="space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded">
+                          <span className="font-mono font-bold text-slate-900 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md tabular-nums">
                             {sal.reference}
                           </span>
-                          <span className="rounded bg-blue-50 px-2.5 py-0.5 font-black text-blue-900">
+                          <span className="rounded-md bg-blue-50 dark:bg-blue-950/60 px-2.5 py-0.5 font-black text-blue-900 dark:text-blue-300">
                             {formatSalaryPeriodLabel(sal.month, sal.year)}
                           </span>
                           {statusBadge(sal.status)}
-                          <span className="text-[11px] text-slate-400">
+                          <span className="text-[11px] text-slate-400 dark:text-slate-500">
                             • {sal.agencyName}
                           </span>
                         </div>
-                        <p className="text-sm font-black text-slate-900">
+                        <p className="text-sm font-black text-slate-900 dark:text-white">
                           {sal.agentName}{' '}
-                          <span className="font-normal text-slate-500">
+                          <span className="font-normal text-slate-500 dark:text-slate-400">
                             — Montant fixé :{' '}
-                            <strong className="text-slate-950 tabular-nums">
+                            <strong className="text-slate-950 dark:text-white tabular-nums">
                               {sal.plannedAmount.toLocaleString('fr-FR')} {sal.currency}
                             </strong>
                           </span>
                         </p>
                         {sal.designatedPayerType && (
-                          <p className="text-[11px] text-slate-600">
+                          <p className="text-[11px] text-slate-600 dark:text-slate-400">
                             Payeur désigné par DG :{' '}
-                            <strong>
+                            <strong className="text-slate-800 dark:text-slate-200">
                               {sal.designatedPayerType === 'user'
                                 ? sal.designatedPayerName
                                 : `Service ${sal.designatedPayerService}`}
@@ -1024,14 +1024,14 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                             {sal.paidByName && (
                               <>
                                 {' '}
-                                • Payé par <strong>{sal.paidByName}</strong> (Op:{' '}
-                                {sal.linkedOperationNumber})
+                                • Payé par <strong className="text-slate-800 dark:text-slate-200">{sal.paidByName}</strong> (Op:{' '}
+                                <span className="tabular-nums">{sal.linkedOperationNumber}</span>)
                               </>
                             )}
                           </p>
                         )}
                         {sal.confirmedByAgent && (
-                          <p className="text-[11px] font-semibold text-emerald-700">
+                          <p className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 tabular-nums">
                             ✓ Confirmé par l'agent le{' '}
                             {sal.confirmedAt
                               ? new Date(sal.confirmedAt).toLocaleString('fr-FR')
@@ -1048,7 +1048,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                           <button
                             type="button"
                             onClick={() => setAuthorizingSalary(sal)}
-                            className="rounded-xl bg-blue-600 px-3.5 py-2 font-bold text-white hover:bg-blue-500"
+                            className="rounded-lg bg-blue-600 px-3.5 py-2 font-bold text-white hover:bg-blue-500"
                           >
                             Autoriser & Désigner Payeur
                           </button>
@@ -1058,7 +1058,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                           <button
                             type="button"
                             onClick={() => handleExecuteSalaryPayment(sal)}
-                            className="rounded-xl bg-emerald-600 px-3.5 py-2 font-bold text-white hover:bg-emerald-500"
+                            className="rounded-lg bg-emerald-600 px-3.5 py-2 font-bold text-white hover:bg-emerald-500"
                           >
                             Décaisser maintenant
                           </button>
@@ -1066,7 +1066,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                         <button
                           type="button"
                           onClick={() => setSelectedHistorySalary(sal)}
-                          className="flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 font-bold text-slate-700 hover:bg-slate-100"
+                          className="flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 tabular-nums"
                         >
                           <History className="h-3.5 w-3.5" />
                           Historique ({sal.history?.length || 0})
@@ -1083,27 +1083,27 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
           {dgTab === 'define' && (
             <form
               onSubmit={handleDefineSalary}
-              className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4"
+              className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-4"
             >
               <div>
-                <h3 className="text-base font-black text-slate-900">
+                <h3 className="text-base font-black text-slate-900 dark:text-white">
                   Définir ou ajuster le salaire d'un agent pour une période donnée
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Chaque période (Agent + Année + Mois) conserve son propre montant validé sans jamais écraser les mois précédents.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Agent bénéficiaire
                   </label>
                   <select
                     required
                     value={selectedAgentUid}
                     onChange={(e) => setSelectedAgentUid(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs font-semibold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                   >
                     <option value="">Sélectionner un agent actif...</option>
                     {agentsList.map((ag) => (
@@ -1115,13 +1115,13 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Mois de paie
                   </label>
                   <select
                     value={periodMonth}
                     onChange={(e) => setPeriodMonth(Number(e.target.value))}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs font-semibold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                   >
                     {MONTH_NAMES_FR.map((mName, idx) => (
                       <option key={mName} value={idx + 1}>
@@ -1132,7 +1132,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Année
                   </label>
                   <input
@@ -1141,12 +1141,12 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                     max="2035"
                     value={periodYear}
                     onChange={(e) => setPeriodYear(Number(e.target.value))}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs font-bold tabular-nums"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-bold tabular-nums text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Montant du salaire pour cette période
                   </label>
                   <input
@@ -1157,18 +1157,18 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                     value={plannedAmount}
                     onChange={(e) => setPlannedAmount(e.target.value)}
                     placeholder="Ex: 150"
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs font-bold tabular-nums"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-bold tabular-nums text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-emerald-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Devise
                   </label>
                   <select
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value as 'USD' | 'CDF')}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs font-bold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-bold text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                   >
                     <option value="USD">USD ($)</option>
                     <option value="CDF">CDF (Franc Congolais)</option>
@@ -1176,14 +1176,14 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Date d'échéance prévue (suivi retard)
                   </label>
                   <input
                     type="date"
                     value={dueDateStr}
                     onChange={(e) => setDueDateStr(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-xs"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                   />
                 </div>
               </div>
@@ -1192,13 +1192,13 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                 <button
                   type="button"
                   onClick={() => setDgTab('overview')}
-                  className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-bold text-slate-700"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white hover:bg-slate-800"
+                  className="rounded-lg bg-slate-900 dark:bg-emerald-600 px-5 py-2 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-emerald-500"
                 >
                   Enregistrer le Salaire de la Période
                 </button>
@@ -1208,16 +1208,16 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
           {/* DG ONGLET 3 : RECLAMATIONS DE SALAIRE EN RETARD */}
           {dgTab === 'claims' && (
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-              <h3 className="text-base font-black text-slate-900">
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-4">
+              <h3 className="text-base font-black text-slate-900 dark:text-white tabular-nums">
                 Réclamations Salariales des Agents ({claims.length})
               </h3>
               {claims.length === 0 ? (
-                <p className="py-10 text-center text-xs text-slate-500">
+                <p className="py-10 text-center text-xs text-slate-500 dark:text-slate-400">
                   Aucune réclamation de salaire en retard enregistrée.
                 </p>
               ) : (
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
                   {claims.map((clm) => (
                     <div
                       key={clm.id}
@@ -1225,25 +1225,25 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                     >
                       <div className="space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded">
+                          <span className="font-mono font-bold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/60 px-2 py-0.5 rounded-md tabular-nums">
                             {clm.reference}
                           </span>
-                          <span className="font-bold text-slate-900">
+                          <span className="font-bold text-slate-900 dark:text-white">
                             {formatSalaryPeriodLabel(clm.month, clm.year)}
                           </span>
-                          <span className="rounded-full bg-amber-100 px-2.5 py-0.5 font-bold text-amber-900">
+                          <span className="rounded-md bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 font-bold text-amber-900 dark:text-amber-300">
                             {clm.status.replace(/_/g, ' ')}
                           </span>
                         </div>
-                        <p className="text-sm font-black text-slate-900">
+                        <p className="text-sm font-black text-slate-900 dark:text-white">
                           {clm.agentName} ({clm.agencyName}) —{' '}
-                          <span className="tabular-nums text-red-700">
+                          <span className="tabular-nums text-red-700 dark:text-red-400">
                             {clm.amount.toLocaleString('fr-FR')} {clm.currency}
                           </span>
                         </p>
-                        <p className="text-slate-700">Motif : « {clm.reason} »</p>
+                        <p className="text-slate-700 dark:text-slate-300">Motif : « {clm.reason} »</p>
                         {clm.dgResponse && (
-                          <p className="text-emerald-700 font-semibold">
+                          <p className="text-emerald-700 dark:text-emerald-400 font-semibold">
                             Décision / Réponse DG : {clm.dgResponse}
                           </p>
                         )}
@@ -1255,7 +1255,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                           setClaimNextStatus(clm.status);
                           setClaimDgResponse(clm.dgResponse || '');
                         }}
-                        className="rounded-xl bg-slate-900 px-4 py-2 font-bold text-white hover:bg-slate-800 shrink-0"
+                        className="rounded-lg bg-slate-900 dark:bg-slate-800 px-4 py-2 font-bold text-white hover:bg-slate-800 dark:hover:bg-slate-700 shrink-0"
                       >
                         Examiner / Répondre
                       </button>
@@ -1268,24 +1268,24 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
           {/* DG ONGLET 4 : EXAMEN & DECISION SUR LES DEMANDES D'AVANCE */}
           {dgTab === 'advances' && (
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h3 className="text-base font-black text-slate-900">
+                  <h3 className="text-base font-black text-slate-900 dark:text-white tabular-nums">
                     Demandes d'Avance sur Salaire ({advances.length})
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     Examinez la demande écrite obligatoire de l'agent, décidez d'accepter ou refuser et fixez les mois couverts.
                   </p>
                 </div>
               </div>
 
               {advances.length === 0 ? (
-                <p className="py-10 text-center text-xs text-slate-500">
+                <p className="py-10 text-center text-xs text-slate-500 dark:text-slate-400">
                   Aucune demande d'avance sur salaire soumise.
                 </p>
               ) : (
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
                   {advances.map((adv) => (
                     <div
                       key={adv.id}
@@ -1293,55 +1293,55 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                     >
                       <div className="space-y-1.5">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono font-bold text-purple-800 bg-purple-50 px-2 py-0.5 rounded">
+                          <span className="font-mono font-bold text-purple-800 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 px-2 py-0.5 rounded-md tabular-nums">
                             {adv.reference}
                           </span>
                           <span
-                            className={`rounded-full px-2.5 py-0.5 font-bold ${
+                            className={`rounded-md px-2 py-0.5 font-bold ${
                               adv.dgDecision === 'acceptee'
-                                ? 'bg-emerald-100 text-emerald-800'
+                                ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                                 : adv.dgDecision === 'refusee'
-                                  ? 'bg-red-100 text-red-800'
-                                  : 'bg-amber-100 text-amber-800'
+                                  ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300'
+                                  : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
                             }`}
                           >
                             Décision DG : {adv.dgDecision.replace('_', ' ')} ({adv.status.replace(/_/g, ' ')})
                           </span>
-                          <span className="text-slate-400">• {adv.agencyName}</span>
+                          <span className="text-slate-400 dark:text-slate-500">• {adv.agencyName}</span>
                         </div>
 
-                        <p className="text-sm font-black text-slate-900">
+                        <p className="text-sm font-black text-slate-900 dark:text-white">
                           {adv.agentName} — Demandé :{' '}
-                          <span className="tabular-nums text-purple-700">
+                          <span className="tabular-nums text-purple-700 dark:text-purple-400">
                             {adv.requestedAmount.toLocaleString('fr-FR')} {adv.currency}
                           </span>{' '}
-                          sur {adv.requestedMonthsCount} mois
+                          sur <span className="tabular-nums">{adv.requestedMonthsCount}</span> mois
                           {adv.approvedAmount && (
-                            <span className="ml-2 text-emerald-700">
+                            <span className="ml-2 text-emerald-700 dark:text-emerald-400 tabular-nums">
                               (Accordé : {adv.approvedAmount.toLocaleString('fr-FR')} {adv.currency} sur{' '}
                               {adv.approvedMonthsCount} mois)
                             </span>
                           )}
                         </p>
 
-                        <p className="text-slate-700">
+                        <p className="text-slate-700 dark:text-slate-300">
                           <strong>Motif :</strong> {adv.reason}
                         </p>
-                        <p className="text-slate-600 italic">
+                        <p className="text-slate-600 dark:text-slate-400 italic">
                           <strong>Demande écrite :</strong> « {adv.writtenStatement} »
                         </p>
                         <div className="flex flex-wrap items-center gap-2 pt-1">
                           <a
                             href={adv.documentDataUrl}
                             download={adv.documentName}
-                            className="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-700 hover:bg-blue-100"
+                            className="inline-flex items-center gap-1 rounded-lg border border-blue-200 dark:border-blue-900/60 bg-blue-50 dark:bg-blue-950/50 px-2.5 py-1 text-[11px] font-bold text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50"
                           >
                             <Paperclip className="h-3 w-3" />
                             Consulter Document Écrit ({adv.documentName})
                           </a>
-                          <span className="text-[11px] text-slate-500">
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400">
                             Périodes couvertes :{' '}
-                            <strong>
+                            <strong className="text-slate-700 dark:text-slate-300">
                               {adv.coveredPeriods
                                 ?.map((p) => formatSalaryPeriodLabel(p.month, p.year))
                                 .join(', ')}
@@ -1361,7 +1361,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                               setAdvStartYear(adv.requestedStartYear);
                               setAdvStartMonth(adv.requestedStartMonth);
                             }}
-                            className="rounded-xl bg-slate-900 px-4 py-2 font-bold text-white hover:bg-slate-800"
+                            className="rounded-lg bg-slate-900 dark:bg-slate-800 px-4 py-2 font-bold text-white hover:bg-slate-800 dark:hover:bg-slate-700"
                           >
                             Examiner & Décider (DG)
                           </button>
@@ -1371,7 +1371,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                             <button
                               type="button"
                               onClick={() => handleExecuteAdvancePayment(adv)}
-                              className="rounded-xl bg-emerald-600 px-4 py-2 font-bold text-white hover:bg-emerald-500"
+                              className="rounded-lg bg-emerald-600 px-4 py-2 font-bold text-white hover:bg-emerald-500"
                             >
                               Payer l'Avance
                             </button>
@@ -1386,21 +1386,21 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
           {/* DG ONGLET 5 : HISTORIQUE & TRACABILITE COMPLETE */}
           {dgTab === 'history' && (
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-4">
               <div>
-                <h3 className="text-base font-black text-slate-900">
+                <h3 className="text-base font-black text-slate-900 dark:text-white">
                   Journal Global de Traçabilité des Salaires, Avances & Réclamations
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Chronologie complète de toutes les décisions DG, autorisations, décaissements et confirmations des agents.
                 </p>
               </div>
               {salaries.length === 0 && advances.length === 0 && claims.length === 0 ? (
-                <p className="py-10 text-center text-xs text-slate-500">
+                <p className="py-10 text-center text-xs text-slate-500 dark:text-slate-400">
                   Aucun événement salarial enregistré pour le moment.
                 </p>
               ) : (
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
                   {[
                     ...salaries.flatMap((s) =>
                       (s.history || []).map((h) => ({
@@ -1432,21 +1432,21 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                       <div key={`${item.ref}_${item.id}`} className="py-3.5 text-xs space-y-1">
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded">
+                            <span className="font-mono font-bold text-slate-900 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md tabular-nums">
                               {item.ref}
                             </span>
-                            <span className="font-black text-slate-900">{item.action}</span>
-                            <span className="text-slate-500">
+                            <span className="font-black text-slate-900 dark:text-white">{item.action}</span>
+                            <span className="text-slate-500 dark:text-slate-400">
                               • {item.agentName} ({item.period})
                             </span>
                           </div>
-                          <span className="text-[11px] text-slate-400">
+                          <span className="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
                             {new Date(item.timestamp).toLocaleString('fr-FR')}
                           </span>
                         </div>
-                        <p className="text-slate-700">{item.details}</p>
-                        <p className="text-[11px] text-slate-500">
-                          Exécuté par : <strong>{item.actorName}</strong> ({item.actorRole})
+                        <p className="text-slate-700 dark:text-slate-300">{item.details}</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                          Exécuté par : <strong className="text-slate-700 dark:text-slate-300">{item.actorName}</strong> ({item.actorRole})
                         </p>
                       </div>
                     ))}
@@ -1463,24 +1463,24 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
       {effectiveMode === 'agent' && (
         <>
           {agentTab === 'my_salaries' && (
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div>
-                  <h3 className="text-base font-black text-slate-900">
+                  <h3 className="text-base font-black text-slate-900 dark:text-white">
                     Mes Bulletins & Périodes de Salaire
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     Consultez vos salaires autorisés, confirmez la réception après paiement ou signalez un retard.
                   </p>
                 </div>
               </div>
 
               {myPersonalSalaries.length === 0 ? (
-                <p className="py-10 text-center text-xs text-slate-500">
+                <p className="py-10 text-center text-xs text-slate-500 dark:text-slate-400">
                   Aucune fiche de salaire enregistrée pour votre compte pour le moment.
                 </p>
               ) : (
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
                   {myPersonalSalaries.map((sal) => (
                     <div
                       key={sal.id}
@@ -1488,31 +1488,31 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                     >
                       <div className="space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded">
+                          <span className="font-mono font-bold text-slate-900 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md tabular-nums">
                             {sal.reference}
                           </span>
-                          <span className="rounded bg-blue-50 px-2.5 py-0.5 font-black text-blue-900">
+                          <span className="rounded-md bg-blue-50 dark:bg-blue-950/60 px-2.5 py-0.5 font-black text-blue-900 dark:text-blue-300">
                             {formatSalaryPeriodLabel(sal.month, sal.year)}
                           </span>
                           {statusBadge(sal.status)}
-                          <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase text-slate-600">
+                          <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-bold uppercase text-slate-600 dark:text-slate-300">
                             {sal.paymentCategory === 'couvert_par_avance'
                               ? 'Couvert par Avance'
                               : 'Paiement Normal'}
                           </span>
                         </div>
-                        <p className="text-sm font-black text-slate-900 tabular-nums">
+                        <p className="text-sm font-black text-slate-900 dark:text-white tabular-nums">
                           Montant : {sal.plannedAmount.toLocaleString('fr-FR')} {sal.currency}
                         </p>
                         {sal.paidAt && (
-                          <p className="text-slate-600">
+                          <p className="text-slate-600 dark:text-slate-400 tabular-nums">
                             Payé le {new Date(sal.paidAt).toLocaleString('fr-FR')} par{' '}
-                            <strong>{sal.paidByName}</strong> (Réf Opération :{' '}
+                            <strong className="text-slate-800 dark:text-slate-200">{sal.paidByName}</strong> (Réf Opération :{' '}
                             {sal.linkedOperationNumber})
                           </p>
                         )}
                         {sal.confirmedByAgent && (
-                          <p className="font-bold text-emerald-700">
+                          <p className="font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
                             ✓ Confirmé le{' '}
                             {sal.confirmedAt
                               ? new Date(sal.confirmedAt).toLocaleString('fr-FR')
@@ -1527,7 +1527,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                           <button
                             type="button"
                             onClick={() => handleConfirmReceiptByAgent(sal)}
-                            className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 font-bold text-white shadow-sm hover:bg-emerald-500"
+                            className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 font-bold text-white shadow-sm hover:bg-emerald-500"
                           >
                             <CheckCircle2 className="h-4 w-4" />
                             J'ai reçu mon salaire ({formatSalaryPeriodLabel(sal.month, sal.year)})
@@ -1539,7 +1539,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                           <button
                             type="button"
                             onClick={() => setClaimingSalary(sal)}
-                            className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2 font-bold text-red-700 hover:bg-red-100"
+                            className="rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/60 px-3.5 py-2 font-bold text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/50"
                           >
                             Réclamer un retard
                           </button>
@@ -1553,34 +1553,34 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
           )}
 
           {agentTab === 'my_claims' && (
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-              <h3 className="text-base font-black text-slate-900">
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-4">
+              <h3 className="text-base font-black text-slate-900 dark:text-white">
                 Suivi de mes Réclamations Salariales
               </h3>
               {claims.filter((c) => c.agentId === user?.uid).length === 0 ? (
-                <p className="py-8 text-center text-xs text-slate-500">
+                <p className="py-8 text-center text-xs text-slate-500 dark:text-slate-400">
                   Vous n'avez soumis aucune réclamation de salaire.
                 </p>
               ) : (
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
                   {claims
                     .filter((c) => c.agentId === user?.uid)
                     .map((clm) => (
                       <div key={clm.id} className="py-4 space-y-1 text-xs">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-slate-900">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-mono font-bold text-slate-900 dark:text-white tabular-nums">
                             {clm.reference}
                           </span>
-                          <span className="font-bold text-blue-800">
+                          <span className="font-bold text-blue-800 dark:text-blue-300">
                             {formatSalaryPeriodLabel(clm.month, clm.year)}
                           </span>
-                          <span className="rounded-full bg-amber-100 px-2.5 py-0.5 font-bold text-amber-900">
+                          <span className="rounded-md bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 font-bold text-amber-900 dark:text-amber-300">
                             {clm.status.replace(/_/g, ' ')}
                           </span>
                         </div>
-                        <p className="text-slate-700">Votre motif : « {clm.reason} »</p>
+                        <p className="text-slate-700 dark:text-slate-300">Votre motif : « {clm.reason} »</p>
                         {clm.dgResponse && (
-                          <p className="font-bold text-emerald-700">
+                          <p className="font-bold text-emerald-700 dark:text-emerald-400">
                             Réponse Direction Générale : {clm.dgResponse}
                           </p>
                         )}
@@ -1592,15 +1592,15 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
           )}
 
           {agentTab === 'my_advances' && (
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-5">
               {!settings.advanceRequestsEnabled ? (
-                <div className="rounded-2xl border border-amber-300 bg-amber-50 p-5 text-xs text-amber-950 flex items-start gap-3">
-                  <Lock className="h-5 w-5 text-amber-700 shrink-0 mt-0.5" />
+                <div className="rounded-xl border border-amber-300 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/50 p-4 sm:p-5 text-xs text-amber-950 dark:text-amber-200 flex items-start gap-3">
+                  <Lock className="h-5 w-5 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5" />
                   <div className="space-y-1">
                     <h4 className="font-black text-sm">
                       Demandes d'avance sur salaire actuellement désactivées par la Direction Générale
                     </h4>
-                    <p className="text-amber-800">
+                    <p className="text-amber-800 dark:text-amber-300/90">
                       Conformément aux règles de gestion Ets AMANI, la soumission de nouvelles demandes d'avance est temporairement fermée par le Directeur Général. Vous pouvez toujours consulter ci-dessous l'historique et les décisions de vos demandes précédentes.
                     </p>
                   </div>
@@ -1608,20 +1608,20 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
               ) : (
                 <form
                   onSubmit={handleSubmitAdvanceRequest}
-                  className="rounded-2xl border border-purple-200 bg-purple-50/40 p-5 space-y-4"
+                  className="rounded-xl border border-purple-200 dark:border-purple-900/60 bg-purple-50/40 dark:bg-purple-950/30 p-4 sm:p-5 space-y-4"
                 >
                   <div>
-                    <h3 className="text-sm font-black text-slate-900">
+                    <h3 className="text-sm font-black text-slate-900 dark:text-white">
                       Soumettre une Demande d'Avance sur Salaire
                     </h3>
-                    <p className="text-xs text-slate-600">
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
                       La demande écrite signée / pièce justificative est obligatoire. Toute demande reste soumise à l'examen et à la décision finale du Directeur Général.
                     </p>
                   </div>
 
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                         Montant demandé
                       </label>
                       <input
@@ -1632,11 +1632,11 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                         value={reqAdvAmount}
                         onChange={(e) => setReqAdvAmount(e.target.value)}
                         placeholder="Ex: 300"
-                        className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold tabular-nums"
+                        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold tabular-nums text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-purple-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                         Devise
                       </label>
                       <select
@@ -1644,14 +1644,14 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                         onChange={(e) =>
                           setReqAdvCurrency(e.target.value as 'USD' | 'CDF')
                         }
-                        className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold"
+                        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold text-slate-900 dark:text-white outline-none focus:border-purple-500"
                       >
                         <option value="USD">USD ($)</option>
                         <option value="CDF">CDF</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                         Nombre de mois concernés
                       </label>
                       <input
@@ -1661,18 +1661,18 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                         required
                         value={reqAdvMonths}
                         onChange={(e) => setReqAdvMonths(Number(e.target.value))}
-                        className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold"
+                        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold tabular-nums text-slate-900 dark:text-white outline-none focus:border-purple-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                         À partir du mois de
                       </label>
                       <div className="flex gap-1">
                         <select
                           value={reqAdvStartMonth}
                           onChange={(e) => setReqAdvStartMonth(Number(e.target.value))}
-                          className="w-full rounded-xl border border-slate-300 bg-white px-2 py-2 text-xs font-semibold"
+                          className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-2 text-xs font-semibold text-slate-900 dark:text-white outline-none focus:border-purple-500"
                         >
                           {MONTH_NAMES_FR.map((m, idx) => (
                             <option key={m} value={idx + 1}>
@@ -1684,14 +1684,14 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                           type="number"
                           value={reqAdvStartYear}
                           onChange={(e) => setReqAdvStartYear(Number(e.target.value))}
-                          className="w-20 rounded-xl border border-slate-300 bg-white px-2 py-2 text-xs font-bold"
+                          className="w-20 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-2 text-xs font-bold tabular-nums text-slate-900 dark:text-white outline-none focus:border-purple-500"
                         />
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Motif synthétique de la demande
                     </label>
                     <input
@@ -1700,12 +1700,12 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                       value={reqAdvReason}
                       onChange={(e) => setReqAdvReason(e.target.value)}
                       placeholder="Ex: Frais médicaux familiaux / Scolarité..."
-                      className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-purple-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Lettre / Document écrit obligatoire de l'agent (Engagement signé)
                     </label>
                     <textarea
@@ -1714,13 +1714,13 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                       value={reqAdvWrittenStatement}
                       onChange={(e) => setReqAdvWrittenStatement(e.target.value)}
                       placeholder="Je soussigné(e) ..., sollicite auprès de la Direction Générale Ets AMANI une avance sur salaire de ..."
-                      className="w-full rounded-xl border border-slate-300 bg-white p-3 text-xs"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-purple-500"
                     />
                   </div>
 
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50">
-                      <Paperclip className="h-4 w-4 text-purple-700" />
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700">
+                      <Paperclip className="h-4 w-4 text-purple-700 dark:text-purple-400" />
                       <span>
                         {reqAdvDocName
                           ? `Pièce jointe : ${reqAdvDocName}`
@@ -1736,7 +1736,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
                     <button
                       type="submit"
-                      className="rounded-xl bg-purple-700 px-5 py-2.5 text-xs font-bold text-white hover:bg-purple-600"
+                      className="rounded-lg bg-purple-700 px-5 py-2 text-xs font-bold text-white hover:bg-purple-600"
                     >
                       Envoyer la demande d'avance au DG
                     </button>
@@ -1746,11 +1746,11 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
               {/* Liste des demandes d'avance de l'agent */}
               <div className="space-y-3">
-                <h4 className="text-sm font-black text-slate-900">
+                <h4 className="text-sm font-black text-slate-900 dark:text-white">
                   Historique de mes Demandes d'Avance & Décisions du DG
                 </h4>
                 {advances.filter((a) => a.agentId === user?.uid).length === 0 ? (
-                  <p className="py-6 text-center text-xs text-slate-500">
+                  <p className="py-6 text-center text-xs text-slate-500 dark:text-slate-400">
                     Aucune demande d'avance enregistrée.
                   </p>
                 ) : (
@@ -1759,44 +1759,44 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                     .map((adv) => (
                       <div
                         key={adv.id}
-                        className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs"
+                        className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs"
                       >
                         <div className="space-y-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="font-mono font-bold text-purple-800">
+                            <span className="font-mono font-bold text-purple-800 dark:text-purple-300 tabular-nums">
                               {adv.reference}
                             </span>
                             <span
-                              className={`rounded-full px-2.5 py-0.5 font-bold ${
+                              className={`rounded-md px-2 py-0.5 font-bold ${
                                 adv.dgDecision === 'acceptee'
-                                  ? 'bg-emerald-100 text-emerald-800'
+                                  ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                                   : adv.dgDecision === 'refusee'
-                                    ? 'bg-red-100 text-red-800'
-                                    : 'bg-amber-100 text-amber-800'
+                                    ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300'
+                                    : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
                               }`}
                             >
                               Décision DG : {adv.dgDecision} ({adv.status.replace(/_/g, ' ')})
                             </span>
                           </div>
-                          <p className="font-bold text-slate-900">
+                          <p className="font-bold text-slate-900 dark:text-white tabular-nums">
                             Montant demandé : {adv.requestedAmount.toLocaleString('fr-FR')}{' '}
                             {adv.currency} ({adv.requestedMonthsCount} mois)
                             {adv.approvedAmount && (
-                              <span className="text-emerald-700">
+                              <span className="text-emerald-700 dark:text-emerald-400">
                                 {' '}
                                 • Accordé par DG : {adv.approvedAmount.toLocaleString('fr-FR')}{' '}
                                 {adv.currency} ({adv.approvedMonthsCount} mois)
                               </span>
                             )}
                           </p>
-                          <p className="text-slate-600">
+                          <p className="text-slate-600 dark:text-slate-400">
                             Périodes couvertes :{' '}
                             {adv.coveredPeriods
                               ?.map((p) => formatSalaryPeriodLabel(p.month, p.year))
                               .join(', ')}
                           </p>
                           {adv.dgConditionsOrReason && (
-                            <p className="font-semibold text-slate-800">
+                            <p className="font-semibold text-slate-800 dark:text-slate-200">
                               Note / Décision du DG : {adv.dgConditionsOrReason}
                             </p>
                           )}
@@ -1806,7 +1806,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                           <button
                             type="button"
                             onClick={() => handleConfirmAdvanceByAgent(adv)}
-                            className="rounded-xl bg-emerald-600 px-4 py-2 font-bold text-white hover:bg-emerald-500 shrink-0"
+                            className="rounded-lg bg-emerald-600 px-4 py-2 font-bold text-white hover:bg-emerald-500 shrink-0"
                           >
                             Confirmer réception de l'avance
                           </button>
@@ -1825,43 +1825,43 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
          ========================================================= */}
       {((effectiveMode === 'dg' && dgTab === 'payer_desk') ||
         (effectiveMode === 'agent' && agentTab === 'payer_desk')) && (
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
+        <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm space-y-5">
           <div>
-            <h3 className="text-base font-black text-slate-900">
+            <h3 className="text-base font-black text-slate-900 dark:text-white">
               Guichet du Payeur Autorisé — Décaissements Salariaux Assignés
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Seuls les salaires et avances autorisés par le Directeur Général et assignés à votre profil ou service apparaissent ici. Le montant fixé par le DG est verrouillé.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 tabular-nums">
               Salaires Mensuels Autorisés à Décaisser ({assignedSalariesToPay.length})
             </h4>
             {assignedSalariesToPay.length === 0 ? (
-              <p className="py-6 text-center text-xs text-slate-500">
+              <p className="py-6 text-center text-xs text-slate-500 dark:text-slate-400">
                 Aucun salaire en attente de paiement ne vous est assigné actuellement.
               </p>
             ) : (
               assignedSalariesToPay.map((sal) => (
                 <div
                   key={sal.id}
-                  className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between text-xs"
+                  className="flex flex-col gap-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-4 sm:flex-row sm:items-center sm:justify-between text-xs"
                 >
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-blue-700">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-mono font-bold text-blue-700 dark:text-blue-400 tabular-nums">
                         {sal.reference}
                       </span>
-                      <span className="font-bold text-slate-900">
+                      <span className="font-bold text-slate-900 dark:text-white">
                         {formatSalaryPeriodLabel(sal.month, sal.year)}
                       </span>
                     </div>
-                    <p className="text-sm font-black text-slate-900">
+                    <p className="text-sm font-black text-slate-900 dark:text-white">
                       Bénéficiaire : {sal.agentName} ({sal.agencyName})
                     </p>
-                    <p className="font-bold text-emerald-700 tabular-nums">
+                    <p className="font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
                       Montant autorisé par le DG ({sal.authorizedByName}) :{' '}
                       {sal.plannedAmount.toLocaleString('fr-FR')} {sal.currency}
                     </p>
@@ -1869,7 +1869,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                   <button
                     type="button"
                     onClick={() => handleExecuteSalaryPayment(sal)}
-                    className="rounded-xl bg-emerald-600 px-4 py-2.5 font-bold text-white shadow-sm hover:bg-emerald-500 shrink-0"
+                    className="rounded-lg bg-emerald-600 px-4 py-2 font-bold text-white shadow-sm hover:bg-emerald-500 shrink-0"
                   >
                     Confirmer le Paiement Effectué
                   </button>
@@ -1878,28 +1878,28 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             )}
           </div>
 
-          <div className="space-y-3 border-t border-slate-100 pt-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+          <div className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-4">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 tabular-nums">
               Avances sur Salaire Approuvées à Décaisser ({assignedAdvancesToPay.length})
             </h4>
             {assignedAdvancesToPay.length === 0 ? (
-              <p className="py-4 text-center text-xs text-slate-500">
+              <p className="py-4 text-center text-xs text-slate-500 dark:text-slate-400">
                 Aucune avance approuvée en attente de décaissement.
               </p>
             ) : (
               assignedAdvancesToPay.map((adv) => (
                 <div
                   key={adv.id}
-                  className="flex flex-col gap-3 rounded-2xl border border-purple-200 bg-purple-50/40 p-4 sm:flex-row sm:items-center sm:justify-between text-xs"
+                  className="flex flex-col gap-3 rounded-xl border border-purple-200 dark:border-purple-900/60 bg-purple-50/40 dark:bg-purple-950/30 p-4 sm:flex-row sm:items-center sm:justify-between text-xs"
                 >
                   <div className="space-y-1">
-                    <span className="font-mono font-bold text-purple-800">
+                    <span className="font-mono font-bold text-purple-800 dark:text-purple-300 tabular-nums">
                       {adv.reference}
                     </span>
-                    <p className="text-sm font-black text-slate-900">
+                    <p className="text-sm font-black text-slate-900 dark:text-white">
                       Bénéficiaire : {adv.agentName} ({adv.agencyName})
                     </p>
-                    <p className="font-bold text-purple-900 tabular-nums">
+                    <p className="font-bold text-purple-900 dark:text-purple-300 tabular-nums">
                       Montant d'avance accordé par le DG :{' '}
                       {(adv.approvedAmount || adv.requestedAmount).toLocaleString('fr-FR')}{' '}
                       {adv.currency}
@@ -1908,7 +1908,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                   <button
                     type="button"
                     onClick={() => handleExecuteAdvancePayment(adv)}
-                    className="rounded-xl bg-purple-700 px-4 py-2.5 font-bold text-white hover:bg-purple-600 shrink-0"
+                    className="rounded-lg bg-purple-700 px-4 py-2 font-bold text-white hover:bg-purple-600 shrink-0"
                   >
                     Décaisser l'Avance
                   </button>
@@ -1925,38 +1925,42 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
       {/* Modal DG : Autoriser le salaire & Désigner le payeur */}
       {authorizingSalary && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/50 p-4">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
           <form
             onSubmit={handleAuthorizeSalary}
-            className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4 text-xs"
+            className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl space-y-4 text-xs"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-black text-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-sm font-black text-slate-900 dark:text-white">
                 Autoriser le paiement & Désigner le payeur
               </h3>
-              <button type="button" onClick={() => setAuthorizingSalary(null)}>
+              <button
+                type="button"
+                onClick={() => setAuthorizingSalary(null)}
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200"
+              >
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <p className="text-slate-600">
-              Agent : <strong>{authorizingSalary.agentName}</strong> • Période :{' '}
-              <strong>
+            <p className="text-slate-600 dark:text-slate-400">
+              Agent : <strong className="text-slate-900 dark:text-white">{authorizingSalary.agentName}</strong> • Période :{' '}
+              <strong className="text-slate-900 dark:text-white">
                 {formatSalaryPeriodLabel(authorizingSalary.month, authorizingSalary.year)}
               </strong>{' '}
               • Montant :{' '}
-              <strong>
+              <strong className="text-slate-900 dark:text-white tabular-nums">
                 {authorizingSalary.plannedAmount.toLocaleString('fr-FR')}{' '}
                 {authorizingSalary.currency}
               </strong>
             </p>
             <div>
-              <label className="block font-bold text-slate-700 mb-1">
+              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Mode de désignation du payeur
               </label>
               <select
                 value={payerType}
                 onChange={(e) => setPayerType(e.target.value as 'service' | 'user')}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 font-semibold"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-semibold text-slate-900 dark:text-white outline-none focus:border-blue-500"
               >
                 <option value="service">Par Service habilité (Guichet / Caisse / Comptabilité)</option>
                 <option value="user">Par Utilisateur nominatif précis</option>
@@ -1964,13 +1968,13 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             </div>
             {payerType === 'service' ? (
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Service chargé du paiement
                 </label>
                 <select
                   value={payerService}
                   onChange={(e) => setPayerService(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 px-3 py-2 font-semibold"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-semibold text-slate-900 dark:text-white outline-none focus:border-blue-500"
                 >
                   <option value="guichetier">Guichetier / Caissier d'Agence</option>
                   <option value="comptable">Service Comptabilité</option>
@@ -1979,14 +1983,14 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
               </div>
             ) : (
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Sélectionner l'utilisateur payeur
                 </label>
                 <select
                   required
                   value={payerUserId}
                   onChange={(e) => setPayerUserId(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 px-3 py-2 font-semibold"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-semibold text-slate-900 dark:text-white outline-none focus:border-blue-500"
                 >
                   <option value="">Choisir un utilisateur...</option>
                   {usersList.map((u) => (
@@ -2001,13 +2005,13 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
               <button
                 type="button"
                 onClick={() => setAuthorizingSalary(null)}
-                className="rounded-xl border border-slate-300 px-4 py-2 font-bold"
+                className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Annuler
               </button>
               <button
                 type="submit"
-                className="rounded-xl bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-500"
+                className="rounded-lg bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-500"
               >
                 Valider l'Autorisation
               </button>
@@ -2018,39 +2022,43 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
       {/* Modal DG : Examen & Décision finale sur une Demande d'Avance */}
       {examiningAdvance && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/50 p-4">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
           <form
             onSubmit={handleDecideAdvance}
-            className="w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl space-y-4 text-xs max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl space-y-4 text-xs max-h-[90vh] overflow-y-auto"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-black text-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-sm font-black text-slate-900 dark:text-white tabular-nums">
                 Décision du Directeur Général — Avance {examiningAdvance.reference}
               </h3>
-              <button type="button" onClick={() => setExaminingAdvance(null)}>
+              <button
+                type="button"
+                onClick={() => setExaminingAdvance(null)}
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200"
+              >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="rounded-2xl bg-slate-50 p-3.5 space-y-1">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-3.5 space-y-1 text-slate-700 dark:text-slate-300">
               <p>
-                <strong>Agent :</strong> {examiningAdvance.agentName} ({examiningAdvance.agencyName})
+                <strong className="text-slate-900 dark:text-white">Agent :</strong> {examiningAdvance.agentName} ({examiningAdvance.agencyName})
               </p>
-              <p>
-                <strong>Demande :</strong>{' '}
+              <p className="tabular-nums">
+                <strong className="text-slate-900 dark:text-white">Demande :</strong>{' '}
                 {examiningAdvance.requestedAmount.toLocaleString('fr-FR')}{' '}
                 {examiningAdvance.currency} sur {examiningAdvance.requestedMonthsCount} mois
               </p>
               <p>
-                <strong>Motif :</strong> {examiningAdvance.reason}
+                <strong className="text-slate-900 dark:text-white">Motif :</strong> {examiningAdvance.reason}
               </p>
-              <p className="italic text-slate-600">
+              <p className="italic text-slate-600 dark:text-slate-400">
                 « {examiningAdvance.writtenStatement} »
               </p>
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 mb-1">
+              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Décision finale du DG
               </label>
               <select
@@ -2058,7 +2066,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                 onChange={(e) =>
                   setAdvDecision(e.target.value as 'acceptee' | 'refusee')
                 }
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 font-bold"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-bold text-slate-900 dark:text-white outline-none focus:border-emerald-500"
               >
                 <option value="acceptee">ACCEPTER l'avance et verrouiller les mois couverts</option>
                 <option value="refusee">REFUSER la demande d'avance</option>
@@ -2067,9 +2075,9 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
             {advDecision === 'acceptee' && (
               <>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Montant accordé ({examiningAdvance.currency})
                     </label>
                     <input
@@ -2079,11 +2087,11 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                       required
                       value={advApprovedAmount}
                       onChange={(e) => setAdvApprovedAmount(e.target.value)}
-                      className="w-full rounded-xl border border-slate-300 px-3 py-2 font-bold"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-bold tabular-nums text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Nombre de mois couverts
                     </label>
                     <input
@@ -2093,20 +2101,20 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                       required
                       value={advApprovedMonths}
                       onChange={(e) => setAdvApprovedMonths(Number(e.target.value))}
-                      className="w-full rounded-xl border border-slate-300 px-3 py-2 font-bold"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-bold tabular-nums text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Premier mois couvert
                     </label>
                     <select
                       value={advStartMonth}
                       onChange={(e) => setAdvStartMonth(Number(e.target.value))}
-                      className="w-full rounded-xl border border-slate-300 px-3 py-2 font-semibold"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-semibold text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                     >
                       {MONTH_NAMES_FR.map((m, idx) => (
                         <option key={m} value={idx + 1}>
@@ -2116,20 +2124,20 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                     </select>
                   </div>
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Année de départ
                     </label>
                     <input
                       type="number"
                       value={advStartYear}
                       onChange={(e) => setAdvStartYear(Number(e.target.value))}
-                      className="w-full rounded-xl border border-slate-300 px-3 py-2 font-bold"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-bold tabular-nums text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Mode de désignation du payeur de l'avance
                   </label>
                   <select
@@ -2137,7 +2145,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                     onChange={(e) =>
                       setAdvPayerType(e.target.value as 'service' | 'user')
                     }
-                    className="w-full rounded-xl border border-slate-300 px-3 py-2 font-semibold"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-semibold text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                   >
                     <option value="service">Par Service habilité (Guichet / Comptabilité)</option>
                     <option value="user">Par Utilisateur nominatif précis</option>
@@ -2146,13 +2154,13 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
                 {advPayerType === 'service' ? (
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Service désigné pour décaisser l'avance
                     </label>
                     <select
                       value={advPayerService}
                       onChange={(e) => setAdvPayerService(e.target.value)}
-                      className="w-full rounded-xl border border-slate-300 px-3 py-2 font-semibold"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-semibold text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                     >
                       <option value="guichetier">Guichetier / Caissier d'Agence</option>
                       <option value="comptable">Service Comptabilité</option>
@@ -2161,14 +2169,14 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                   </div>
                 ) : (
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Utilisateur désigné pour décaisser l'avance
                     </label>
                     <select
                       required
                       value={advPayerUserId}
                       onChange={(e) => setAdvPayerUserId(e.target.value)}
-                      className="w-full rounded-xl border border-slate-300 px-3 py-2 font-semibold"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-semibold text-slate-900 dark:text-white outline-none focus:border-emerald-500"
                     >
                       <option value="">Choisir un utilisateur...</option>
                       {usersList.map((u) => (
@@ -2183,7 +2191,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
             )}
 
             <div>
-              <label className="block font-bold text-slate-700 mb-1">
+              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                 {advDecision === 'acceptee'
                   ? 'Conditions de l’avance / Instructions de paie'
                   : 'Motif du refus'}
@@ -2198,7 +2206,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
                     ? 'Ex: Couvre intégralement les mois sélectionnés sans nouvelle paie normale.'
                     : 'Préciser le motif du refus...'
                 }
-                className="w-full rounded-xl border border-slate-300 p-2.5"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-emerald-500"
               />
             </div>
 
@@ -2206,13 +2214,13 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
               <button
                 type="button"
                 onClick={() => setExaminingAdvance(null)}
-                className="rounded-xl border border-slate-300 px-4 py-2 font-bold"
+                className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Annuler
               </button>
               <button
                 type="submit"
-                className={`rounded-xl px-4 py-2 font-bold text-white ${
+                className={`rounded-lg px-4 py-2 font-bold text-white ${
                   advDecision === 'acceptee'
                     ? 'bg-emerald-600 hover:bg-emerald-500'
                     : 'bg-red-600 hover:bg-red-500'
@@ -2227,23 +2235,27 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
       {/* Modal DG : Traitement d'une réclamation */}
       {processingClaim && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/50 p-4">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
           <form
             onSubmit={handleProcessClaim}
-            className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4 text-xs"
+            className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl space-y-4 text-xs"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-black text-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-sm font-black text-slate-900 dark:text-white tabular-nums">
                 Traiter la Réclamation {processingClaim.reference}
               </h3>
-              <button type="button" onClick={() => setProcessingClaim(null)}>
+              <button
+                type="button"
+                onClick={() => setProcessingClaim(null)}
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200"
+              >
                 <X className="h-4 w-4" />
               </button>
             </div>
             <select
               value={claimNextStatus}
               onChange={(e) => setClaimNextStatus(e.target.value as SalaryClaimStatus)}
-              className="w-full rounded-xl border border-slate-300 px-3 py-2 font-bold"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 font-bold text-slate-900 dark:text-white outline-none"
             >
               <option value="en_examen">En examen</option>
               <option value="traitee">Traitée</option>
@@ -2257,19 +2269,19 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
               value={claimDgResponse}
               onChange={(e) => setClaimDgResponse(e.target.value)}
               placeholder="Réponse ou décision du Directeur Général..."
-              className="w-full rounded-xl border border-slate-300 p-3"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 text-slate-900 dark:text-white placeholder:text-slate-400 outline-none"
             />
             <div className="flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setProcessingClaim(null)}
-                className="rounded-xl border border-slate-300 px-4 py-2 font-bold"
+                className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Annuler
               </button>
               <button
                 type="submit"
-                className="rounded-xl bg-slate-900 px-4 py-2 font-bold text-white"
+                className="rounded-lg bg-slate-900 dark:bg-emerald-600 px-4 py-2 font-bold text-white hover:bg-slate-800 dark:hover:bg-emerald-500"
               >
                 Valider
               </button>
@@ -2280,17 +2292,21 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
       {/* Modal Agent : Soumettre une réclamation de retard */}
       {claimingSalary && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/50 p-4">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
           <form
             onSubmit={handleSubmitClaim}
-            className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4 text-xs"
+            className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl space-y-4 text-xs"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-black text-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-sm font-black text-slate-900 dark:text-white">
                 Réclamation de salaire —{' '}
                 {formatSalaryPeriodLabel(claimingSalary.month, claimingSalary.year)}
               </h3>
-              <button type="button" onClick={() => setClaimingSalary(null)}>
+              <button
+                type="button"
+                onClick={() => setClaimingSalary(null)}
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200"
+              >
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -2300,19 +2316,19 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
               value={claimReason}
               onChange={(e) => setClaimReason(e.target.value)}
               placeholder="Expliquez le motif de votre réclamation (ex: échéance dépassée, salaire non reçu au guichet)..."
-              className="w-full rounded-xl border border-slate-300 p-3"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 text-slate-900 dark:text-white placeholder:text-slate-400 outline-none"
             />
             <div className="flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setClaimingSalary(null)}
-                className="rounded-xl border border-slate-300 px-4 py-2 font-bold"
+                className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Annuler
               </button>
               <button
                 type="submit"
-                className="rounded-xl bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-500"
+                className="rounded-lg bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-500"
               >
                 Envoyer la Réclamation
               </button>
@@ -2323,14 +2339,14 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
 
       {/* Modal Historique Complet d'une période de salaire */}
       {selectedHistorySalary && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/50 p-4">
-          <div className="w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl space-y-4 text-xs max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl space-y-4 text-xs max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
-                <h3 className="text-sm font-black text-slate-900">
+                <h3 className="text-sm font-black text-slate-900 dark:text-white tabular-nums">
                   Traçabilité & Historique — {selectedHistorySalary.reference}
                 </h3>
-                <p className="text-slate-500">
+                <p className="text-slate-500 dark:text-slate-400">
                   {selectedHistorySalary.agentName} •{' '}
                   {formatSalaryPeriodLabel(
                     selectedHistorySalary.month,
@@ -2341,6 +2357,7 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
               <button
                 type="button"
                 onClick={() => setSelectedHistorySalary(null)}
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -2350,17 +2367,17 @@ export default function SalaryModule({ mode, onClose }: SalaryModuleProps) {
               {(selectedHistorySalary.history || []).map((evt) => (
                 <div
                   key={evt.id}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-3.5 space-y-1"
+                  className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-3.5 space-y-1"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="font-black text-slate-900">{evt.action}</span>
-                    <span className="text-[10px] text-slate-400">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-black text-slate-900 dark:text-white">{evt.action}</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums">
                       {new Date(evt.timestamp).toLocaleString('fr-FR')}
                     </span>
                   </div>
-                  <p className="text-slate-700">{evt.details}</p>
-                  <p className="text-[10px] text-slate-500">
-                    Acteur : <strong>{evt.actorName}</strong> ({evt.actorRole})
+                  <p className="text-slate-700 dark:text-slate-300">{evt.details}</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                    Acteur : <strong className="text-slate-700 dark:text-slate-300">{evt.actorName}</strong> ({evt.actorRole})
                   </p>
                 </div>
               ))}
