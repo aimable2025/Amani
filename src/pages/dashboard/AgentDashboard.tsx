@@ -14,6 +14,7 @@ import {
   Scale,
   Search,
   Users,
+  Wallet,
   WalletCards,
   Wifi,
   X,
@@ -26,6 +27,7 @@ import WorkspaceNavigationHeader, {
   type WorkspaceTab,
 } from '../../components/dashboard/WorkspaceNavigationHeader';
 import BilletageModule from './components/BilletageModule';
+import AgentFundsModule from './components/AgentFundsModule';
 import ChatModule from './components/ChatModule';
 import ConnectivityModule from './components/ConnectivityModule';
 import TreasuryTransfersDebtsModule from './components/TreasuryTransfersDebtsModule';
@@ -41,6 +43,7 @@ import {
   requestNotificationPermission,
   startAgentNotificationWatcher,
   startClientOrderNotificationWatcher,
+  startFinancialNotificationWatcher,
   triggerTestUrgentNotification,
 } from '../../services/LocalNotificationService';
 import {
@@ -55,6 +58,7 @@ import type { Operation } from '../../types/operation';
 
 type AgentView =
   | 'overview'
+  | 'funds'
   | 'commandes'
   | 'billetage'
   | 'salary'
@@ -66,6 +70,7 @@ type AgentView =
 
 const AGENT_TABS: WorkspaceTab[] = [
   { id: 'overview', label: 'Missions', icon: LayoutDashboard },
+  { id: 'funds', label: 'Crédits & Fonds', icon: Wallet },
   { id: 'commandes', label: 'Commandes Clients', icon: ClipboardList },
   { id: 'reports', label: 'Rapports', icon: FileText },
   { id: 'billetage', label: 'Billetage', icon: Coins },
@@ -211,9 +216,18 @@ export default function AgentDashboard() {
       void loadOperations();
     });
 
+    const stopFinanceWatcher = startFinancialNotificationWatcher(user, (evt) => {
+      setToastAlert({
+        title: evt.title,
+        message: evt.body,
+        isUrgent: evt.severity === 'critical' || evt.severity === 'warning',
+      });
+    });
+
     return () => {
       stopWatcher();
       stopOrderWatcher();
+      stopFinanceWatcher();
     };
   }, [user?.uid]);
 
@@ -316,6 +330,12 @@ export default function AgentDashboard() {
     }
     if (item === 'reports') {
       handleSelectView('reports');
+    } else if (
+      item === 'funds' ||
+      item === 'financial-supervision' ||
+      item === 'financial_supervision'
+    ) {
+      handleSelectView('funds');
     } else if (item === 'commandes' || item === 'orders' || item === 'client-orders') {
       handleSelectView('commandes');
     } else if (item === 'billetage' || item === 'accounting' || item === 'treasury') {
@@ -373,7 +393,14 @@ export default function AgentDashboard() {
               Guichet, missions affectées, billetage et déclarations d&apos;activité
             </p>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => handleSelectView('funds')}
+              className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition whitespace-nowrap"
+            >
+              Fonds &amp; Guichet
+            </button>
             <button
               type="button"
               onClick={() => handleSelectView('transfers')}
@@ -398,21 +425,23 @@ export default function AgentDashboard() {
           activeModuleTitle={
             activeView === 'overview'
               ? 'Missions & Opérations'
-              : activeView === 'commandes'
-                ? 'Commandes & Réclamations Clients'
-                : activeView === 'reports'
-                  ? "Mes Rapports d'Activité"
-                  : activeView === 'billetage'
-                    ? 'Billetage & Tenue de Caisse'
-                    : activeView === 'salary'
-                      ? 'Mon Salaire'
-                      : activeView === 'transfers'
-                        ? 'Transferts Inter-Agences'
-                        : activeView === 'debts'
-                          ? 'Engagements & Dettes'
-                          : activeView === 'connectivity'
-                            ? 'Disponibilité & Synchro'
-                            : 'Messagerie & Annonces'
+              : activeView === 'funds'
+                ? 'Crédits Virtuels, Caisse & Guichet'
+                : activeView === 'commandes'
+                  ? 'Commandes & Réclamations Clients'
+                  : activeView === 'reports'
+                    ? "Mes Rapports d'Activité"
+                    : activeView === 'billetage'
+                      ? 'Billetage & Tenue de Caisse'
+                      : activeView === 'salary'
+                        ? 'Mon Salaire'
+                        : activeView === 'transfers'
+                          ? 'Transferts Inter-Agences'
+                          : activeView === 'debts'
+                            ? 'Engagements & Dettes'
+                            : activeView === 'connectivity'
+                              ? 'Disponibilité & Synchro'
+                              : 'Messagerie & Annonces'
           }
           backLabel="Missions"
           onBack={() => handleSelectView('overview')}
@@ -431,6 +460,9 @@ export default function AgentDashboard() {
           onTabChange={(id) => handleSelectView(id as AgentView)}
         />
 
+        {activeView === 'funds' && (
+          <AgentFundsModule onClose={() => handleSelectView('overview')} />
+        )}
         {activeView === 'commandes' && (
           <CommandesClientsModule
             onClose={() => handleSelectView('overview')}

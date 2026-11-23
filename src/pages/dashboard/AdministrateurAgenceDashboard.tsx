@@ -9,6 +9,7 @@ import {
   Scale,
   UserCheck,
   Users,
+  Wallet,
   WalletCards,
   Wifi,
 } from 'lucide-react';
@@ -33,13 +34,16 @@ import TreasuryTransfersDebtsModule from './components/TreasuryTransfersDebtsMod
 import SalaryModule from './components/SalaryModule';
 import AuditModule from './components/AuditModule';
 import CommandesClientsModule from './components/CommandesClientsModule';
+import FinancialSupervisionModule from './components/FinancialSupervisionModule';
 import UnifiedExecutiveOverview from '../../components/dashboard/UnifiedExecutiveOverview';
 import { db } from '../../lib/db';
 import { getAgency } from '../../services/AgencyService';
 import { getAgencyUsers } from '../../services/AgencyUserService';
 import { fetchScopedClientOrders } from '../../services/ClientOrderService';
+import { startFinancialNotificationWatcher } from '../../services/LocalNotificationService';
 
 type ModuleId =
+  | 'funds'
   | 'billetage'
   | 'operations'
   | 'commandes'
@@ -57,6 +61,13 @@ const AGENCY_MODULES_META: Record<
   ModuleId,
   { title: string; shortTitle: string; description: string; category: string; icon: typeof WalletCards }
 > = {
+  funds: {
+    title: 'Crédits Virtuels & Fonds Agents',
+    shortTitle: 'Crédits & Fonds',
+    description: 'Soldes USD/CDF par agent, réapprovisionnements, remises cash, rapprochement SMS et inventaires.',
+    category: 'Caisse & Finances',
+    icon: Wallet,
+  },
   billetage: {
     title: 'Billetage de Caisse & Coffre',
     shortTitle: 'Billetage',
@@ -153,6 +164,16 @@ const AGENCY_MODULE_CARDS: Array<{
   variant: 'default' | 'primary' | 'success' | 'warning' | 'danger';
   badge?: string;
 }> = [
+  {
+    id: 'funds',
+    pole: '01. Caisse & Finances Locales',
+    title: 'Crédits Virtuels & Fonds Agents',
+    shortTitle: 'Crédits & Fonds',
+    description: 'Supervision des stocks cash/virtuel USD & CDF, remises cash, inventaires et anomalies.',
+    icon: Wallet,
+    variant: 'primary',
+    badge: 'USD/CDF',
+  },
   {
     id: 'billetage',
     pole: '01. Caisse & Finances Locales',
@@ -345,11 +366,13 @@ export default function AdministrateurAgenceDashboard() {
 
     void loadStats();
     const interval = setInterval(loadStats, 8000);
+    const stopFinanceWatcher = startFinancialNotificationWatcher(user);
     return () => {
       isMounted = false;
       clearInterval(interval);
+      stopFinanceWatcher();
     };
-  }, [user?.agencyId]);
+  }, [user?.agencyId, user?.uid]);
 
   const handleSidebarNavigate = (item: string) => {
     if (item === 'profile') {
@@ -359,6 +382,9 @@ export default function AdministrateurAgenceDashboard() {
     const map: Record<string, ModuleId | null> = {
       dashboard: null,
       overview: null,
+      funds: 'funds',
+      'financial-supervision': 'funds',
+      financial_supervision: 'funds',
       operations: 'operations',
       transactions: 'operations',
       commandes: 'commandes',
@@ -389,6 +415,7 @@ export default function AdministrateurAgenceDashboard() {
   const sidebarActiveItem = useMemo(() => {
     if (!activeModule) return 'dashboard';
     const reverseMap: Record<ModuleId, string> = {
+      funds: 'funds',
       billetage: 'treasury',
       operations: 'transactions',
       commandes: 'commandes',
@@ -427,6 +454,7 @@ export default function AdministrateurAgenceDashboard() {
               backLabel="Accueil Agence"
               onBack={() => setActiveModule(null)}
               tabs={[
+                { id: 'funds', label: 'Crédits & Fonds', icon: Wallet },
                 { id: 'billetage', label: 'Billetage', icon: WalletCards },
                 { id: 'salaries', label: 'Salaires', icon: Coins },
                 {
@@ -463,6 +491,12 @@ export default function AdministrateurAgenceDashboard() {
             />
 
             <div className="relative">
+              {activeModule === 'funds' && (
+                <FinancialSupervisionModule
+                  mode="agency_admin"
+                  onClose={() => setActiveModule(null)}
+                />
+              )}
               {activeModule === 'billetage' && (
                 <BilletageModule onClose={() => setActiveModule(null)} />
               )}

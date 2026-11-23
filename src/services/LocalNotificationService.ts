@@ -497,3 +497,216 @@ export function startClientOrderNotificationWatcher(
   };
 }
 
+const NOTIFIED_FINANCE_CACHE_KEY = 'ets_amani_notified_finance_events';
+let financeWatcherIntervalId: ReturnType<typeof setInterval> | null = null;
+
+function getNotifiedFinanceSignatures(uid: string): Set<string> {
+  try {
+    const raw = localStorage.getItem(`${NOTIFIED_FINANCE_CACHE_KEY}_${uid}`);
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) return new Set(arr);
+    }
+  } catch {
+    // ignore
+  }
+  return new Set();
+}
+
+function saveNotifiedFinanceSignature(uid: string, sig: string): void {
+  try {
+    const set = getNotifiedFinanceSignatures(uid);
+    set.add(sig);
+    localStorage.setItem(
+      `${NOTIFIED_FINANCE_CACHE_KEY}_${uid}`,
+      JSON.stringify(Array.from(set).slice(-350))
+    );
+  } catch {
+    // ignore
+  }
+}
+
+export interface FinancialNotificationEvent {
+  id: string;
+  title: string;
+  body: string;
+  severity: 'info' | 'warning' | 'critical';
+  timestamp: number;
+}
+
+export function startFinancialNotificationWatcher(
+  user: AppUser | null,
+  onFinanceEvent?: (event: FinancialNotificationEvent) => void
+): () => void {
+  if (!user?.uid || user.role === 'client' || user.role === 'abonne') {
+    return () => {};
+  }
+
+  const check = async () => {
+    try {
+      const seen = getNotifiedFinanceSignatures(user.uid);
+      const isGlobal =
+        user.role === 'directeur_general' || user.role === 'administrateur_systeme';
+      const isAgencyAdmin = user.role === 'administrateur_agence';
+      const isAgentUser = user.role === 'agent';
+
+      const emitOnce = async (
+        sig: string,
+        title: string,
+        body: string,
+        severity: FinancialNotificationEvent['severity']
+      ) => {
+        if (seen.has(sig)) return;
+        saveNotifiedFinanceSignature(user.uid, sig);
+        onFinanceEvent?.({
+          id: sig,
+          title,
+          body,
+          severity,
+          timestamp: Date.now(),
+        });
+        await sendLocalPushNotification({
+          title,
+          body,
+          priority: severity === 'critical' ? 'tres_urgent' : severity === 'warning' ? 'urgent' : 'normal',
+          tag: `fin-${sig}`,
+          data: { url: `/dashboard/${user.role}` },
+        });
+      };
+
+      // 1. Demandes de réapprovisionnement
+      const reqs = await db.replenishmentRequests.toArray();
+      for (const req of reqs) {
+        if (isGlobal || (isAgencyAdmin && req.agencyId === user.agencyId)) {
+          if (req.status === 'en_attente') {
+            await emitOnce(
+              `rep-pending:${req.id}`,
+              `Réapprovisionnement demandé (${req.reference})`,
+              `${req.agentName} · ${req.requestedAmount} ${req.currency} (${req.urgency})`,
+              req.urgency === 'critique' ? 'critical' : 'warning'
+            );
+          }
+        } else if (isAgentUser && req.agentId === user.uid) {
+          if (req.status === 'approuvee' || req.status === 'rejetee') {
+            await emitOnce(
+              `rep-decision:${req.id}:${req.status}`,
+              `Réapprovisionnement ${req.status === 'approuvee' ? 'approuvé' : 'rejeté'}`,
+              `${req.reference} · ${req.approvedAmount ?? req.requestedAmount} ${req.currency}`,
+              req.status === 'approuvee' ? 'info' : 'warning'
+            );
+          }
+        }
+      }
+
+      // 2. Remises de cash à confirmer
+      const handovers = await db.cashHandovers.toArray();
+      for (const h of handovers) {
+        if (h.status !== 'en_attente_confirmation') continue;
+        const shouldConfirm =
+          (h.direction === 'direction_vers_agent' && isAgentUser && h.agentId === user.uid) ||
+          (h.direction !== 'direction_vers_agent' &&
+            (isGlobal || (isAgencyAdmin && h.agencyId === user.agencyId)));
+        if (shouldConfirm && h.initiatedByUid !== user.uid) {
+          await emitOnce(
+            `handover:${h.id}`,
+            `Confirmation cash requise (${h.reference})`,
+            `${h.agentName} · ${h.amount} ${h.currency}`,
+            'warning'
+          );
+        }
+      }
+
+      // 3. Inventaires inopinés ou soumis
+      const inventories = await db.physicalInventories.toArray();
+      for (const inv of inventories) {
+        if (isAgentUser && inv.agentId === user.uid && inv.status === 'en_attente_agent') {
+          await emitOnce(
+            `inv-req:${inv.id}`,
+            `Contrôle d'inventaire demandé (${inv.reference})`,
+            `Type : ${inv.controlType}. Comptage physique & virtuel requis.`,
+            inv.controlType === 'inopine' ? 'critical' : 'warning'
+          );
+        }
+        if (
+          (isGlobal || (isAgencyAdmin && inv.agencyId === user.agencyId)) &&
+          inv.status === 'soumis_agent'
+        ) {
+          await emitOnce(
+            `inv-sub:${inv.id}`,
+            `Inventaire soumis (${inv.reference})`,
+            `${inv.agentName} a transmis son comptage pour validation.`,
+            'info'
+          );
+        }
+      }
+
+      // 4. Anomalies financières
+      const anomalies = await db.financialAnomalies.toArray();
+      for (const ano of anomalies) {
+        if (ano.status === 'cloturee') continue;
+        if (isGlobal || (isAgencyAdmin && ano.agencyId === user.agencyId)) {
+          await emitOnce(
+            `ano-sup:${ano.id}:${ano.status}`,
+            `Anomalie ${ano.severity.toUpperCase()} (${ano.reference})`,
+            ano.title,
+            ano.severity === 'critique' ? 'critical' : 'warning'
+          );
+        } else if (
+          isAgentUser &&
+          ano.agentId === user.uid &&
+          ano.status === 'justification_demandee'
+        ) {
+          await emitOnce(
+            `ano-just:${ano.id}`,
+            `Justification requise (${ano.reference})`,
+            ano.supervisorDecisionNote || ano.title,
+            'warning'
+          );
+        }
+      }
+
+      // 5. Seuils crédit virtuel bas / cash physique élevé
+      const stocks = await db.agentFundStocks.toArray();
+      for (const st of stocks) {
+        const relevant =
+          isGlobal ||
+          (isAgencyAdmin && st.agencyId === user.agencyId) ||
+          (isAgentUser && st.agentId === user.uid);
+        if (!relevant) continue;
+        if (st.virtualCreditAvailable > 0 && st.virtualCreditAvailable < st.creditLowThreshold) {
+          await emitOnce(
+            `low-credit:${st.id}:${new Date().toISOString().slice(0, 10)}`,
+            `Crédit virtuel bas (${st.currency})`,
+            `${st.agentName} : ${st.virtualCreditAvailable} ${st.currency} restant.`,
+            'warning'
+          );
+        }
+        if (st.physicalCashAvailable > st.cashHighThreshold) {
+          await emitOnce(
+            `high-cash:${st.id}:${new Date().toISOString().slice(0, 10)}`,
+            `Cash physique élevé (${st.currency})`,
+            `${st.agentName} détient ${st.physicalCashAvailable} ${st.currency} en caisse.`,
+            'warning'
+          );
+        }
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  void check();
+  if (financeWatcherIntervalId) clearInterval(financeWatcherIntervalId);
+  financeWatcherIntervalId = setInterval(() => {
+    void check();
+  }, 10000);
+
+  return () => {
+    if (financeWatcherIntervalId) {
+      clearInterval(financeWatcherIntervalId);
+      financeWatcherIntervalId = null;
+    }
+  };
+}
+
+

@@ -17,6 +17,7 @@ import {
   User,
   UserCheck,
   Users,
+  Wallet,
   WalletCards,
   Wifi,
   X,
@@ -80,6 +81,7 @@ export default function Sidebar({
   } else if (isAgent) {
     pilotageItems = [
       { id: 'dashboard', label: 'Accueil & Missions', icon: LayoutGrid },
+      { id: 'funds', label: 'Crédits & Fonds', icon: Wallet },
       { id: 'transactions', label: 'Missions & Opérations', icon: Share2 },
       { id: 'commandes', label: 'Commandes Clients', icon: ClipboardList },
       { id: 'billetage', label: 'Billetage Caisse', icon: Coins },
@@ -99,6 +101,7 @@ export default function Sidebar({
   } else if (isAgencyAdmin) {
     pilotageItems = [
       { id: 'dashboard', label: 'Accueil Agence', icon: LayoutGrid },
+      { id: 'funds', label: 'Crédits & Fonds', icon: Wallet },
       { id: 'transactions', label: 'Opérations', icon: Share2 },
       { id: 'commandes', label: 'Commandes Clients', icon: ClipboardList },
       { id: 'treasury', label: 'Billetage & Caisse', icon: Coins },
@@ -121,6 +124,7 @@ export default function Sidebar({
   } else if (isDG) {
     pilotageItems = [
       { id: 'dashboard', label: 'Vue Globale', icon: LayoutGrid },
+      { id: 'funds', label: 'Crédits & Fonds', icon: Wallet },
       { id: 'transactions', label: 'Opérations Réseau', icon: Share2 },
       { id: 'commandes', label: 'Commandes Clients', icon: ClipboardList },
       { id: 'treasury', label: 'Billetage & Caisse', icon: Landmark },
@@ -147,6 +151,7 @@ export default function Sidebar({
     // Administrateur Système (ou défaut interne)
     pilotageItems = [
       { id: 'dashboard', label: 'Vue Système', icon: LayoutGrid },
+      { id: 'funds', label: 'Crédits & Fonds', icon: Wallet },
       { id: 'members', label: 'Utilisateurs & Rôles', icon: Users },
       { id: 'registrations', label: 'Inscriptions', icon: UserCheck },
       ...(isSystemAdmin

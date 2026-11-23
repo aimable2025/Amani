@@ -45,10 +45,12 @@ import ChatModule from './components/ChatModule';
 import TreasuryTransfersDebtsModule from './components/TreasuryTransfersDebtsModule';
 import SalaryModule from './components/SalaryModule';
 import CommandesClientsModule from './components/CommandesClientsModule';
+import FinancialSupervisionModule from './components/FinancialSupervisionModule';
 import { getDgFeatures } from '../../services/DgFeatureService';
 import { getAgencies, type Agency } from '../../services/AgencyService';
 import { getAllSystemUsers, type ManagedUser } from '../../services/SystemUserService';
 import { db, type LocalInterAgencyTransfer, type LocalReport } from '../../lib/db';
+import { startFinancialNotificationWatcher } from '../../services/LocalNotificationService';
 import {
   subscribeToDirectorGeneralConfig,
   type DirectorGeneralConfig,
@@ -194,11 +196,13 @@ export default function DirecteurGeneralDashboard() {
     const unsub = subscribeToDirectorGeneralConfig((cfg) => {
       setDgConfig(cfg);
     });
+    const stopFinanceWatcher = startFinancialNotificationWatcher(user);
     return () => {
       clearInterval(statsInterval);
       unsub();
+      stopFinanceWatcher();
     };
-  }, [activeModuleId]);
+  }, [activeModuleId, user?.uid]);
 
   const isSuspended =
     user?.status === 'suspended' || dgConfig?.status === 'suspended';
@@ -351,6 +355,9 @@ export default function DirecteurGeneralDashboard() {
     const map: Record<string, string | null> = {
       dashboard: null,
       overview: null,
+      funds: 'financial-supervision',
+      'financial-supervision': 'financial-supervision',
+      financial_supervision: 'financial-supervision',
       operations: 'operations-management',
       transactions: 'operations-management',
       commandes: 'client-orders',
@@ -431,6 +438,7 @@ export default function DirecteurGeneralDashboard() {
   const sidebarActiveItem = useMemo(() => {
     if (!activeModuleId) return 'dashboard';
     const reverseMap: Record<string, string> = {
+      'financial-supervision': 'funds',
       'operations-management': 'transactions',
       'client-orders': 'commandes',
       billetage: 'treasury',
@@ -567,6 +575,9 @@ export default function DirecteurGeneralDashboard() {
               {activeModuleId === 'salaries-management' && (
                 <SalaryModule mode="dg" onClose={() => setActiveModuleId(null)} />
               )}
+              {activeModuleId === 'financial-supervision' && (
+                <FinancialSupervisionModule mode="dg" onClose={() => setActiveModuleId(null)} />
+              )}
             </div>
           </section>
         ) : (
@@ -584,7 +595,14 @@ export default function DirecteurGeneralDashboard() {
                   Supervision consolidée des agences, caisse, missions et contrôle interne
                 </p>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleOpenModule('financial-supervision')}
+                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition whitespace-nowrap"
+                >
+                  Crédits &amp; Fonds
+                </button>
                 <button
                   type="button"
                   onClick={() => handleOpenModule('inter-agency-transfers')}

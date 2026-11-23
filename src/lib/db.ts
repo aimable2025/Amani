@@ -2,6 +2,17 @@ import Dexie, { type Table } from 'dexie';
 import type { Operation, OperationAssignment } from '../types/operation';
 import type { AgentCategorySpecificData } from '../types/report';
 import type { ClientOrder } from '../types/clientOrder';
+import type {
+  AgentFundStock,
+  CashHandover,
+  CreditDelegationScope,
+  FinancialAnomaly,
+  FinancialLedgerEntry,
+  FinancialTransaction,
+  PhysicalInventory,
+  ReconciliationRecord,
+  ReplenishmentRequest,
+} from '../types/financialSupervision';
 
 export interface BilletageDenomination {
   id?: number;
@@ -45,7 +56,16 @@ export interface SyncQueueItem {
     | 'salary'
     | 'salaryClaim'
     | 'salaryAdvance'
-    | 'clientOrder';
+    | 'clientOrder'
+    | 'agentFundStock'
+    | 'financialLedger'
+    | 'financialTransaction'
+    | 'replenishmentRequest'
+    | 'cashHandover'
+    | 'reconciliationRecord'
+    | 'financialAnomaly'
+    | 'physicalInventory'
+    | 'financialDelegation';
   entityId: string;
   operation: 'create' | 'update' | 'delete';
   attempts: number;
@@ -695,6 +715,15 @@ export class EtsAmaniDatabase extends Dexie {
   salaryClaims!: Table<LocalSalaryClaim, string>;
   salaryAdvances!: Table<LocalSalaryAdvance, string>;
   clientOrders!: Table<ClientOrder, string>;
+  agentFundStocks!: Table<AgentFundStock, string>;
+  financialLedger!: Table<FinancialLedgerEntry, string>;
+  financialTransactions!: Table<FinancialTransaction, string>;
+  replenishmentRequests!: Table<ReplenishmentRequest, string>;
+  cashHandovers!: Table<CashHandover, string>;
+  reconciliationRecords!: Table<ReconciliationRecord, string>;
+  financialAnomalies!: Table<FinancialAnomaly, string>;
+  physicalInventories!: Table<PhysicalInventory, string>;
+  financialDelegations!: Table<CreditDelegationScope, string>;
 
   constructor() {
     super('EtsAmaniDB');
@@ -856,6 +885,61 @@ export class EtsAmaniDatabase extends Dexie {
         'id, reference, agentId, agencyId, status, dgDecision, designatedPayerId, designatedPayerService, syncStatus, createdAt, updatedAt',
       clientOrders:
         'id, reference, category, transactionType, authorUid, authorRole, agencyId, assignedAgentId, status, priority, syncStatus, createdAt, updatedAt',
+    });
+
+    this.version(8).stores({
+      billetages:
+        'id, userId, agencyId, type, currency, status, syncStatus, transactionId, createdAt, updatedAt',
+      billetageDenominations:
+        '++id, billetageId, currency, denomination, createdAt, updatedAt',
+      syncQueue:
+        '++id, entity, entityId, operation, status, createdAt, updatedAt',
+      operations:
+        'id, operationNumber, agencyId, status, priority, type, createdBy, createdAt, updatedAt, syncStatus',
+      operationAssignments:
+        'id, operationId, agencyId, agentId, status, createdAt, updatedAt, syncStatus',
+      internalNumbers:
+        'id, phoneNumber, operator, agencyId, assignedUserId, status, monitoringEnabled, createdAt, updatedAt',
+      smsOperations:
+        'id, internalNumberId, agencyId, operator, sender, transactionReference, amount, transactionType, operationDate, receivedAt, status, syncStatus, createdAt, updatedAt',
+      smsSyncQueue:
+        '++id, smsOperationId, operation, status, attempts, nextAttemptAt, lastAttemptAt, createdAt, updatedAt',
+      reports:
+        'id, reference, type, period, agencyId, status, createdBy, syncStatus, createdAt, updatedAt',
+      chatMessages:
+        'id, channelType, channelId, agencyId, senderId, recipientId, syncStatus, createdAt, updatedAt',
+      broadcasts:
+        'id, severity, scope, agencyId, authorId, syncStatus, createdAt, updatedAt',
+      debts:
+        'id, reference, category, agencyId, currency, status, dueDate, syncStatus, createdAt, updatedAt',
+      interAgencyTransfers:
+        'id, reference, transferType, sourceAgencyId, targetAgencyId, currency, status, syncStatus, createdAt, updatedAt',
+      salaries:
+        'id, &periodKey, reference, agentId, agencyId, year, month, status, designatedPayerId, designatedPayerService, syncStatus, createdAt, updatedAt',
+      salaryClaims:
+        'id, reference, salaryId, periodKey, agentId, agencyId, status, syncStatus, createdAt, updatedAt',
+      salaryAdvances:
+        'id, reference, agentId, agencyId, status, dgDecision, designatedPayerId, designatedPayerService, syncStatus, createdAt, updatedAt',
+      clientOrders:
+        'id, reference, category, transactionType, authorUid, authorRole, agencyId, assignedAgentId, status, priority, syncStatus, createdAt, updatedAt',
+      agentFundStocks:
+        'id, agentId, agencyId, currency, status, syncStatus, recalculatedAt, updatedAt',
+      financialLedger:
+        'id, &idempotencyKey, reference, operationCategory, agentId, agencyId, currency, linkedTransactionId, linkedSmsOperationId, syncLifecycle, syncStatus, createdAt, updatedAt',
+      financialTransactions:
+        'id, &idempotencyKey, reference, externalOperatorRef, transactionType, agentId, agencyId, operator, internalNumberId, currency, reconciliationStatus, linkedSmsOperationId, status, syncLifecycle, syncStatus, createdAt, updatedAt',
+      replenishmentRequests:
+        'id, &idempotencyKey, reference, agentId, agencyId, requestType, currency, status, urgency, reviewedByUid, syncStatus, createdAt, updatedAt',
+      cashHandovers:
+        'id, &idempotencyKey, reference, direction, agentId, agencyId, currency, status, initiatedByUid, confirmedByUid, syncStatus, createdAt, updatedAt',
+      reconciliationRecords:
+        'id, smsOperationId, financialTransactionId, agentId, agencyId, status, currency, createdAt, updatedAt',
+      financialAnomalies:
+        'id, reference, dedupKey, anomalyType, severity, status, agentId, agencyId, linkedTransactionId, linkedSmsOperationId, linkedInventoryId, createdAt, updatedAt',
+      physicalInventories:
+        'id, reference, controlType, agentId, agencyId, status, immutableLocked, requestedByUid, requestedAt, createdAt, updatedAt',
+      financialDelegations:
+        'id, delegateUid, agencyId, grantedByUid, status, expiresAt, createdAt, updatedAt',
     });
   }
 }

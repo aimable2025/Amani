@@ -1,0 +1,57 @@
+{
+  "projectId": "ets-amani",
+  "collections": {
+    "users": {
+      "description": "User profiles and RBAC role assignments across Ets AMANI.",
+      "fields": ["uid", "email", "displayName", "role", "category", "function", "functions", "agencyId", "status", "isApproved", "permissions"]
+    },
+    "agencies": {
+      "description": "Physical Ets AMANI agencies.",
+      "fields": ["id", "code", "name", "city", "status"]
+    },
+    "agentFundStocks": {
+      "description": "Recalculable per-agent, per-currency dual-stock projections (physicalCash vs virtualCredit). Direct agent mutation prohibited; updated via validated transactions/allocations.",
+      "fields": ["id", "agentId", "agencyId", "currency", "physicalCashConfirmed", "virtualCreditConfirmed", "netAttributedCapital", "invariantResidual", "status", "lastLedgerEntryId", "recalculatedAt", "updatedAt"]
+    },
+    "financialLedger": {
+      "description": "Append-only immutable accounting ledger separating USD and CDF.",
+      "fields": ["id", "idempotencyKey", "reference", "operationCategory", "agentId", "agencyId", "currency", "physicalCashDelta", "virtualCreditDelta", "capitalDelta", "feeDelta", "fxNetDelta", "adjustmentDelta", "authorUid", "authorRole", "syncLifecycle", "createdAt"]
+    },
+    "financialTransactions": {
+      "description": "Agent-declared financial transactions (deposits, withdrawals, virtual transfers, FX, fees) with SMS reconciliation tracking.",
+      "fields": ["id", "idempotencyKey", "reference", "transactionType", "agentId", "agencyId", "operator", "currency", "amount", "feeAmount", "reconciliationStatus", "linkedSmsOperationId", "status", "createdAt", "updatedAt"]
+    },
+    "replenishmentRequests": {
+      "description": "Agent requests for virtual credit or physical cash replenishment approved or rejected by DG or explicitly delegated agency admin.",
+      "fields": ["id", "reference", "idempotencyKey", "agentId", "agencyId", "requestType", "currency", "requestedAmount", "approvedAmount", "status", "reviewedByUid", "createdAt", "updatedAt"]
+    },
+    "cashHandovers": {
+      "description": "Bilateral cash receipts and handovers requiring two-party confirmation.",
+      "fields": ["id", "reference", "idempotencyKey", "direction", "agentId", "agencyId", "currency", "amount", "initiatedByUid", "status", "confirmedByUid", "createdAt", "updatedAt"]
+    },
+    "reconciliationRecords": {
+      "description": "Automatic and manual reconciliation matches between Mobile Money SMS operations and declared financial transactions.",
+      "fields": ["id", "smsOperationId", "financialTransactionId", "agentId", "agencyId", "status", "confidenceScore", "amountDifference", "createdAt", "updatedAt"]
+    },
+    "financialAnomalies": {
+      "description": "Append-only financial anomalies and justification workflow; deletion strictly prohibited.",
+      "fields": ["id", "reference", "dedupKey", "anomalyType", "severity", "status", "agentId", "agencyId", "discrepancyAmount", "createdAt", "updatedAt"]
+    },
+    "physicalInventories": {
+      "description": "Scheduled and unannounced physical cash and virtual channel inventory controls.",
+      "fields": ["id", "reference", "controlType", "agentId", "agencyId", "status", "immutableLocked", "requestedByUid", "validatedByUid", "createdAt", "updatedAt"]
+    },
+    "financialDelegations": {
+      "description": "Explicit, time-bounded, limit-capped credit approval delegations from DG to Administrateur d'Agence.",
+      "fields": ["id", "delegateUid", "agencyId", "grantedByUid", "status", "canApproveReplenishment", "maxAmountUsd", "maxAmountCdf", "expiresAt", "createdAt", "updatedAt"]
+    },
+    "smsOperations": {
+      "description": "Mobile Money operator SMS captured automatically from collector SIM devices (preserved independent source).",
+      "fields": ["id", "internalNumberId", "agencyId", "operator", "transactionReference", "amount", "currency", "reconciliationStatus", "receivedAt"]
+    },
+    "auditLogs": {
+      "description": "Immutable append-only audit trail.",
+      "fields": ["id", "action", "category", "severity", "actorUid", "actorRole", "agencyId", "timestamp"]
+    }
+  }
+}

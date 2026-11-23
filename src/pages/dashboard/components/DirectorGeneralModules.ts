@@ -69,6 +69,17 @@ export const DG_MODULES: DgModuleItem[] = [
     isAvailable: (f) => f?.billetageAccess ?? true,
   },
   {
+    id: 'financial-supervision',
+    title: 'Crédits Virtuels & Fonds Agents',
+    shortTitle: 'Crédits & Fonds',
+    description: 'Dotations, réapprovisionnements, remises de cash, rapprochement SMS et inventaires USD/CDF.',
+    icon: Wallet,
+    category: 'finance',
+    variant: 'primary',
+    badge: 'USD/CDF',
+    isAvailable: (f) => f?.supervisionAccess ?? f?.transactionsManage ?? true,
+  },
+  {
     id: 'salaries-management',
     title: 'Salaires, Avances & Paie',
     shortTitle: 'Salaires & Paie',

@@ -5,6 +5,7 @@ import {
   getDocs,
   limit,
   query,
+  runTransaction,
   serverTimestamp,
   setDoc,
   where,
@@ -26,6 +27,25 @@ import type {
 import type { Operation, OperationAssignment } from '../types/operation';
 import type { ClientOrder } from '../types/clientOrder';
 import type { AppUser } from '../types/auth';
+import type {
+  AgentFundStock,
+  CashHandover,
+  CreditDelegationScope,
+  FinancialAnomaly,
+  FinancialLedgerEntry,
+  FinancialTransaction,
+  PhysicalInventory,
+  ReconciliationRecord,
+  ReplenishmentRequest,
+} from '../types/financialSupervision';
+import {
+  buildStockId,
+  recalculateAgentStockFromLedger,
+  reconcileAndPersistAgentStock,
+  roundCurrency,
+  sanitizeForFirestore,
+} from './FinancialLedgerService';
+import { raiseFinancialAnomaly } from './AnomalyDetectionService';
 
 const SYNC_INTERVAL_MS = 10000;
 const MAX_ATTEMPTS = 5;
@@ -517,6 +537,264 @@ async function pullRemoteDataToLocal(): Promise<void> {
   } catch {
     // Silencieux si hors-ligne ou règles restreintes
   }
+
+  // 10. Hydratation descendante Supervision Financière & Crédits Virtuels (strictement hors Client/Abonné)
+  if (!isExternal && sessionCtx.role) {
+    const pullScopedFinancialCollection = async <T extends { id?: string; updatedAt?: number }>(
+      colName: string,
+      table: {
+        get: (id: string) => Promise<(T & { syncStatus?: string }) | undefined>;
+        put: (val: T) => Promise<unknown>;
+      },
+      extraFilterField?: 'agentId' | 'delegateUid'
+    ): Promise<T[]> => {
+      const pulled: T[] = [];
+      try {
+        let qRef;
+        if (isGlobalSupervisor) {
+          qRef = query(collection(firestore, colName), limit(250));
+        } else if (sessionCtx.role === 'administrateur_agence' && sessionCtx.agencyId) {
+          qRef = query(
+            collection(firestore, colName),
+            where('agencyId', '==', sessionCtx.agencyId),
+            limit(200)
+          );
+        } else if (sessionCtx.role === 'agent') {
+          if (extraFilterField === 'delegateUid') return pulled;
+          qRef = query(
+            collection(firestore, colName),
+            where('agentId', '==', sessionCtx.uid),
+            limit(200)
+          );
+        } else {
+          return pulled;
+        }
+
+        const snap = await getDocs(qRef);
+        for (const d of snap.docs) {
+          const remote = d.data() as T & { syncStatus?: string; syncLifecycle?: string };
+          const id = remote.id || d.id;
+          const local = await table.get(id);
+          const remoteUpdated = Number(remote.updatedAt || 0);
+          const localUpdated = Number(local?.updatedAt || 0);
+          if (
+            !local ||
+            (local.syncStatus !== 'pending' && local.syncStatus !== 'conflict') ||
+            remoteUpdated > localUpdated
+          ) {
+            const merged = {
+              ...remote,
+              id,
+              syncStatus: 'synced',
+            } as T;
+            await table.put(merged);
+            pulled.push(merged);
+          }
+        }
+      } catch {
+        // Silencieux si offline ou permissions restreintes
+      }
+      return pulled;
+    };
+
+    const pulledLedger = await pullScopedFinancialCollection<FinancialLedgerEntry>(
+      'financialLedger',
+      db.financialLedger
+    );
+    await pullScopedFinancialCollection<AgentFundStock>('agentFundStocks', db.agentFundStocks);
+    await pullScopedFinancialCollection<FinancialTransaction>(
+      'financialTransactions',
+      db.financialTransactions
+    );
+    await pullScopedFinancialCollection<ReplenishmentRequest>(
+      'replenishmentRequests',
+      db.replenishmentRequests
+    );
+    await pullScopedFinancialCollection<CashHandover>('cashHandovers', db.cashHandovers);
+    await pullScopedFinancialCollection<ReconciliationRecord>(
+      'reconciliationRecords',
+      db.reconciliationRecords
+    );
+    await pullScopedFinancialCollection<FinancialAnomaly>(
+      'financialAnomalies',
+      db.financialAnomalies
+    );
+    await pullScopedFinancialCollection<PhysicalInventory>(
+      'physicalInventories',
+      db.physicalInventories
+    );
+    await pullScopedFinancialCollection<CreditDelegationScope>(
+      'financialDelegations',
+      db.financialDelegations,
+      'delegateUid'
+    );
+
+    // Recalcul déterministe des stocks affectés par de nouvelles écritures distantes
+    const affectedPairs = new Map<string, FinancialLedgerEntry>();
+    for (const entry of pulledLedger) {
+      affectedPairs.set(`${entry.agentId}_${entry.currency}`, entry);
+    }
+    for (const entry of affectedPairs.values()) {
+      await reconcileAndPersistAgentStock({
+        agentId: entry.agentId,
+        agentName: entry.agentName,
+        agencyId: entry.agencyId,
+        agencyName: entry.agencyName,
+        currency: entry.currency,
+      });
+    }
+  }
+}
+
+async function markOfflineEntryAsConflict(params: {
+  entry: FinancialLedgerEntry;
+  reason: string;
+  observedVirtual: number;
+  observedCash: number;
+}): Promise<void> {
+  const { entry, reason, observedVirtual, observedCash } = params;
+  const now = Date.now();
+  await db.financialLedger.update(entry.id, {
+    syncLifecycle: 'en_conflit',
+    syncStatus: 'conflict',
+    conflictReason: reason,
+    updatedAt: now,
+  });
+
+  if (entry.linkedTransactionId) {
+    const linkedTx = await db.financialTransactions.get(entry.linkedTransactionId);
+    if (linkedTx) {
+      await db.financialTransactions.update(linkedTx.id, {
+        status: 'en_conflit',
+        syncLifecycle: 'en_conflit',
+        syncStatus: 'conflict',
+        conflictDetails: reason,
+        updatedAt: now,
+      });
+    }
+  }
+
+  await reconcileAndPersistAgentStock({
+    agentId: entry.agentId,
+    agentName: entry.agentName,
+    agencyId: entry.agencyId,
+    agencyName: entry.agencyName,
+    currency: entry.currency,
+  });
+
+  await raiseFinancialAnomaly({
+    dedupKey: `offline-conflict:${entry.id}`,
+    anomalyType:
+      entry.virtualCreditDelta < 0 ? 'tentative_credit_insuffisant' : 'solde_incoherent',
+    severity: 'elevee',
+    agentId: entry.agentId,
+    agentName: entry.agentName,
+    agencyId: entry.agencyId,
+    agencyName: entry.agencyName,
+    currency: entry.currency,
+    expectedAmount: Math.abs(
+      entry.virtualCreditDelta < 0 ? entry.virtualCreditDelta : entry.physicalCashDelta
+    ),
+    observedAmount:
+      entry.virtualCreditDelta < 0 ? observedVirtual : observedCash,
+    discrepancyAmount: roundCurrency(
+      Math.abs(
+        entry.virtualCreditDelta < 0 ? entry.virtualCreditDelta : entry.physicalCashDelta
+      ) - (entry.virtualCreditDelta < 0 ? observedVirtual : observedCash)
+    ),
+    linkedLedgerEntryId: entry.id,
+    linkedTransactionId: entry.linkedTransactionId ?? null,
+    title: `Conflit de synchronisation hors-ligne (${entry.reference})`,
+    description: reason,
+  });
+}
+
+/**
+ * Simule ou applique la vérification serveur lors de la reconnexion d'une écriture locale.
+ * Si le stock serveur confirmé est insuffisant pour absorber un débit (ex. dépense concurrente),
+ * marque l'écriture et la transaction en `en_conflit` sans écraser silencieusement ni corrompre le solde.
+ */
+export async function reconcileOfflineLedgerPushWithServerStock(params: {
+  entryId: string;
+  serverStock: Pick<
+    AgentFundStock,
+    'virtualCreditConfirmed' | 'physicalCashConfirmed' | 'status'
+  >;
+}): Promise<{ status: 'confirmee_serveur' | 'en_conflit' | 'missing'; reason?: string }> {
+  const entry = await db.financialLedger.get(params.entryId);
+  if (!entry) return { status: 'missing' };
+
+  const { serverStock } = params;
+  if (serverStock.status !== 'active') {
+    const reason = `Conflit de synchronisation : stock ${entry.currency} ${serverStock.status} sur le serveur.`;
+    await markOfflineEntryAsConflict({
+      entry,
+      reason,
+      observedVirtual: serverStock.virtualCreditConfirmed,
+      observedCash: serverStock.physicalCashConfirmed,
+    });
+    return { status: 'en_conflit', reason };
+  }
+
+  const nextVirtual = roundCurrency(
+    serverStock.virtualCreditConfirmed + entry.virtualCreditDelta
+  );
+  const nextCash = roundCurrency(
+    serverStock.physicalCashConfirmed + entry.physicalCashDelta
+  );
+
+  if (entry.virtualCreditDelta < 0 && nextVirtual < -0.0001) {
+    const reason = `Conflit de synchronisation : crédit virtuel serveur insuffisant (${serverStock.virtualCreditConfirmed} ${entry.currency}) pour absorber ${entry.virtualCreditDelta} ${entry.currency}.`;
+    await markOfflineEntryAsConflict({
+      entry,
+      reason,
+      observedVirtual: serverStock.virtualCreditConfirmed,
+      observedCash: serverStock.physicalCashConfirmed,
+    });
+    return { status: 'en_conflit', reason };
+  }
+
+  if (entry.physicalCashDelta < 0 && nextCash < -0.0001) {
+    const reason = `Conflit de synchronisation : cash physique serveur insuffisant (${serverStock.physicalCashConfirmed} ${entry.currency}) pour décaisser ${Math.abs(entry.physicalCashDelta)} ${entry.currency}.`;
+    await markOfflineEntryAsConflict({
+      entry,
+      reason,
+      observedVirtual: serverStock.virtualCreditConfirmed,
+      observedCash: serverStock.physicalCashConfirmed,
+    });
+    return { status: 'en_conflit', reason };
+  }
+
+  const now = Date.now();
+  await db.financialLedger.update(entry.id, {
+    syncLifecycle: 'confirmee_serveur',
+    syncStatus: 'synced',
+    serverConfirmedAt: entry.serverConfirmedAt || now,
+    updatedAt: now,
+  });
+
+  if (entry.linkedTransactionId) {
+    const linkedTx = await db.financialTransactions.get(entry.linkedTransactionId);
+    if (linkedTx) {
+      await db.financialTransactions.update(linkedTx.id, {
+        status: linkedTx.status === 'en_attente_synchro' ? 'validee' : linkedTx.status,
+        syncLifecycle: 'confirmee_serveur',
+        syncStatus: 'synced',
+        serverConfirmedAt: linkedTx.serverConfirmedAt || now,
+        updatedAt: now,
+      });
+    }
+  }
+
+  await reconcileAndPersistAgentStock({
+    agentId: entry.agentId,
+    agentName: entry.agentName,
+    agencyId: entry.agencyId,
+    agencyName: entry.agencyName,
+    currency: entry.currency,
+  });
+
+  return { status: 'confirmee_serveur' };
 }
 
 async function syncSingleItem(item: SyncQueueItem): Promise<void> {
@@ -812,6 +1090,266 @@ async function syncSingleItem(item: SyncQueueItem): Promise<void> {
       syncStatus: 'synced',
       updatedAt: Date.now(),
     });
+  } else if (entity === 'financialLedger') {
+    if (operation === 'delete') return;
+    const entry = await db.financialLedger.get(entityId);
+    if (!entry) return;
+    if (entry.syncLifecycle === 'en_conflit' || entry.syncStatus === 'conflict') {
+      return;
+    }
+
+    const ledgerRef = doc(firestore, 'financialLedger', entityId);
+    const stockId = buildStockId(entry.agentId, entry.currency);
+    const stockRef = doc(firestore, 'agentFundStocks', stockId);
+    const now = Date.now();
+
+    let serverConflictDetected: {
+      reason: string;
+      observedVirtual: number;
+      observedCash: number;
+    } | null = null;
+
+    await runTransaction(firestore, async (rtx) => {
+      const existingRemoteLedger = await rtx.get(ledgerRef);
+      if (existingRemoteLedger.exists()) {
+        // Idempotent : déjà confirmé sur le serveur
+        return;
+      }
+
+      const remoteStockSnap = await rtx.get(stockRef);
+      const localStock = await db.agentFundStocks.get(stockId);
+      const baseStock: AgentFundStock | null = remoteStockSnap.exists()
+        ? (remoteStockSnap.data() as AgentFundStock)
+        : localStock || null;
+
+      if (baseStock) {
+        const nextVirtual = roundCurrency(
+          baseStock.virtualCreditConfirmed + entry.virtualCreditDelta
+        );
+        const nextCash = roundCurrency(
+          baseStock.physicalCashConfirmed + entry.physicalCashDelta
+        );
+
+        if (entry.virtualCreditDelta < 0 && nextVirtual < -0.0001) {
+          serverConflictDetected = {
+            reason: `Conflit de synchronisation : crédit virtuel serveur insuffisant (${baseStock.virtualCreditConfirmed} ${entry.currency}) pour absorber ${entry.virtualCreditDelta} ${entry.currency}.`,
+            observedVirtual: baseStock.virtualCreditConfirmed,
+            observedCash: baseStock.physicalCashConfirmed,
+          };
+          return;
+        }
+        if (entry.physicalCashDelta < 0 && nextCash < -0.0001) {
+          serverConflictDetected = {
+            reason: `Conflit de synchronisation : cash physique serveur insuffisant (${baseStock.physicalCashConfirmed} ${entry.currency}) pour décaisser ${Math.abs(entry.physicalCashDelta)} ${entry.currency}.`,
+            observedVirtual: baseStock.virtualCreditConfirmed,
+            observedCash: baseStock.physicalCashConfirmed,
+          };
+          return;
+        }
+      }
+
+      const confirmedEntry: FinancialLedgerEntry = {
+        ...entry,
+        syncLifecycle: 'confirmee_serveur',
+        syncStatus: 'synced',
+        serverConfirmedAt: entry.serverConfirmedAt || now,
+        updatedAt: now,
+      };
+      rtx.set(ledgerRef, {
+        ...sanitizeForFirestore(confirmedEntry),
+        syncedAt: serverTimestamp(),
+      });
+
+      if (baseStock) {
+        const nextStock = recalculateAgentStockFromLedger({
+          agentId: entry.agentId,
+          agentName: entry.agentName,
+          agencyId: entry.agencyId,
+          agencyName: entry.agencyName,
+          currency: entry.currency,
+          entries: [
+            ...(await db.financialLedger
+              .where('agentId')
+              .equals(entry.agentId)
+              .filter((e) => e.currency === entry.currency && e.id !== entry.id)
+              .toArray()),
+            confirmedEntry,
+          ],
+          existingStock: baseStock,
+        });
+        rtx.set(stockRef, sanitizeForFirestore(nextStock), { merge: true });
+      }
+    });
+
+    if (serverConflictDetected) {
+      const conflictInfo = serverConflictDetected as {
+        reason: string;
+        observedVirtual: number;
+        observedCash: number;
+      };
+      await markOfflineEntryAsConflict({
+        entry,
+        reason: conflictInfo.reason,
+        observedVirtual: conflictInfo.observedVirtual,
+        observedCash: conflictInfo.observedCash,
+      });
+      return;
+    }
+
+    await db.financialLedger.update(entityId, {
+      syncLifecycle: 'confirmee_serveur',
+      syncStatus: 'synced',
+      serverConfirmedAt: entry.serverConfirmedAt || now,
+      updatedAt: now,
+    });
+    await reconcileAndPersistAgentStock({
+      agentId: entry.agentId,
+      agentName: entry.agentName,
+      agencyId: entry.agencyId,
+      agencyName: entry.agencyName,
+      currency: entry.currency,
+    });
+  } else if (entity === 'agentFundStock') {
+    if (operation === 'delete') return;
+    const stock = await db.agentFundStocks.get(entityId);
+    if (!stock) return;
+    if (stock.syncStatus === 'conflict') return;
+    await setDoc(
+      doc(firestore, 'agentFundStocks', entityId),
+      sanitizeForFirestore({
+        ...stock,
+        syncStatus: 'synced',
+        lastSyncedAt: Date.now(),
+        syncedAt: serverTimestamp(),
+      }),
+      { merge: true }
+    );
+    await db.agentFundStocks.update(entityId, {
+      syncStatus: 'synced',
+      lastSyncedAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+  } else if (entity === 'financialTransaction') {
+    if (operation === 'delete') return;
+    const tx = await db.financialTransactions.get(entityId);
+    if (!tx) return;
+    if (tx.status === 'en_conflit' || tx.syncLifecycle === 'en_conflit') return;
+    await setDoc(
+      doc(firestore, 'financialTransactions', entityId),
+      sanitizeForFirestore({
+        ...tx,
+        status: tx.status === 'en_attente_synchro' ? 'validee' : tx.status,
+        syncLifecycle: 'confirmee_serveur',
+        syncStatus: 'synced',
+        serverConfirmedAt: tx.serverConfirmedAt || Date.now(),
+        syncedAt: serverTimestamp(),
+      }),
+      { merge: true }
+    );
+    await db.financialTransactions.update(entityId, {
+      status: tx.status === 'en_attente_synchro' ? 'validee' : tx.status,
+      syncLifecycle: 'confirmee_serveur',
+      syncStatus: 'synced',
+      serverConfirmedAt: tx.serverConfirmedAt || Date.now(),
+      updatedAt: Date.now(),
+    });
+  } else if (entity === 'replenishmentRequest') {
+    if (operation === 'delete') return;
+    const req = await db.replenishmentRequests.get(entityId);
+    if (!req) return;
+    await setDoc(
+      doc(firestore, 'replenishmentRequests', entityId),
+      sanitizeForFirestore({
+        ...req,
+        syncStatus: 'synced',
+        syncedAt: serverTimestamp(),
+      }),
+      { merge: true }
+    );
+    await db.replenishmentRequests.update(entityId, {
+      syncStatus: 'synced',
+      updatedAt: Date.now(),
+    });
+  } else if (entity === 'cashHandover') {
+    if (operation === 'delete') return;
+    const handover = await db.cashHandovers.get(entityId);
+    if (!handover) return;
+    await setDoc(
+      doc(firestore, 'cashHandovers', entityId),
+      sanitizeForFirestore({
+        ...handover,
+        syncStatus: 'synced',
+        syncedAt: serverTimestamp(),
+      }),
+      { merge: true }
+    );
+    await db.cashHandovers.update(entityId, {
+      syncStatus: 'synced',
+      updatedAt: Date.now(),
+    });
+  } else if (entity === 'reconciliationRecord') {
+    if (operation === 'delete') return;
+    const rec = await db.reconciliationRecords.get(entityId);
+    if (!rec) return;
+    await setDoc(
+      doc(firestore, 'reconciliationRecords', entityId),
+      sanitizeForFirestore({
+        ...rec,
+        syncStatus: 'synced',
+        syncedAt: serverTimestamp(),
+      }),
+      { merge: true }
+    );
+    await db.reconciliationRecords.update(entityId, {
+      syncStatus: 'synced',
+      updatedAt: Date.now(),
+    });
+  } else if (entity === 'financialAnomaly') {
+    if (operation === 'delete') return;
+    const ano = await db.financialAnomalies.get(entityId);
+    if (!ano) return;
+    await setDoc(
+      doc(firestore, 'financialAnomalies', entityId),
+      sanitizeForFirestore({
+        ...ano,
+        syncStatus: 'synced',
+        syncedAt: serverTimestamp(),
+      }),
+      { merge: true }
+    );
+    await db.financialAnomalies.update(entityId, {
+      syncStatus: 'synced',
+      updatedAt: Date.now(),
+    });
+  } else if (entity === 'physicalInventory') {
+    if (operation === 'delete') return;
+    const inv = await db.physicalInventories.get(entityId);
+    if (!inv) return;
+    await setDoc(
+      doc(firestore, 'physicalInventories', entityId),
+      sanitizeForFirestore({
+        ...inv,
+        syncStatus: 'synced',
+        syncedAt: serverTimestamp(),
+      }),
+      { merge: true }
+    );
+    await db.physicalInventories.update(entityId, {
+      syncStatus: 'synced',
+      updatedAt: Date.now(),
+    });
+  } else if (entity === 'financialDelegation') {
+    if (operation === 'delete') return;
+    const del = await db.financialDelegations.get(entityId);
+    if (!del) return;
+    await setDoc(
+      doc(firestore, 'financialDelegations', entityId),
+      sanitizeForFirestore({
+        ...del,
+        syncedAt: serverTimestamp(),
+      }),
+      { merge: true }
+    );
   }
 }
 

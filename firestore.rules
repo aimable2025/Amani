@@ -2412,6 +2412,453 @@ match /clientOrders/{orderId} {
 
 
 /* =========================================================
+   SUPERVISION FINANCIERE, CREDITS VIRTUELS & JOURNAL IMMUABLE
+   - Isolation stricte par agence et par agent
+   - Aucune suppression sur les collections comptables et anomalies
+   - Aucune auto-approbation / auto-attribution de crédit
+   - Ledger strictement append-only
+   - Délégations temporaires explicites plafonnées
+   ========================================================= */
+
+function isFinancialSupervisor() {
+  return isSystemAdmin() || isDG();
+}
+
+function hasActiveFinancialDelegation(agencyId, currency, amount) {
+  return isAdministrateurAgence()
+    && agencyId != null
+    && currentAgencyId() == agencyId
+    && exists(
+      /databases/$(database)/documents/financialDelegations/$(request.auth.uid + '_' + agencyId)
+    )
+    && get(
+      /databases/$(database)/documents/financialDelegations/$(request.auth.uid + '_' + agencyId)
+    ).data.get('status', '') == 'active'
+    && get(
+      /databases/$(database)/documents/financialDelegations/$(request.auth.uid + '_' + agencyId)
+    ).data.get('delegateUid', '') == request.auth.uid
+    && get(
+      /databases/$(database)/documents/financialDelegations/$(request.auth.uid + '_' + agencyId)
+    ).data.get('agencyId', '') == agencyId
+    && get(
+      /databases/$(database)/documents/financialDelegations/$(request.auth.uid + '_' + agencyId)
+    ).data.get('canApproveReplenishment', false) == true
+    && get(
+      /databases/$(database)/documents/financialDelegations/$(request.auth.uid + '_' + agencyId)
+    ).data.get('expiresAt', 0) > request.time.toMillis()
+    && (
+      (
+        currency == 'USD'
+        && amount <= get(
+          /databases/$(database)/documents/financialDelegations/$(request.auth.uid + '_' + agencyId)
+        ).data.get('maxAmountUsd', 0)
+      )
+      ||
+      (
+        currency == 'CDF'
+        && amount <= get(
+          /databases/$(database)/documents/financialDelegations/$(request.auth.uid + '_' + agencyId)
+        ).data.get('maxAmountCdf', 0)
+      )
+    );
+}
+
+match /financialDelegations/{delegationId} {
+  allow read: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+    || (isActiveUser() && resource.data.get('delegateUid', null) == request.auth.uid);
+
+  allow create, update: if
+    isFinancialSupervisor()
+    && request.resource.data.get('delegateUid', null) != request.auth.uid
+    && request.resource.data.get('maxAmountUsd', -1) >= 0
+    && request.resource.data.get('maxAmountCdf', -1) >= 0;
+
+  allow delete: if false;
+}
+
+match /agentFundStocks/{stockId} {
+  allow read: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+    || (isAgent() && resource.data.get('agentId', null) == request.auth.uid);
+
+  allow create: if
+    (
+      isFinancialSupervisor()
+      && request.resource.data.get('currency', '') in ['USD', 'CDF']
+      && request.resource.data.get('physicalCashConfirmed', -1) >= 0
+      && request.resource.data.get('virtualCreditConfirmed', -1) >= 0
+    )
+    ||
+    (
+      isAdministrateurAgence()
+      && request.resource.data.get('agencyId', null) == currentAgencyId()
+      && request.resource.data.get('agentId', null) != request.auth.uid
+      && request.resource.data.get('currency', '') in ['USD', 'CDF']
+      && request.resource.data.get('physicalCashConfirmed', -1) >= 0
+      && request.resource.data.get('virtualCreditConfirmed', -1) >= 0
+      && hasActiveFinancialDelegation(
+        request.resource.data.get('agencyId', null),
+        request.resource.data.get('currency', ''),
+        request.resource.data.get('virtualCreditConfirmed', 0)
+      )
+    )
+    ||
+    (
+      isAgent()
+      && request.resource.data.get('agentId', null) == request.auth.uid
+      && request.resource.data.get('agencyId', null) == currentAgencyId()
+      && request.resource.data.get('currency', '') in ['USD', 'CDF']
+      && request.resource.data.get('physicalCashConfirmed', 0) == 0
+      && request.resource.data.get('virtualCreditConfirmed', 0) == 0
+      && request.resource.data.get('netAttributedCapital', 0) == 0
+      && request.resource.data.get('totalInitialEndowment', 0) == 0
+      && request.resource.data.get('totalCreditsAllocated', 0) == 0
+    );
+
+  allow update: if
+    (
+      isFinancialSupervisor()
+      && request.resource.data.get('agentId', null) == resource.data.get('agentId', null)
+      && request.resource.data.get('currency', null) == resource.data.get('currency', null)
+      && request.resource.data.get('physicalCashConfirmed', -1) >= 0
+      && request.resource.data.get('virtualCreditConfirmed', -1) >= 0
+    )
+    ||
+    (
+      isAdministrateurAgence()
+      && resource.data.get('agencyId', null) == currentAgencyId()
+      && resource.data.get('agentId', null) != request.auth.uid
+      && request.resource.data.get('agentId', null) == resource.data.get('agentId', null)
+      && request.resource.data.get('currency', null) == resource.data.get('currency', null)
+      && request.resource.data.get('physicalCashConfirmed', -1) >= 0
+      && request.resource.data.get('virtualCreditConfirmed', -1) >= 0
+      && hasActiveFinancialDelegation(
+        resource.data.get('agencyId', null),
+        resource.data.get('currency', ''),
+        request.resource.data.get('virtualCreditConfirmed', 0) - resource.data.get('virtualCreditConfirmed', 0)
+      )
+    )
+    ||
+    (
+      isAgent()
+      && resource.data.get('agentId', null) == request.auth.uid
+      && resource.data.get('agencyId', null) == currentAgencyId()
+      && request.resource.data.get('agentId', null) == resource.data.get('agentId', null)
+      && request.resource.data.get('agencyId', null) == resource.data.get('agencyId', null)
+      && request.resource.data.get('currency', null) == resource.data.get('currency', null)
+      && request.resource.data.get('status', null) == resource.data.get('status', null)
+      && request.resource.data.get('netAttributedCapital', 0) == resource.data.get('netAttributedCapital', 0)
+      && request.resource.data.get('totalInitialEndowment', 0) == resource.data.get('totalInitialEndowment', 0)
+      && request.resource.data.get('totalCreditsAllocated', 0) == resource.data.get('totalCreditsAllocated', 0)
+      && request.resource.data.get('totalCashReceived', 0) == resource.data.get('totalCashReceived', 0)
+      && request.resource.data.get('totalCashHandedOver', 0) == resource.data.get('totalCashHandedOver', 0)
+      && request.resource.data.get('totalInventoryAdjustments', 0) == resource.data.get('totalInventoryAdjustments', 0)
+      && request.resource.data.get('physicalCashConfirmed', -1) >= 0
+      && request.resource.data.get('virtualCreditConfirmed', -1) >= 0
+      && request.resource.data.get('lastLedgerEntryId', null) != null
+      && request.resource.data.get('lastLedgerEntryId', null) != resource.data.get('lastLedgerEntryId', null)
+      && existsAfter(/databases/$(database)/documents/financialLedger/$(request.resource.data.lastLedgerEntryId))
+      && (
+        (request.resource.data.get('physicalCashConfirmed', 0) + request.resource.data.get('virtualCreditConfirmed', 0))
+        - (resource.data.get('physicalCashConfirmed', 0) + resource.data.get('virtualCreditConfirmed', 0))
+        <=
+        (request.resource.data.get('totalFeesCollected', 0) - resource.data.get('totalFeesCollected', 0))
+        + (request.resource.data.get('totalFxNet', 0) - resource.data.get('totalFxNet', 0))
+        + 0.01
+      )
+    );
+
+  allow delete: if false;
+}
+
+match /financialLedger/{entryId} {
+  allow read: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+    || (isAgent() && resource.data.get('agentId', null) == request.auth.uid);
+
+  allow create: if
+    request.resource.data.get('currency', '') in ['USD', 'CDF']
+    && request.resource.data.get('authorUid', null) == request.auth.uid
+    && (
+      isFinancialSupervisor()
+      ||
+      (
+        isAdministrateurAgence()
+        && request.resource.data.get('agencyId', null) == currentAgencyId()
+        && request.resource.data.get('agentId', null) != request.auth.uid
+        && (
+          (
+            request.resource.data.get('operationCategory', '') == 'attribution_credit_virtuel'
+            && hasActiveFinancialDelegation(
+              request.resource.data.get('agencyId', null),
+              request.resource.data.get('currency', ''),
+              request.resource.data.get('virtualCreditDelta', 0)
+            )
+          )
+          ||
+          (
+            request.resource.data.get('operationCategory', '') in ['remise_cash', 'reception_cash', 'ecart_inventaire']
+          )
+        )
+      )
+      ||
+      (
+        isAgent()
+        && request.resource.data.get('agentId', null) == request.auth.uid
+        && request.resource.data.get('agencyId', null) == currentAgencyId()
+        && request.resource.data.get('capitalDelta', 0) == 0
+        && request.resource.data.get('adjustmentDelta', 0) == 0
+        && request.resource.data.get('operationCategory', '') in [
+          'depot_client',
+          'depot_abonne',
+          'retrait_client',
+          'retrait_abonne',
+          'transaction_virtuelle',
+          'change_devise',
+          'commission_frais'
+        ]
+      )
+    );
+
+  allow update, delete: if false;
+}
+
+match /financialTransactions/{txId} {
+  allow read: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+    || (isAgent() && resource.data.get('agentId', null) == request.auth.uid);
+
+  allow create: if
+    request.resource.data.get('currency', '') in ['USD', 'CDF']
+    && request.resource.data.get('amount', 0) > 0
+    && (
+      isFinancialSupervisor()
+      || (
+        isAgent()
+        && request.resource.data.get('agentId', null) == request.auth.uid
+        && request.resource.data.get('agencyId', null) == currentAgencyId()
+      )
+    );
+
+  allow update: if
+    request.resource.data.get('agentId', null) == resource.data.get('agentId', null)
+    && request.resource.data.get('agencyId', null) == resource.data.get('agencyId', null)
+    && request.resource.data.get('currency', null) == resource.data.get('currency', null)
+    && request.resource.data.get('amount', null) == resource.data.get('amount', null)
+    && request.resource.data.get('transactionType', null) == resource.data.get('transactionType', null)
+    && request.resource.data.get('idempotencyKey', null) == resource.data.get('idempotencyKey', null)
+    && (
+      isFinancialSupervisor()
+      || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+      || (isAgent() && resource.data.get('agentId', null) == request.auth.uid)
+    );
+
+  allow delete: if false;
+}
+
+match /replenishmentRequests/{requestId} {
+  allow read: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+    || (isAgent() && resource.data.get('agentId', null) == request.auth.uid);
+
+  allow create: if
+    isAgent()
+    && request.resource.data.get('agentId', null) == request.auth.uid
+    && request.resource.data.get('agencyId', null) == currentAgencyId()
+    && request.resource.data.get('status', '') == 'en_attente'
+    && request.resource.data.get('requestedAmount', 0) > 0
+    && request.resource.data.get('currency', '') in ['USD', 'CDF']
+    && request.resource.data.get('reviewedByUid', null) == null;
+
+  allow update: if
+    (
+      isAgent()
+      && resource.data.get('agentId', null) == request.auth.uid
+      && resource.data.get('status', '') == 'en_attente'
+      && request.resource.data.get('status', '') == 'annulee'
+      && request.resource.data.get('reviewedByUid', null) == null
+    )
+    ||
+    (
+      resource.data.get('status', '') in ['en_attente', 'en_examen']
+      && request.auth.uid != resource.data.get('agentId', null)
+      && request.resource.data.get('reviewedByUid', null) == request.auth.uid
+      && request.resource.data.get('status', '') in ['en_examen', 'approuvee', 'rejetee']
+      && request.resource.data.get('agentId', null) == resource.data.get('agentId', null)
+      && request.resource.data.get('currency', null) == resource.data.get('currency', null)
+      && request.resource.data.get('requestedAmount', null) == resource.data.get('requestedAmount', null)
+      && (
+        isFinancialSupervisor()
+        || (
+          isAdministrateurAgence()
+          && resource.data.get('agencyId', null) == currentAgencyId()
+          && hasActiveFinancialDelegation(
+            resource.data.get('agencyId', null),
+            resource.data.get('currency', ''),
+            resource.data.get('requestedAmount', 0)
+          )
+        )
+      )
+    );
+
+  allow delete: if false;
+}
+
+match /cashHandovers/{handoverId} {
+  allow read: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+    || (isAgent() && resource.data.get('agentId', null) == request.auth.uid);
+
+  allow create: if
+    request.resource.data.get('initiatedByUid', null) == request.auth.uid
+    && request.resource.data.get('status', '') == 'en_attente_confirmation'
+    && request.resource.data.get('amount', 0) > 0
+    && request.resource.data.get('currency', '') in ['USD', 'CDF']
+    && request.resource.data.get('confirmedByUid', null) == null
+    && (
+      isFinancialSupervisor()
+      || (
+        isAdministrateurAgence()
+        && request.resource.data.get('agencyId', null) == currentAgencyId()
+      )
+      || (
+        isAgent()
+        && request.resource.data.get('agentId', null) == request.auth.uid
+        && request.resource.data.get('agencyId', null) == currentAgencyId()
+        && request.resource.data.get('direction', '') in ['agent_vers_direction', 'agent_vers_caisse_agence']
+      )
+    );
+
+  allow update: if
+    (
+      resource.data.get('status', '') == 'en_attente_confirmation'
+      && resource.data.get('initiatedByUid', null) == request.auth.uid
+      && request.resource.data.get('status', '') == 'annulee'
+    )
+    ||
+    (
+      resource.data.get('status', '') == 'en_attente_confirmation'
+      && request.auth.uid != resource.data.get('initiatedByUid', null)
+      && request.resource.data.get('confirmedByUid', null) == request.auth.uid
+      && request.resource.data.get('status', '') in ['confirmee', 'rejetee']
+      && request.resource.data.get('amount', null) == resource.data.get('amount', null)
+      && request.resource.data.get('currency', null) == resource.data.get('currency', null)
+      && request.resource.data.get('agentId', null) == resource.data.get('agentId', null)
+      && (
+        (
+          resource.data.get('direction', '') == 'direction_vers_agent'
+          && (
+            (isAgent() && resource.data.get('agentId', null) == request.auth.uid)
+            || isFinancialSupervisor()
+          )
+        )
+        ||
+        (
+          resource.data.get('direction', '') in ['agent_vers_direction', 'agent_vers_caisse_agence']
+          && (
+            isFinancialSupervisor()
+            || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+          )
+        )
+      )
+    );
+
+  allow delete: if false;
+}
+
+match /reconciliationRecords/{recId} {
+  allow read: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+    || (isAgent() && resource.data.get('agentId', null) == request.auth.uid);
+
+  allow create, update: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && request.resource.data.get('agencyId', null) == currentAgencyId())
+    || (isAgent() && request.resource.data.get('agentId', null) == request.auth.uid);
+
+  allow delete: if false;
+}
+
+match /financialAnomalies/{anomalyId} {
+  allow read: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+    || (isAgent() && resource.data.get('agentId', null) == request.auth.uid);
+
+  allow create: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && request.resource.data.get('agencyId', null) == currentAgencyId())
+    || (isAgent() && request.resource.data.get('agentId', null) == request.auth.uid);
+
+  allow update: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+    || (
+      isAgent()
+      && resource.data.get('agentId', null) == request.auth.uid
+      && request.resource.data.get('anomalyType', null) == resource.data.get('anomalyType', null)
+      && request.resource.data.get('severity', null) == resource.data.get('severity', null)
+      && request.resource.data.get('status', '') == 'justifiee'
+    );
+
+  allow delete: if false;
+}
+
+match /physicalInventories/{inventoryId} {
+  allow read: if
+    isFinancialSupervisor()
+    || (isAdministrateurAgence() && resource.data.get('agencyId', null) == currentAgencyId())
+    || (isAgent() && resource.data.get('agentId', null) == request.auth.uid);
+
+  allow create: if
+    request.resource.data.get('status', '') == 'en_attente_agent'
+    && request.resource.data.get('immutableLocked', false) == false
+    && (
+      isFinancialSupervisor()
+      || (
+        isAdministrateurAgence()
+        && request.resource.data.get('agencyId', null) == currentAgencyId()
+        && request.resource.data.get('agentId', null) != request.auth.uid
+      )
+    );
+
+  allow update: if
+    resource.data.get('immutableLocked', false) == false
+    && (
+      (
+        isAgent()
+        && resource.data.get('agentId', null) == request.auth.uid
+        && resource.data.get('status', '') in ['en_attente_agent', 'justification_demandee']
+        && request.resource.data.get('status', '') == 'soumis_agent'
+        && request.resource.data.get('immutableLocked', false) == false
+      )
+      ||
+      (
+        (
+          isFinancialSupervisor()
+          || (
+            isAdministrateurAgence()
+            && resource.data.get('agencyId', null) == currentAgencyId()
+            && resource.data.get('agentId', null) != request.auth.uid
+          )
+        )
+        && request.resource.data.get('agentId', null) == resource.data.get('agentId', null)
+      )
+    );
+
+  allow delete: if false;
+}
+
+
+/* =========================================================
    DENI PAR DEFAUT
    ========================================================= */
 

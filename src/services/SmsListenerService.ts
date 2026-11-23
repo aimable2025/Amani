@@ -13,8 +13,8 @@ import {
   resolveInternalNumber,
 } from './InternalNumberResolver';
 
-import { db } from '../lib/db';
-import type { SmsOperationStatus } from '../types/smsOperation';
+import { db, type LocalSmsOperation } from '../lib/db';
+import type { SmsOperation, SmsOperationStatus } from '../types/smsOperation';
 
 let listenerHandle: PluginListenerHandle | null = null;
 
@@ -156,7 +156,7 @@ async function processSms(
       status = 'analyzed';
     }
 
-    await saveSmsOperationLocally({
+    const smsRecord: SmsOperation = {
       id: generateSmsId(),
       internalNumberId: internalNumber.internalNumberId,
       agencyId: internalNumber.agencyId,
@@ -175,7 +175,9 @@ async function processSms(
       syncStatus: 'pending',
       createdAt: now,
       updatedAt: now,
-    });
+    };
+
+    await saveSmsOperationLocally(smsRecord);
 
     console.info('[Ets AMANI] SMS opérateur enregistré avec succès et en attente de synchronisation.', {
       internalNumberId: internalNumber.internalNumberId,
@@ -186,6 +188,14 @@ async function processSms(
       amount: parsed.amount,
       status,
     });
+
+    // Rapprochement automatique non bloquant avec les transactions déclarées
+    const localSmsRecord: LocalSmsOperation = { ...smsRecord };
+    import('./SmsReconciliationService')
+      .then(({ reconcileSmsOperationWithTransactions }) =>
+        reconcileSmsOperationWithTransactions(localSmsRecord)
+      )
+      .catch(() => {});
 
     // Déclenchement immédiat de la synchronisation vers Firestore si le réseau est accessible
     if (typeof navigator !== 'undefined' && navigator.onLine) {

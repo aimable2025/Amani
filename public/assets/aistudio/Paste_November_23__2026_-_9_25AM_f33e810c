@@ -1,0 +1,1222 @@
+ETS AMANI — IMPLÉMENTATION DU SYSTÈME DE GESTION DES CRÉDITS VIRTUELS, DE SUIVI DES FONDS ET DE SUPERVISION FINANCIÈRE DES AGENTS
+
+1. MISSION ET RESPONSABILITÉ
+
+Tu es un Architecte Logiciel Senior, Expert en React, TypeScript, Vite, DexieJS/IndexedDB, Firebase Authentication, Cloud Firestore, Cloud Functions, Capacitor, PWA, RBAC, sécurité financière, journalisation comptable et architectures Offline-First.
+
+Tu interviens directement sur le projet existant Ets AMANI.
+
+Ta mission consiste à analyser, concevoir, intégrer, sécuriser et finaliser un système de gestion des crédits virtuels et de supervision des fonds utilisés par les agents et les administrateurs d'agence.
+
+Ce système constitue une deuxième méthode de supervision des transactions. Il complète impérativement le mécanisme existant de lecture automatique des SMS des opérateurs.
+
+Il ne doit remplacer, désactiver, contourner ou dégrader aucun mécanisme existant.
+
+Objectif central
+
+Permettre au Directeur Général (DG) de connaître, suivre et contrôler en temps réel, dans la mesure de la connectivité disponible :
+
+Le cash physique théorique détenu par chaque agent.
+
+Le crédit virtuel disponible de chaque agent.
+
+Les crédits manuels attribués par le DG.
+
+Les dépôts et retraits effectués par les agents.
+
+Les demandes de réapprovisionnement.
+
+Les transactions déclarées par les agents.
+
+Les transactions détectées automatiquement par SMS.
+
+Les opérations non déclarées.
+
+Les écarts entre les soldes théoriques et les montants physiquement constatés.
+
+Les mouvements financiers suspects.
+
+Les opérations en attente de synchronisation.
+
+L'objectif est d'obtenir une traçabilité financière cohérente, contrôlable et vérifiable.
+
+2. RÈGLE FONDAMENTALE : PRÉSERVER L'APPLICATION EXISTANTE
+
+Avant toute intervention :
+
+Examiner intégralement l'architecture actuelle.
+
+Identifier les modules de transactions, billetage, SMS, agences, utilisateurs, notifications, audit, authentification et synchronisation.
+
+Examiner les modèles TypeScript, services, hooks, contextes, stores, composants, règles Firestore et schémas Dexie.
+
+Identifier les mécanismes existants de lecture et de rapprochement des SMS.
+
+Comprendre les opérations réellement utilisées par les agents.
+
+Identifier les flux existants de calcul et de synchronisation des soldes.
+
+Examiner les rôles et permissions actuels.
+
+Interdictions absolues
+
+Ne pas recréer l'application.
+
+Ne pas remplacer l'architecture existante.
+
+Ne pas supprimer de fonctionnalités.
+
+Ne pas réinitialiser Firebase.
+
+Ne pas supprimer ou réinitialiser les données Dexie/IndexedDB.
+
+Ne pas modifier arbitrairement les identifiants Firebase.
+
+Ne pas créer de fausses données, de comptes fictifs ou d'agences de démonstration.
+
+Ne pas créer un second système indépendant de transactions.
+
+Ne pas remplacer la lecture des SMS par les déclarations manuelles.
+
+Ne pas contourner les permissions RBAC.
+
+Ne pas exposer les secrets Firebase ou les identifiants administratifs dans le frontend.
+
+Ne pas considérer une opération locale non synchronisée comme une opération confirmée par le serveur.
+
+Ne pas présenter une fonctionnalité non testée comme fonctionnelle.
+
+Toute modification doit s'intégrer aux structures existantes.
+
+Si une migration de données est nécessaire, elle doit être progressive, versionnée, réversible lorsque possible et compatible avec les données historiques.
+
+3. CONCEPT COMPTABLE : DEUX STOCKS DISTINCTS
+
+Le système doit gérer deux ressources indépendantes pour chaque agent autorisé.
+
+A. Cash physique
+
+Il représente l'argent liquide réellement détenu par l'agent.
+
+B. Crédit virtuel
+
+Il représente le capital électronique de fonctionnement attribué manuellement par le DG à l'agent.
+
+ATTENTION : ce crédit virtuel est un solde interne de contrôle et de disponibilité opérationnelle dans Ets AMANI. Il ne représente pas nécessairement le solde réel d'un compte Mobile Money détenu chez un opérateur.
+
+Le système ne doit jamais prétendre qu'un crédit virtuel attribué dans l'application constitue automatiquement de l'argent réellement disponible chez un opérateur.
+
+Chaque devise doit être gérée séparément : USD et CDF.
+
+Aucune conversion automatique ne doit être effectuée sans opération de change explicitement enregistrée et documentée.
+
+Formules de variation
+
+OpérationCash physiqueCrédit virtuelDépôt client/abonné+−Retrait client/abonné−+Attribution de crédit virtuel par le DG0+Réception de cash du DG+0Remise de cash au DG−0Correction comptable autoriséeSelon le mouvementSelon le mouvement 
+
+Exemple :
+
+Situation initiale :
+
+Cash physique : 1 000 USD.
+
+Crédit virtuel : 1 000 USD.
+
+Dépôt de 200 USD :
+
+Cash physique : 1 200 USD.
+
+Crédit virtuel : 800 USD.
+
+Retrait de 150 USD :
+
+Cash physique : 1 050 USD.
+
+Crédit virtuel : 950 USD.
+
+Le système doit calculer automatiquement les soldes à partir du journal des mouvements.
+
+Invariant comptable
+
+En l'absence de frais, de pertes, de différences de change ou d'autres mouvements autorisés :
+
+Cash physique + crédit virtuel = capital total attribué.
+
+Cette équation sert de contrôle de cohérence. Elle ne doit pas être appliquée aveuglément lorsqu'une opération réelle modifie le capital total, notamment les commissions, frais, pertes ou écarts dûment documentés.
+
+Les commissions et frais doivent être représentés séparément, selon les règles comptables réellement utilisées par Ets AMANI.
+
+4. ATTRIBUTION INITIALE DES FONDS PAR LE DG
+
+Le DG doit disposer d'une interface permettant d'attribuer les fonds de fonctionnement à chaque agent autorisé ou administrateur d'agence autorisé.
+
+Informations obligatoires :
+
+Agent bénéficiaire.
+
+Agence concernée.
+
+Montant de cash physique attribué.
+
+Montant de crédit virtuel attribué.
+
+Devise.
+
+Date et heure.
+
+Auteur de l'attribution.
+
+Référence unique.
+
+Motif ou observation.
+
+L'attribution doit produire des écritures financières distinctes pour le cash physique et le crédit virtuel.
+
+L'opération doit être protégée contre les doublons et les modifications non autorisées.
+
+Une attribution déjà validée ne doit pas être modifiée directement.
+
+Toute correction doit passer par une écriture compensatrice autorisée.
+
+5. GESTION AUTOMATIQUE DES TRANSACTIONS
+
+Toutes les transactions concernées doivent être intégrées au système existant.
+
+Types d'opérations à prendre en charge :
+
+Dépôt client.
+
+Dépôt abonné.
+
+Retrait client.
+
+Retrait abonné.
+
+Transactions virtuelles existantes.
+
+Change USD/CDF.
+
+Autres catégories de transactions déjà présentes dans Ets AMANI, après analyse de leur nature comptable.
+
+Règle de blocage obligatoire
+
+Avant toute validation d'une transaction, le système doit vérifier :
+
+L'identité de l'agent connecté.
+
+Son statut actif.
+
+Ses permissions.
+
+Son autorisation à effectuer cette catégorie d'opération.
+
+L'agence à laquelle il appartient.
+
+La devise.
+
+Le montant demandé.
+
+Le cash physique disponible lorsque l'opération l'exige.
+
+Le crédit virtuel disponible lorsque l'opération l'exige.
+
+L'absence de doublon.
+
+Aucune transaction ne doit être validée si le solde requis est insuffisant.
+
+Exemple :
+
+Un agent possède :
+
+Cash physique : 100 USD.
+
+Crédit virtuel : 50 USD.
+
+Il souhaite effectuer un dépôt de 80 USD.
+
+Même si son cash physique est suffisant, l'opération doit être refusée parce que son crédit virtuel est insuffisant.
+
+Le système affiche clairement :
+
+« Transaction impossible : votre crédit virtuel disponible est insuffisant. Veuillez demander un réapprovisionnement au Directeur Général. »
+
+Aucun mouvement financier ne doit être enregistré en cas de refus.
+
+Protection contre les transactions simultanées
+
+Le contrôle du solde, la validation de la transaction et la création des écritures comptables doivent être atomiques.
+
+Empêcher deux transactions simultanées de consommer le même crédit virtuel.
+
+Utiliser les transactions Firestore côté serveur lorsque la connexion est disponible.
+
+Prévoir un mécanisme d'identifiant unique et d'idempotence pour empêcher les doublons.
+
+Ne jamais faire confiance au solde transmis par le frontend.
+
+Le backend doit recalculer et vérifier les disponibilités avant toute validation définitive.
+
+6. DEMANDES DE RÉAPPROVISIONNEMENT
+
+Lorsqu'un agent constate que son crédit virtuel devient insuffisant, il doit pouvoir demander un nouveau crédit.
+
+Interface agent
+
+L'agent doit pouvoir :
+
+Consulter son crédit virtuel disponible.
+
+Consulter son historique de consommation.
+
+Saisir le montant demandé.
+
+Sélectionner la devise.
+
+Indiquer le motif.
+
+Envoyer la demande au DG.
+
+Consulter le statut de sa demande.
+
+Statuts :
+
+En attente.
+
+En cours d'examen, si cette étape est utilisée.
+
+Approuvée.
+
+Rejetée.
+
+Annulée, uniquement avant validation et selon les permissions.
+
+Interface DG
+
+Le DG doit voir :
+
+Le nom de l'agent.
+
+L'agence.
+
+Le crédit virtuel actuel.
+
+Le cash physique théorique.
+
+L'historique des transactions.
+
+Le montant demandé.
+
+Les demandes précédentes.
+
+Les éventuelles anomalies.
+
+La date de la demande.
+
+Le DG peut approuver ou rejeter la demande.
+
+Validation
+
+En cas d'approbation :
+
+Vérifier que la demande est toujours en attente.
+
+Vérifier que le DG possède la permission.
+
+Vérifier le montant et la devise.
+
+Vérifier la disponibilité des fonds dans le mécanisme de financement central existant, s'il est suivi.
+
+Enregistrer l'identité du validateur.
+
+Créditer le solde virtuel de l'agent.
+
+Créer l'écriture correspondante.
+
+Marquer la demande comme approuvée.
+
+Envoyer une notification à l'agent.
+
+Enregistrer l'ensemble dans le journal d'audit.
+
+La validation et le crédit doivent constituer une seule opération atomique.
+
+Une demande rejetée ne doit jamais modifier le solde.
+
+Un agent ne peut pas approuver sa propre demande.
+
+Une demande déjà traitée ne peut pas être validée une deuxième fois.
+
+7. SUPERVISION FINANCIÈRE DU DG
+
+Créer une vue consolidée permettant au DG de superviser tous les agents autorisés et toutes les agences.
+
+Indicateurs principaux
+
+Afficher :
+
+Nombre d'agents actifs.
+
+Total du cash physique théorique.
+
+Total du crédit virtuel disponible.
+
+Total des dotations initiales.
+
+Total des crédits attribués.
+
+Total des crédits consommés.
+
+Total des dépôts.
+
+Total des retraits.
+
+Demandes en attente.
+
+Transactions non déclarées détectées.
+
+Transactions en attente de rapprochement.
+
+Écarts de caisse.
+
+Opérations suspectes.
+
+Agents hors synchronisation.
+
+Tous les montants doivent être regroupés par devise.
+
+Ne jamais additionner directement USD et CDF.
+
+Tableau individuel des agents
+
+Pour chaque agent, afficher :
+
+Nom.
+
+Agence.
+
+Statut.
+
+Cash physique théorique.
+
+Crédit virtuel disponible.
+
+Capital total suivi.
+
+Nombre d'opérations.
+
+Dernière opération.
+
+Dernière synchronisation.
+
+Nombre d'anomalies.
+
+Dernier inventaire.
+
+Demandes de réapprovisionnement.
+
+Permettre au DG de consulter le détail complet de chaque agent.
+
+Prévoir des filtres par agence, agent, devise, période, type d'opération et statut.
+
+Actualisation
+
+Utiliser les mécanismes de synchronisation et d'écoute Firestore existants pour afficher les changements dès qu'ils sont confirmés par le serveur.
+
+Distinguer clairement les informations :
+
+Confirmées par le serveur.
+
+En attente de synchronisation.
+
+En conflit.
+
+À vérifier.
+
+Ne jamais afficher un indicateur « Temps réel » pour des données qui ne sont pas effectivement synchronisées.
+
+8. RAPPROCHEMENT AUTOMATIQUE AVEC LES SMS DES OPÉRATEURS
+
+Cette fonctionnalité est prioritaire.
+
+Le système existant de lecture des SMS doit rester entièrement fonctionnel.
+
+Il constitue une source indépendante de vérification des transactions déclarées.
+
+Principe
+
+Lorsqu'un SMS de transaction est reçu :
+
+Identifier l'opérateur.
+
+Extraire le type d'opération.
+
+Extraire le montant.
+
+Extraire la devise.
+
+Identifier l'expéditeur ou le bénéficiaire lorsque disponible.
+
+Extraire la référence de transaction.
+
+Identifier la date et l'heure.
+
+Identifier le téléphone ou l'agent associé lorsque cette information est disponible.
+
+Rechercher une transaction déclarée correspondante.
+
+Comparer les informations disponibles.
+
+États du rapprochement
+
+Rapprochée : correspondance suffisamment fiable.
+
+Non déclarée : SMS reçu sans déclaration correspondante.
+
+Déclaration sans SMS : transaction déclarée sans SMS correspondant.
+
+Montant différent : incohérence détectée.
+
+Référence différente : à examiner.
+
+Doublon potentiel : plusieurs correspondances possibles.
+
+À vérifier manuellement : données insuffisantes.
+
+Ne pas rapprocher uniquement sur le montant.
+
+Utiliser une combinaison de critères : référence, montant, devise, type, date, heure, agent, numéro concerné et sens de l'opération.
+
+Prévoir une tolérance temporelle configurable et une validation manuelle des correspondances ambiguës.
+
+Alerte au DG
+
+Lorsqu'un SMS est reçu sans transaction déclarée correspondante :
+
+Créer une alerte contenant :
+
+Agent concerné, si identifié.
+
+Numéro professionnel concerné.
+
+Opérateur.
+
+Montant.
+
+Type d'opération.
+
+Référence SMS.
+
+Date et heure.
+
+Statut du rapprochement.
+
+L'alerte ne doit pas être assimilée automatiquement à une preuve de fraude.
+
+Elle indique une anomalie à examiner.
+
+Prévention des doubles comptabilisations
+
+Une opération déclarée et un SMS correspondant représentent deux observations d'une même opération potentielle.
+
+Ils ne doivent jamais générer deux mouvements financiers.
+
+Le SMS enrichit et vérifie la transaction déclarée.
+
+Si le système détecte un SMS correspondant à une opération déjà comptabilisée, il met à jour uniquement son état de rapprochement.
+
+Il ne débite ou crédite pas une seconde fois les stocks.
+
+Si le SMS révèle une opération non déclarée, le système crée une anomalie et demande une vérification. Il ne doit pas modifier silencieusement le solde de l'agent sans politique de régularisation explicite.
+
+9. CONTRÔLE DES OPÉRATIONS NON DÉCLARÉES
+
+Le système doit rechercher activement les mouvements qui ne sont pas déclarés dans l'application.
+
+Cas à détecter
+
+SMS reçu sans déclaration correspondante.
+
+Transaction déclarée sans SMS attendu.
+
+Montant différent entre SMS et déclaration.
+
+Référence de transaction réutilisée.
+
+Plusieurs opérations ayant des caractéristiques suspectes.
+
+Écart entre les stocks théoriques et l'inventaire physique.
+
+Synchronisation anormalement retardée.
+
+Activité inhabituelle d'un agent.
+
+Solde incohérent.
+
+Tentative de transaction avec crédit insuffisant.
+
+Chaque anomalie doit disposer :
+
+D'un identifiant.
+
+D'un type.
+
+D'un niveau de priorité.
+
+D'un agent concerné.
+
+D'une référence d'opération.
+
+D'une date de détection.
+
+D'une description.
+
+D'un statut.
+
+D'une justification éventuelle.
+
+D'un historique de traitement.
+
+Statuts :
+
+Nouvelle.
+
+En cours d'examen.
+
+Justification demandée.
+
+Justifiée.
+
+Confirmée.
+
+Clôturée.
+
+Seules les personnes autorisées peuvent traiter les anomalies.
+
+Ne jamais supprimer une anomalie déjà enregistrée.
+
+10. INVENTAIRES PHYSIQUES ET CONTRÔLES INOPINÉS
+
+Le DG doit pouvoir demander à tout moment un inventaire à un agent.
+
+Déroulement
+
+Le DG lance un contrôle.
+
+L'agent reçoit une notification.
+
+L'agent saisit son cash physique réellement disponible.
+
+Il indique son crédit virtuel réellement disponible selon les canaux concernés.
+
+Il déclare les éventuelles opérations non encore enregistrées.
+
+Il ajoute une observation si nécessaire.
+
+Le système compare les montants déclarés aux soldes théoriques.
+
+Le DG consulte les résultats.
+
+Résultats
+
+Conforme.
+
+Écart positif.
+
+Écart négatif.
+
+Justification demandée.
+
+Contrôle incomplet.
+
+Le système doit enregistrer les montants théoriques au moment du contrôle, les montants déclarés, les différences et les personnes impliquées.
+
+Un agent ne peut pas modifier rétroactivement un inventaire validé.
+
+Le DG peut demander un nouvel inventaire.
+
+11. GESTION DU CASH PHYSIQUE ET DES MOUVEMENTS DE CAISSE
+
+Le cash physique doit être suivi séparément du crédit virtuel.
+
+Prévoir les opérations suivantes :
+
+Dotation initiale en cash.
+
+Réception de cash.
+
+Remise de cash.
+
+Retrait client.
+
+Dépôt client.
+
+Inventaire.
+
+Écart constaté.
+
+Ajustement autorisé.
+
+Chaque réception ou remise de cash doit être documentée.
+
+Lorsque cela est applicable, prévoir une confirmation de réception par les deux parties.
+
+Une simple déclaration de l'agent ne doit pas suffire à confirmer une remise de fonds au DG ou à la caisse centrale.
+
+Ne jamais enregistrer automatiquement une remise de cash simplement parce qu'un agent en fait la déclaration.
+
+12. GESTION DES DEVISES ET DU CHANGE
+
+Le système doit gérer USD et CDF séparément.
+
+Une opération de change doit contenir :
+
+Devise source.
+
+Montant source.
+
+Devise destination.
+
+Montant destination.
+
+Taux de change appliqué.
+
+Auteur.
+
+Date.
+
+Référence.
+
+Commission éventuelle.
+
+Le système doit déterminer les mouvements sur les deux stocks en fonction du sens réel de l'opération.
+
+Ne pas appliquer une règle simplifiée qui débiterait ou créditerait arbitrairement les deux devises.
+
+Le moteur comptable doit tenir compte des deux jambes de l'opération et vérifier la disponibilité des ressources nécessaires.
+
+13. ALERTES ET NOTIFICATIONS
+
+Intégrer les notifications au système existant.
+
+Le DG doit recevoir des alertes concernant :
+
+Les nouvelles demandes de réapprovisionnement.
+
+Les transactions non déclarées détectées.
+
+Les écarts de stocks.
+
+Les SMS non rapprochés.
+
+Les demandes de justification.
+
+Les tentatives de transaction refusées pour insuffisance de crédit.
+
+Les opérations inhabituelles.
+
+Les inventaires non effectués.
+
+Les agents qui ne synchronisent plus leurs opérations.
+
+L'agent doit recevoir :
+
+La confirmation de sa dotation.
+
+La confirmation de son réapprovisionnement.
+
+Le rejet de sa demande.
+
+Une alerte de crédit insuffisant.
+
+Une demande d'inventaire.
+
+Une demande de justification.
+
+La confirmation de synchronisation de ses opérations.
+
+Éviter les notifications en double.
+
+Respecter le système actuel de notifications Ets AMANI.
+
+14. SÉCURITÉ ET PROTECTION CONTRE LES PERTES FINANCIÈRES
+
+La sécurité doit être conçue côté serveur et côté client.
+
+A. Contrôle des permissions
+
+Respecter les rôles existants :
+
+administrateur_systeme.
+
+directeur_general.
+
+administrateur_agence.
+
+agent.
+
+abonne.
+
+client.
+
+Seuls les utilisateurs autorisés à effectuer des transactions peuvent accéder aux fonctions de gestion de stocks.
+
+Le DG conserve le contrôle des attributions et validations de crédits.
+
+Un administrateur d'agence ne peut gérer les crédits d'un agent que si une délégation explicite, limitée et traçable l'autorise.
+
+Un agent ne peut jamais :
+
+Créer du crédit virtuel.
+
+Modifier son solde.
+
+Modifier le solde d'un autre agent.
+
+Valider sa propre demande.
+
+Supprimer une écriture financière.
+
+Modifier une opération déjà validée.
+
+Modifier les références des opérations pour éviter un rapprochement.
+
+B. Sécurité Firestore
+
+Auditer et renforcer les règles Firestore existantes.
+
+Interdire les modifications directes des soldes depuis le frontend.
+
+Protéger les collections financières.
+
+Vérifier les identités, rôles, permissions, appartenances aux agences et transitions autorisées.
+
+Ne jamais faire confiance à une simple valeur de rôle envoyée par le client.
+
+Les opérations sensibles doivent passer par des fonctions serveur authentifiées et autorisées.
+
+Utiliser les transactions Firestore pour les mouvements atomiques.
+
+C. Authentification
+
+Renforcer l'authentification du DG.
+
+Prévoir une réauthentification ou une authentification renforcée pour les opérations sensibles, lorsque les mécanismes disponibles le permettent.
+
+Protéger les sessions et détecter les accès inhabituels.
+
+D. Journal d'audit
+
+Tracer au minimum :
+
+Attribution de crédit.
+
+Demande de crédit.
+
+Validation.
+
+Rejet.
+
+Débit.
+
+Crédit.
+
+Correction.
+
+Inventaire.
+
+Rapprochement.
+
+Déclaration.
+
+Justification.
+
+Modification de permissions.
+
+Tentative non autorisée.
+
+Le journal doit être append-only dans les règles applicables.
+
+Un administrateur ne doit pas pouvoir supprimer ou modifier silencieusement les traces financières.
+
+E. Protection contre les abus
+
+Détecter les répétitions anormales, les montants inhabituels, les opérations hors habitudes et les tentatives d'accès interdites.
+
+Prévoir des alertes de sécurité.
+
+Ne jamais assimiler automatiquement une anomalie à une fraude avérée.
+
+15. ARCHITECTURE OFFLINE-FIRST
+
+Le projet utilise déjà Dexie/IndexedDB, Firebase et les mécanismes de synchronisation existants.
+
+Le nouveau module doit respecter cette architecture.
+
+Hors connexion
+
+L'application peut conserver localement :
+
+Les opérations saisies.
+
+Les demandes préparées.
+
+Les inventaires.
+
+Les justificatifs.
+
+Les événements en attente de synchronisation.
+
+Chaque opération doit porter un état explicite :
+
+Brouillon local.
+
+En attente de synchronisation.
+
+Synchronisée.
+
+Confirmée par le serveur.
+
+En conflit.
+
+Rejetée.
+
+Règle financière importante
+
+Une opération locale non synchronisée ne doit pas être présentée comme définitivement confirmée.
+
+Le système doit distinguer le solde confirmé par le serveur du solde provisoire local.
+
+Les opérations sensibles ne doivent pas pouvoir contourner le contrôle de crédit à cause d'une perte de connexion.
+
+Si l'application ne peut pas garantir une disponibilité suffisante du crédit sans connexion, elle doit bloquer la validation financière et expliquer clairement la raison.
+
+Ne pas utiliser de mécanisme de synchronisation qui pourrait faire apparaître un solde négatif après reconnexion.
+
+Prévoir des identifiants idempotents, des contrôles de concurrence et une résolution explicite des conflits.
+
+Ne pas écraser les données locales ou serveur lors d'une synchronisation.
+
+16. STRUCTURE TECHNIQUE ET INTÉGRATION
+
+Analyser les structures actuelles avant de choisir les collections et les fichiers.
+
+Les concepts suivants doivent être représentés dans l'architecture existante :
+
+Stocks des agents.
+
+Journal des mouvements financiers.
+
+Dotations initiales.
+
+Demandes de réapprovisionnement.
+
+Validations du DG.
+
+Transactions déclarées.
+
+Observations SMS.
+
+Rapprochements.
+
+Anomalies.
+
+Inventaires.
+
+Justifications.
+
+Historique d'audit.
+
+Les noms des collections, interfaces, services et composants doivent respecter les conventions déjà utilisées dans le projet.
+
+Ne pas créer de doublons de collections si une structure existante peut être étendue proprement.
+
+Le journal financier doit être la source de vérité pour le calcul des soldes.
+
+Les documents de solde peuvent être conservés comme projections pour accélérer l'affichage, mais doivent pouvoir être recalculés et vérifiés à partir des écritures comptables.
+
+17. INTERFACE UTILISATEUR
+
+Créer une interface cohérente avec le design actuel d'Ets AMANI.
+
+Ne pas introduire un design étranger au reste de l'application.
+
+Respecter les interfaces mobiles, tablettes et ordinateurs.
+
+Interface agent
+
+Prévoir :
+
+Mon cash physique.
+
+Mon crédit virtuel.
+
+Mes opérations récentes.
+
+Mon historique de mouvements.
+
+Mes demandes de réapprovisionnement.
+
+Nouvelle demande de crédit.
+
+Mes alertes.
+
+Mes inventaires.
+
+Mes opérations en attente de synchronisation.
+
+Afficher clairement les soldes et les statuts.
+
+Interface administrateur d'agence
+
+Prévoir une supervision limitée aux agents de son agence, dans les limites de ses permissions.
+
+Afficher les stocks, activités, demandes et anomalies.
+
+Ne pas lui donner automatiquement les droits de validation des crédits.
+
+Interface DG
+
+Prévoir un espace central de contrôle financier :
+
+Vue globale.
+
+Stocks par agence.
+
+Stocks par agent.
+
+Dotations.
+
+Réapprovisionnements.
+
+Transactions.
+
+Rapprochement SMS.
+
+Anomalies.
+
+Inventaires.
+
+Audit financier.
+
+Le DG doit pouvoir passer d'une vue globale au détail d'un agent sans navigation inutile.
+
+Ne pas multiplier les cartes volumineuses, les tableaux redondants ou les boutons sans action.
+
+Respecter les composants et la navigation déjà présents.
+
+18. TESTS OBLIGATOIRES
+
+Ne pas considérer le travail terminé sans tests.
+
+Tests comptables
+
+Tester au minimum :
+
+Attribution initiale de cash et de crédit virtuel.
+
+Dépôt client.
+
+Retrait client.
+
+Plusieurs dépôts successifs.
+
+Plusieurs retraits successifs.
+
+Crédit insuffisant.
+
+Cash physique insuffisant.
+
+Réapprovisionnement approuvé.
+
+Réapprovisionnement rejeté.
+
+Tentative de validation en double.
+
+Opération de change.
+
+Frais et commissions.
+
+Correction par contrepassation.
+
+Inventaire avec écart.
+
+Vérification de la conservation des soldes.
+
+Tests de sécurité
+
+Tester :
+
+Agent tentant de modifier son crédit.
+
+Agent tentant d'approuver sa demande.
+
+Administrateur d'agence tentant d'intervenir sur une autre agence.
+
+DG validant deux fois la même demande.
+
+Utilisateur sans permission tentant de créer une écriture.
+
+Modification directe des soldes depuis le client.
+
+Suppression d'une écriture validée.
+
+Transactions simultanées.
+
+Rejeu d'une requête.
+
+Identifiant de transaction dupliqué.
+
+Tests SMS
+
+Tester :
+
+SMS correspondant à une déclaration.
+
+SMS sans déclaration.
+
+Déclaration sans SMS.
+
+Montant différent.
+
+Référence dupliquée.
+
+SMS reçu en retard.
+
+Plusieurs SMS similaires.
+
+Correspondance ambiguë.
+
+SMS provenant d'un numéro non associé à un agent.
+
+Tests Offline-First
+
+Tester :
+
+Opération hors connexion.
+
+Retour de la connexion.
+
+Synchronisation répétée.
+
+Conflit entre deux appareils.
+
+Opération locale rejetée par le serveur.
+
+Perte de connexion pendant une validation.
+
+Absence de double comptabilisation.
+
+Environnement de test
+
+Utiliser Firebase Emulator Suite et des tests automatisés isolés.
+
+Ne jamais exécuter de transactions de test sur les véritables comptes ou stocks financiers de production.
+
+Ne pas introduire de données fictives dans les données réelles.
+
+19. LIVRABLES ATTENDUS
+
+À la fin de l'intervention, fournir :
+
+Un rapport d'audit de l'architecture existante.
+
+Les modules et fichiers réellement modifiés.
+
+Le nouveau fonctionnement comptable.
+
+Les règles Firestore modifiées.
+
+Les fonctions serveur nécessaires.
+
+Les migrations Dexie éventuelles.
+
+Les interfaces utilisateur intégrées.
+
+Les tests réalisés et leurs résultats.
+
+Les éventuelles limites techniques.
+
+Les risques restant à traiter.
+
+Les étapes de déploiement.
+
+Les recommandations de sécurisation avant mise en production.
+
+Ne pas déclarer une fonctionnalité terminée si elle n'a pas été testée.
+
+Ne pas prétendre qu'un déploiement a été effectué si ce n'est pas le cas.
+
+20. CRITÈRES D'ACCEPTATION FINAUX
+
+Le travail sera considéré comme acceptable uniquement si :
+
+Le DG peut attribuer les stocks initiaux.
+
+Le crédit virtuel est distinct du cash physique.
+
+Les transactions mettent correctement à jour les deux stocks.
+
+Les opérations sont bloquées en cas de crédit insuffisant.
+
+Les agents peuvent demander un réapprovisionnement.
+
+Seules les personnes autorisées peuvent valider les demandes.
+
+Les crédits validés sont enregistrés sans possibilité de double validation.
+
+Les mouvements financiers sont traçables.
+
+Les soldes sont recalculables à partir du journal.
+
+Les SMS continuent de fonctionner.
+
+Les SMS et les déclarations sont rapprochés sans double comptabilisation.
+
+Les opérations non déclarées génèrent des anomalies.
+
+Le DG peut lancer des inventaires.
+
+Les écarts sont visibles et justifiables.
+
+Les opérations sensibles sont protégées côté serveur.
+
+Le fonctionnement Offline-First existant est préservé.
+
+Les données historiques sont conservées.
+
+Les permissions des six rôles existants sont respectées.
+
+Les tests comptables et de sécurité passent.
+
+Aucune fonctionnalité existante n'a été supprimée ou dégradée.
+
+21. CONSIGNE FINALE
+
+Agis comme un architecte logiciel responsable de la sécurité financière d'une application professionnelle de production.
+
+Ne te limite pas à créer une interface visuelle.
+
+Le système doit être réellement opérationnel, connecté aux données existantes, cohérent comptablement, sécurisé, auditable et compatible avec les mécanismes actuels d'Ets AMANI.
+
+Travaille progressivement :
+
+Phase 1 : Audit et cartographie.
+
+Phase 2 : Conception du modèle comptable et des règles de sécurité.
+
+Phase 3 : Intégration du journal financier et des soldes.
+
+Phase 4 : Attribution des crédits et réapprovisionnements.
+
+Phase 5 : Intégration aux transactions existantes.
+
+Phase 6 : Rapprochement SMS et détection des anomalies.
+
+Phase 7 : Inventaires, supervision et notifications.
+
+Phase 8 : Tests, audit de sécurité et validation de production.
+
+Priorité absolue : préserver l'application existante, protéger les fonds de l'entreprise et garantir la traçabilité de chaque mouvement financier.
+
+Ne supprime aucune fonctionnalité existante pour faciliter l'implémentation. Si une difficulté architecturale apparaît, propose une extension compatible plutôt qu'une réécriture.
+

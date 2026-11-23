@@ -19,7 +19,8 @@ export type AuditCategory =
   | 'config'
   | 'rbac'
   | 'billetage'
-  | 'reports';
+  | 'reports'
+  | 'finance';
 
 export interface AuditLogEntry {
   id: string;
@@ -32,7 +33,8 @@ export interface AuditLogEntry {
     | 'config'
     | 'rbac'
     | 'billetage'
-    | 'reports';
+    | 'reports'
+    | 'finance';
   severity: AuditSeverity;
   details: string;
   actorName: string;
@@ -148,9 +150,12 @@ export async function recordAuditLog(
 
   // 2. Tentative d'enregistrement dans Firestore si disponible
   try {
+    const cleanEntry = Object.fromEntries(
+      Object.entries(entry).filter(([, value]) => value !== undefined)
+    );
     const auditRef = collection(firestoreDb, 'auditLogs');
     await addDoc(auditRef, {
-      ...entry,
+      ...cleanEntry,
       timestamp: serverTimestamp(),
       createdAtClient: newEntry.timestamp,
     });

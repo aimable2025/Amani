@@ -18,6 +18,7 @@ import {
   UserCheck,
   UserPlus,
   Users,
+  Wallet,
   Wifi,
   X,
 } from 'lucide-react';
@@ -46,8 +47,10 @@ import DirectorGeneralGovernanceModule from './components/DirectorGeneralGoverna
 import AgenciesModule from './components/AgenciesModule';
 import InternalNumbersModule from './components/InternalNumbersModule';
 import CommandesClientsModule from './components/CommandesClientsModule';
+import FinancialSupervisionModule from './components/FinancialSupervisionModule';
 import UnifiedExecutiveOverview from '../../components/dashboard/UnifiedExecutiveOverview';
 import { getAgencies, type Agency } from '../../services/AgencyService';
+import { startFinancialNotificationWatcher } from '../../services/LocalNotificationService';
 import {
   appointDirectorGeneral,
   createAdministrativeUser,
@@ -59,6 +62,7 @@ import type { AccountStatus, UserCategory, UserFunction, UserRole } from '../../
 
 type ActiveView =
   | 'overview'
+  | 'financial_supervision'
   | 'operations'
   | 'commandes'
   | 'transfers'
@@ -83,6 +87,11 @@ const SYSTEM_VIEWS_META: Record<
     title: "Vue d'ensemble",
     description: 'Supervision technique, sécurité & gestion des comptes privilégiés',
     category: 'Console',
+  },
+  financial_supervision: {
+    title: 'Crédits Virtuels & Supervision Financière',
+    description: 'Dotations, suivi USD/CDF par agent, rapprochement SMS, inventaires et grand livre immuable',
+    category: 'Supervision Financière',
   },
   operations: {
     title: 'Opérations de Caisse & Réseau',
@@ -207,6 +216,16 @@ const SYSTEM_MODULE_CARDS: Array<{
     description: "Création, modification et supervision des succursales et responsables.",
     icon: Building2,
     variant: 'primary',
+  },
+  {
+    id: 'financial_supervision',
+    pole: '02. Supervision & Communication',
+    title: 'Crédits Virtuels & Fonds Agents',
+    shortTitle: 'Crédits & Fonds',
+    description: 'Dotations, rapprochement SMS, inventaires, délégations DG et grand livre USD/CDF.',
+    icon: Wallet,
+    variant: 'primary',
+    badge: 'USD/CDF',
   },
   {
     id: 'operations',
@@ -374,7 +393,11 @@ export default function AdministrateurSystemeDashboard() {
 
   useEffect(() => {
     void fetchUsers();
-  }, []);
+    const stopFinanceWatcher = startFinancialNotificationWatcher(user);
+    return () => {
+      stopFinanceWatcher();
+    };
+  }, [user?.uid]);
 
   const currentDg = useMemo(() => {
     return systemUsers.find(
@@ -486,6 +509,9 @@ export default function AdministrateurSystemeDashboard() {
     const map: Record<string, ActiveView> = {
       dashboard: 'overview',
       overview: 'overview',
+      funds: 'financial_supervision',
+      'financial-supervision': 'financial_supervision',
+      financial_supervision: 'financial_supervision',
       operations: 'operations',
       transactions: 'operations',
       commandes: 'commandes',
@@ -521,7 +547,13 @@ export default function AdministrateurSystemeDashboard() {
     <AppLayout
       title="Administration Système — Ets AMANI"
       subtitle="Supervision technique, sécurité & gestion des comptes privilégiés"
-      activeItem={activeView === 'overview' ? 'dashboard' : activeView}
+      activeItem={
+        activeView === 'overview'
+          ? 'dashboard'
+          : activeView === 'financial_supervision'
+            ? 'funds'
+            : activeView
+      }
       onNavigate={handleSidebarNavigate}
       onNavigateToChat={() => {
         setActiveView('chat');
@@ -656,6 +688,7 @@ export default function AdministrateurSystemeDashboard() {
               backLabel="Vue d'ensemble"
               onBack={() => setActiveView('overview')}
               tabs={[
+                { id: 'financial_supervision', label: 'Crédits & Fonds', icon: Wallet },
                 { id: 'users', label: 'Utilisateurs', icon: Users, badge: systemUsers.length },
                 { id: 'registrations', label: 'Inscriptions', icon: UserCheck },
                 { id: 'dg_governance', label: 'Gouvernance DG', icon: Shield },
@@ -832,6 +865,12 @@ export default function AdministrateurSystemeDashboard() {
               </div>
             )}
 
+            {activeView === 'financial_supervision' && (
+              <FinancialSupervisionModule
+                mode="system_admin"
+                onClose={() => setActiveView('overview')}
+              />
+            )}
             {activeView === 'operations' && (
               <OperationModule onClose={() => setActiveView('overview')} />
             )}
