@@ -67,10 +67,16 @@ export interface ReportFormConfiguration {
   summaryPlaceholder: string;
   summaryHelperText: string;
   sections: {
-    general: ReportFormSectionRule;
+    general: ReportFormSectionRule & {
+      showPriority?: boolean;
+      showNotes?: boolean;
+      restrictReportTypesInGuide?: boolean;
+    };
     summary: ReportFormSectionRule;
     metrics: ReportFormSectionRule & {
       showMissions: boolean;
+      showUsdVolume?: boolean;
+      showCdfVolume?: boolean;
       showBilletage: boolean;
       showDiscrepancy: boolean;
     };
@@ -81,6 +87,8 @@ export interface ReportFormConfiguration {
       defaultTemplates: ActivityTemplate[];
     };
     results: ReportFormSectionRule & {
+      showQuantitativeIndicators?: boolean;
+      showQualitativeObjectives?: boolean;
       defaultIndicators: QuantitativeIndicatorTemplate[];
     };
     difficulties: ReportFormSectionRule;
@@ -124,11 +132,20 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
     summaryPlaceholder: 'Synthèse des comptes arrêtés, volumes rapprochés, justificatifs en attente et régularisations...',
     summaryHelperText: 'Présentez à la direction l\'état des rapprochements et les éventuels écarts de balance.',
     sections: {
-      general: { visible: true, required: true, title: '1. Informations Générales & Période' },
+      general: {
+        visible: true,
+        required: true,
+        title: '1. Informations Générales & Période',
+        showPriority: true,
+        showNotes: true,
+        restrictReportTypesInGuide: true,
+      },
       summary: { visible: true, required: true, title: '2. Synthèse Comptable & Balance' },
       metrics: {
         visible: true,
         showMissions: true,
+        showUsdVolume: true,
+        showCdfVolume: true,
         showBilletage: true,
         showDiscrepancy: true,
         title: '3. Soldes & Métriques Financières Vérifiées',
@@ -215,11 +232,20 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
     summaryPlaceholder: 'Affluence de la journée, temps de traitement, nombre de clients servis, anomalies éventuelles...',
     summaryHelperText: 'Résumez le déroulement de votre service au guichet.',
     sections: {
-      general: { visible: true, required: true, title: '1. Informations Générales' },
+      general: {
+        visible: true,
+        required: true,
+        title: '1. Informations Générales',
+        showPriority: true,
+        showNotes: false,
+        restrictReportTypesInGuide: true,
+      },
       summary: { visible: true, required: true, title: '2. Synthèse du Guichet' },
       metrics: {
         visible: true,
         showMissions: true,
+        showUsdVolume: true,
+        showCdfVolume: true,
         showBilletage: false,
         showDiscrepancy: false,
         title: '3. Volume d\'Opérations Traitées',
@@ -302,11 +328,20 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
     summaryPlaceholder: 'Solde initial, total des entrées, total des sorties, solde final physique et justification de tout écart...',
     summaryHelperText: 'Consignez les montants réels en coffre et confirmez l\'alignement avec le billetage.',
     sections: {
-      general: { visible: true, required: true, title: '1. Informations Générales' },
+      general: {
+        visible: true,
+        required: true,
+        title: '1. Informations Générales',
+        showPriority: true,
+        showNotes: true,
+        restrictReportTypesInGuide: true,
+      },
       summary: { visible: true, required: true, title: '2. Synthèse de Clôture' },
       metrics: {
         visible: true,
         showMissions: true,
+        showUsdVolume: true,
+        showCdfVolume: true,
         showBilletage: true,
         showDiscrepancy: true,
         title: '3. Soldes & Écarts Automatiques',
@@ -391,11 +426,20 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
     summaryPlaceholder: 'Volume de change traité, taux moyen du jour, marge brute dégagée, disponibilité des devises...',
     summaryHelperText: 'Précisez les volumes convertis et le respect de la grille officielle des taux.',
     sections: {
-      general: { visible: true, required: true, title: '1. Informations Générales' },
+      general: {
+        visible: true,
+        required: true,
+        title: '1. Informations Générales',
+        showPriority: true,
+        showNotes: false,
+        restrictReportTypesInGuide: true,
+      },
       summary: { visible: true, required: true, title: '2. Synthèse du Marché & Taux' },
       metrics: {
         visible: true,
         showMissions: true,
+        showUsdVolume: true,
+        showCdfVolume: true,
         showBilletage: true,
         showDiscrepancy: false,
         title: '3. Volumes Devises Déclarés',
@@ -472,11 +516,20 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
     summaryPlaceholder: 'Soldes initiaux/finaux par opérateur, recharges traitées, temps de rétablissement des incidents réseau...',
     summaryHelperText: 'Indiquez les soldes de flotte disponibles et la disponibilité des réseaux opérateurs.',
     sections: {
-      general: { visible: true, required: true, title: '1. Informations Générales' },
+      general: {
+        visible: true,
+        required: true,
+        title: '1. Informations Générales',
+        showPriority: true,
+        showNotes: false,
+        restrictReportTypesInGuide: true,
+      },
       summary: { visible: true, required: true, title: '2. Synthèse Flotte Virtuelle' },
       metrics: {
         visible: true,
         showMissions: true,
+        showUsdVolume: true,
+        showCdfVolume: true,
         showBilletage: false,
         showDiscrepancy: false,
         title: '3. Opérations Virtuelles Détectées',
@@ -554,11 +607,20 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
     summaryPlaceholder: 'Itinéraires empruntés, état du véhicule, accomplissement des courses et incidents de circulation...',
     summaryHelperText: 'Détaillez les points d\'intervention et les objectifs atteints.',
     sections: {
-      general: { visible: true, required: true, title: '1. Informations de Mission' },
+      general: {
+        visible: true,
+        required: true,
+        title: '1. Informations de Mission',
+        showPriority: true,
+        showNotes: false,
+        restrictReportTypesInGuide: true,
+      },
       summary: { visible: true, required: true, title: '2. Synthèse de la Mission' },
       metrics: {
         visible: false,
         showMissions: true,
+        showUsdVolume: false,
+        showCdfVolume: false,
         showBilletage: false,
         showDiscrepancy: false,
         title: '3. Métriques',
@@ -637,11 +699,20 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
     summaryPlaceholder: 'Synthèse des différentes fonctions assurées, répartition du temps et bilans par pôle...',
     summaryHelperText: 'Décrivez les différentes casquettes exercées sans double comptabilisation.',
     sections: {
-      general: { visible: true, required: true, title: '1. Informations Générales' },
+      general: {
+        visible: true,
+        required: true,
+        title: '1. Informations Générales',
+        showPriority: true,
+        showNotes: true,
+        restrictReportTypesInGuide: true,
+      },
       summary: { visible: true, required: true, title: '2. Synthèse Globale' },
       metrics: {
         visible: true,
         showMissions: true,
+        showUsdVolume: true,
+        showCdfVolume: true,
         showBilletage: true,
         showDiscrepancy: true,
         title: '3. Données Consolidées Dexie',
@@ -656,6 +727,7 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
           'pendingTransactionsCount',
           'cancelledOrRejectedCount',
           'tellerAnomaliesNotes',
+          'technicalDifficultiesNotes',
           'cashRegisterIdentifier',
           'cashOperationsCount',
           'authorizedReceiptsUSD',
@@ -663,11 +735,35 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
           'authorizedDisbursementsUSD',
           'authorizedDisbursementsCDF',
           'cashDiscrepancyReason',
+          'cashIncidentsNotes',
+          'accountingPeriodName',
+          'filesProcessedCount',
+          'operationsBookedCount',
+          'reconciliationsDoneCount',
+          'discrepanciesCount',
+          'missingReceiptsCount',
+          'accountingCorrectiveActions',
+          'accountingObservations',
           'virtualOperationsCount',
+          'requestsReceivedCount',
           'requestsResolvedCount',
+          'pendingVirtualFilesCount',
+          'technicalIncidentsCount',
+          'connectionIssuesCount',
+          'virtualActionsTaken',
+          'exchangeCurrencies',
           'exchangeOperationsCount',
           'exchangeVolumeUSD',
           'exchangeVolumeCDF',
+          'pendingExchangeOpsCount',
+          'exchangeAnomaliesNotes',
+          'assignedMissionTitle',
+          'missionObjective',
+          'interventionLocation',
+          'fieldActivitiesCompleted',
+          'fieldResultsObtained',
+          'fieldRecommendations',
+          'fieldProofDocumentName',
         ],
       },
       activities: {
@@ -736,11 +832,20 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
     summaryPlaceholder: 'Performance globale de l\'agence, climat de travail, solvabilité, incidents marquants et plans d\'action...',
     summaryHelperText: 'Rapport consolidé destiné à la Direction Générale et à l\'audit interne.',
     sections: {
-      general: { visible: true, required: true, title: '1. Informations de l\'Agence' },
+      general: {
+        visible: true,
+        required: true,
+        title: '1. Informations de l\'Agence',
+        showPriority: true,
+        showNotes: true,
+        restrictReportTypesInGuide: false,
+      },
       summary: { visible: true, required: true, title: '2. Synthèse de Supervision' },
       metrics: {
         visible: true,
         showMissions: true,
+        showUsdVolume: true,
+        showCdfVolume: true,
         showBilletage: true,
         showDiscrepancy: true,
         title: '3. Performance Globale Agence',
@@ -751,11 +856,27 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
         allowedFields: [
           'activeSelectedCategories',
           'accountingPeriodName',
+          'cashRegisterIdentifier',
           'cashOperationsCount',
+          'authorizedReceiptsUSD',
+          'authorizedReceiptsCDF',
+          'authorizedDisbursementsUSD',
+          'authorizedDisbursementsCDF',
+          'cashDiscrepancyReason',
           'tellerOperationsCount',
+          'clientsServedCount',
+          'pendingTransactionsCount',
           'virtualOperationsCount',
+          'requestsReceivedCount',
+          'requestsResolvedCount',
           'exchangeOperationsCount',
+          'exchangeVolumeUSD',
+          'exchangeVolumeCDF',
+          'reconciliationsDoneCount',
+          'discrepanciesCount',
           'accountingObservations',
+          'assignedMissionTitle',
+          'interventionLocation',
         ],
       },
       activities: {
@@ -880,24 +1001,74 @@ export const REPORT_FORM_CONFIGURATIONS: Record<ReportUserProfile, ReportFormCon
 };
 
 /**
- * Résout le profil de rapport adéquat selon la fonction de l'utilisateur, son rôle et ses options.
+ * Correspondance entre catégorie du formulaire adaptatif et profil centralisé.
+ */
+export const CATEGORY_TO_PROFILE: Record<AgentReportCategory, ReportUserProfile> = {
+  guichetier: 'guichetier',
+  caisse: 'caissier',
+  comptable: 'agent_comptable',
+  agent_change: 'agent_change',
+  agent_virtuel: 'agent_virtuel',
+  agent_terrain: 'agent_terrain',
+  polyvalent: 'agent_polyvalent',
+  autre: 'general',
+};
+
+export function mapFunctionToReportCategory(fn?: UserFunction | string | null): AgentReportCategory {
+  switch (fn) {
+    case 'comptable':
+    case 'comptabilite':
+      return 'comptable';
+    case 'caisse':
+      return 'caisse';
+    case 'guichetier':
+      return 'guichetier';
+    case 'agent_change':
+      return 'agent_change';
+    case 'agent_virtuel':
+    case 'agent_vodae':
+    case 'agent_operateur_mobile':
+      return 'agent_virtuel';
+    case 'agent_terrain':
+    case 'chauffeur':
+    case 'cleaner':
+      return 'agent_terrain';
+    default:
+      return 'guichetier';
+  }
+}
+
+/**
+ * Résout le profil de rapport adéquat selon la fonction de l'utilisateur,
+ * ses fonctions multiples éventuelles et son rôle.
  */
 export function resolveReportUserProfile(
   userFunction?: UserFunction | string | null,
   userRole?: UserRole | string | null,
-  multiServiceEnabled?: boolean
+  multiServiceEnabled?: boolean,
+  userFunctions?: Array<UserFunction | string> | null
 ): ReportUserProfile {
-  if (multiServiceEnabled) {
-    return 'agent_polyvalent';
-  }
-
-  // 1. Rôles de Direction
-  if (userRole === 'administrateur_agence' || userRole === 'directeur_general' || userRole === 'administrateur_systeme') {
+  // 1. Rôles de Direction / Supervision
+  if (
+    userRole === 'administrateur_agence' ||
+    userRole === 'directeur_general' ||
+    userRole === 'administrateur_systeme'
+  ) {
     return 'direction_agence';
   }
 
-  // 2. Fonctions opérationnelles
-  switch (userFunction) {
+  // 2. Détection d'un profil multi-services / polyvalent
+  const distinctCategories = new Set(
+    (userFunctions || []).map((fn) => mapFunctionToReportCategory(fn))
+  );
+  if (multiServiceEnabled || distinctCategories.size > 1) {
+    return 'agent_polyvalent';
+  }
+
+  const effectiveFn = userFunction || (userFunctions && userFunctions[0]) || null;
+
+  // 3. Fonctions opérationnelles
+  switch (effectiveFn) {
     case 'comptable':
     case 'comptabilite':
       return 'agent_comptable';
@@ -927,18 +1098,68 @@ export function resolveReportUserProfile(
 }
 
 /**
+ * Résout le profil de formulaire complet directement depuis un objet utilisateur AppUser-like.
+ */
+export function resolveReportConfigForUser(user?: {
+  function?: UserFunction | string | null;
+  functions?: Array<UserFunction | string> | null;
+  role?: UserRole | string | null;
+  multiServiceEnabled?: boolean;
+  serviceAssignments?: Array<{
+    service: UserFunction;
+    status: string;
+    active: boolean;
+    endAt?: number;
+  }>;
+} | null): ReportFormConfiguration {
+  if (!user) return REPORT_FORM_CONFIGURATIONS.general;
+
+  const now = Date.now();
+  const activeAssignmentFunctions = (user.serviceAssignments || [])
+    .filter(
+      (a) =>
+        a.active &&
+        a.status === 'approved' &&
+        (!a.endAt || a.endAt > now)
+    )
+    .map((a) => a.service);
+
+  const mergedFunctions = Array.from(
+    new Set([
+      ...(user.function ? [user.function] : []),
+      ...(user.functions || []),
+      ...activeAssignmentFunctions,
+    ])
+  );
+
+  const profile = resolveReportUserProfile(
+    user.function,
+    user.role,
+    user.multiServiceEnabled,
+    mergedFunctions
+  );
+  return REPORT_FORM_CONFIGURATIONS[profile] || REPORT_FORM_CONFIGURATIONS.general;
+}
+
+/**
  * Obtient la configuration centralisée pour un utilisateur donné ou un profil spécifique.
  */
 export function getReportFormConfig(
   userFunctionOrProfile?: string | null,
   userRole?: string | null,
-  multiServiceEnabled?: boolean
+  multiServiceEnabled?: boolean,
+  userFunctions?: Array<UserFunction | string> | null
 ): ReportFormConfiguration {
   if (userFunctionOrProfile && userFunctionOrProfile in REPORT_FORM_CONFIGURATIONS) {
     return REPORT_FORM_CONFIGURATIONS[userFunctionOrProfile as ReportUserProfile];
   }
 
-  const profile = resolveReportUserProfile(userFunctionOrProfile, userRole, multiServiceEnabled);
+  const profile = resolveReportUserProfile(
+    userFunctionOrProfile,
+    userRole,
+    multiServiceEnabled,
+    userFunctions
+  );
   return REPORT_FORM_CONFIGURATIONS[profile] || REPORT_FORM_CONFIGURATIONS.general;
 }
 
@@ -970,4 +1191,182 @@ export function isCategoryFieldVisible(
     return true;
   }
   return config.sections.category.allowedFields.includes(fieldKey);
+}
+
+/**
+ * Évalue la visibilité d'un champ en tenant compte du volet actif (y compris Agent Polyvalent
+ * combinant dynamiquement plusieurs volets métier).
+ */
+export function isCategoryFieldVisibleForContext(
+  config: ReportFormConfiguration,
+  fieldKey: keyof AgentCategorySpecificData,
+  activeCategory: AgentReportCategory,
+  activeServices: string[] = [],
+  formMode: 'guide' | 'personnalise' = 'guide'
+): boolean {
+  if (formMode === 'personnalise') {
+    return true;
+  }
+
+  if (activeCategory === 'polyvalent' && activeServices.length > 0) {
+    if (fieldKey === 'activeSelectedCategories') return true;
+    // Union des champs autorisés des services sélectionnés par l'agent polyvalent
+    const unionAllowed = new Set<keyof AgentCategorySpecificData>();
+    for (const svc of activeServices) {
+      const cat = svc as AgentReportCategory;
+      const profileKey = CATEGORY_TO_PROFILE[cat];
+      const subConfig = profileKey ? REPORT_FORM_CONFIGURATIONS[profileKey] : undefined;
+      if (subConfig) {
+        for (const f of subConfig.sections.category.allowedFields) {
+          unionAllowed.add(f);
+        }
+      }
+    }
+    if (unionAllowed.size > 0) {
+      return unionAllowed.has(fieldKey);
+    }
+  }
+
+  // Si la catégorie sélectionnée correspond à un autre profil explicite
+  const categoryProfile = CATEGORY_TO_PROFILE[activeCategory];
+  if (categoryProfile && categoryProfile !== config.profile && config.profile !== 'direction_agence') {
+    return REPORT_FORM_CONFIGURATIONS[categoryProfile].sections.category.allowedFields.includes(fieldKey);
+  }
+
+  return config.sections.category.allowedFields.includes(fieldKey);
+}
+
+/**
+ * Retourne les cartes métriques visibles selon le profil et le mode du formulaire.
+ */
+export function getVisibleMetricCards(
+  config: ReportFormConfiguration,
+  formMode: 'guide' | 'personnalise' = 'guide'
+): {
+  showMissions: boolean;
+  showUsdVolume: boolean;
+  showCdfVolume: boolean;
+  showBilletage: boolean;
+  showDiscrepancy: boolean;
+} {
+  if (formMode === 'personnalise') {
+    return {
+      showMissions: true,
+      showUsdVolume: true,
+      showCdfVolume: true,
+      showBilletage: true,
+      showDiscrepancy: true,
+    };
+  }
+  const m = config.sections.metrics;
+  return {
+    showMissions: m.showMissions,
+    showUsdVolume: m.showUsdVolume ?? true,
+    showCdfVolume: m.showCdfVolume ?? true,
+    showBilletage: m.showBilletage,
+    showDiscrepancy: m.showDiscrepancy,
+  };
+}
+
+/**
+ * Valide un rapport avant soumission officielle selon les règles obligatoires du profil actif.
+ */
+export function validateReportAgainstConfig(
+  config: ReportFormConfiguration,
+  formMode: 'guide' | 'personnalise',
+  payload: {
+    title: string;
+    executiveSummary: string;
+    activitiesCount: number;
+    linkedBilletageId?: string | null;
+    certifiedAccepted: boolean;
+  }
+): { valid: boolean; error?: string } {
+  if (config.sections.certification.required && !payload.certifiedAccepted) {
+    return {
+      valid: false,
+      error:
+        "Veuillez cocher la déclaration d'exactitude avant de soumettre officiellement votre rapport.",
+    };
+  }
+
+  if (!payload.title.trim()) {
+    return {
+      valid: false,
+      error: "L'intitulé officiel du rapport est obligatoire pour la soumission.",
+    };
+  }
+
+  if (
+    formMode === 'guide' &&
+    config.sections.summary.visible &&
+    config.sections.summary.required &&
+    !payload.executiveSummary.trim()
+  ) {
+    return {
+      valid: false,
+      error: `Le résumé exécutif (${config.sections.summary.title || 'Synthèse'}) est requis pour le profil ${config.label}.`,
+    };
+  }
+
+  if (
+    formMode === 'guide' &&
+    config.sections.activities.visible &&
+    config.sections.activities.required &&
+    payload.activitiesCount === 0
+  ) {
+    return {
+      valid: false,
+      error: `Veuillez renseigner au moins une activité dans « ${config.sections.activities.title || 'Activités Réalisées'} » pour ce profil.`,
+    };
+  }
+
+  if (
+    formMode === 'guide' &&
+    config.sections.billetage.visible &&
+    config.sections.billetage.required &&
+    !payload.linkedBilletageId
+  ) {
+    return {
+      valid: false,
+      error: `Le raccordement à un billetage de caisse est obligatoire pour le profil ${config.label}.`,
+    };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Calcule le résumé des sections visibles vs masquées pour un profil donné.
+ */
+export function getSectionsVisibilitySummary(
+  config: ReportFormConfiguration,
+  formMode: 'guide' | 'personnalise'
+): { visibleCount: number; totalCount: number; hiddenLabels: string[] } {
+  const sectionLabels: Array<{ key: ReportFormSectionKey; label: string }> = [
+    { key: 'general', label: 'Informations générales' },
+    { key: 'summary', label: 'Résumé exécutif' },
+    { key: 'metrics', label: 'Métriques vérifiées' },
+    { key: 'category', label: 'Volet métier' },
+    { key: 'activities', label: 'Activités' },
+    { key: 'results', label: 'Résultats & indicateurs' },
+    { key: 'difficulties', label: 'Difficultés' },
+    { key: 'recom', label: 'Recommandations' },
+    { key: 'billetage', label: 'Billetage' },
+    { key: 'certification', label: 'Certification' },
+  ];
+  const hiddenLabels: string[] = [];
+  let visibleCount = 0;
+  for (const item of sectionLabels) {
+    if (isSectionVisible(config, item.key, formMode)) {
+      visibleCount += 1;
+    } else {
+      hiddenLabels.push(item.label);
+    }
+  }
+  return {
+    visibleCount,
+    totalCount: sectionLabels.length,
+    hiddenLabels,
+  };
 }

@@ -85,9 +85,15 @@ import {
 } from '../../../types/report';
 import type { UserFunction } from '../../../types/auth';
 import {
+  CATEGORY_TO_PROFILE,
   getReportFormConfig,
+  getSectionsVisibilitySummary,
+  getVisibleMetricCards,
   isSectionVisible,
+  mapFunctionToReportCategory,
   REPORT_FORM_CONFIGURATIONS,
+  resolveReportConfigForUser,
+  validateReportAgainstConfig,
   type ReportFormConfiguration,
   type ReportUserProfile,
 } from '../../../config/reportFormConfig';
@@ -150,8 +156,21 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
   // Configuration centralisée du formulaire par profil utilisateur
   const [selectedProfile, setSelectedProfile] = useState<ReportUserProfile | null>(null);
   const currentFormConfig: ReportFormConfiguration = useMemo(() => {
-    return getReportFormConfig(selectedProfile || user?.function, user?.role, user?.multiServiceEnabled);
-  }, [selectedProfile, user?.function, user?.role, user?.multiServiceEnabled]);
+    if (selectedProfile) {
+      return getReportFormConfig(selectedProfile);
+    }
+    return resolveReportConfigForUser(user);
+  }, [selectedProfile, user]);
+
+  const sectionsVisibility = useMemo(
+    () => getSectionsVisibilitySummary(currentFormConfig, formMode),
+    [currentFormConfig, formMode]
+  );
+
+  const visibleMetricCards = useMemo(
+    () => getVisibleMetricCards(currentFormConfig, formMode),
+    [currentFormConfig, formMode]
+  );
 
   // Catégorie métier adaptative et données spécifiques
   const [activeCategory, setActiveCategory] = useState<AgentReportCategory>('autre');
@@ -312,7 +331,8 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
     setActiveCategory(cfg.defaultCategory);
     setFormType(cfg.defaultReportType);
     setFormPriority(cfg.defaultPriority);
-    if (activities.length === 0 && cfg.sections.activities.defaultTemplates.length > 0) {
+
+    if (cfg.sections.activities.defaultTemplates.length > 0) {
       setActivities(
         cfg.sections.activities.defaultTemplates.map((t, idx) => ({
           id: `act-${Date.now()}-${idx + 1}`,
@@ -325,23 +345,28 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
           result: t.result,
         }))
       );
+    } else {
+      setActivities([]);
     }
-    if (quantitativeData.length === 0 && cfg.sections.results.defaultIndicators.length > 0) {
+
+    if (cfg.sections.results.defaultIndicators.length > 0) {
       setQuantitativeData(
         cfg.sections.results.defaultIndicators.map((i, idx) => ({
           id: `q-${Date.now()}-${idx + 1}`,
           indicator: i.indicator,
           planned: i.planned,
           achieved: 0,
-          variance: 0,
+          variance: -i.planned,
           unit: i.unit,
         }))
       );
+    } else {
+      setQuantitativeData([]);
     }
   };
 
   const handleOpenNewReport = () => {
-    const initialConfig = getReportFormConfig(user?.function, user?.role, user?.multiServiceEnabled);
+    const initialConfig = resolveReportConfigForUser(user);
     setSelectedProfile(initialConfig.profile);
     setEditingReportId(null);
     setFormMode('guide');
@@ -355,15 +380,25 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
     setFormNotes('');
     setCertifiedAccepted(false);
     setLinkedBilletageId('');
-    setSelectedServices(
-      user?.functions && user.functions.length > 0
-        ? user.functions
-        : user?.function
-          ? [user.function]
-          : []
+
+    const now = Date.now();
+    const activeAssignments = (user?.serviceAssignments || [])
+      .filter((a) => a.active && a.status === 'approved' && (!a.endAt || a.endAt > now))
+      .map((a) => a.service);
+    const userMergedFunctions = Array.from(
+      new Set([
+        ...(user?.function ? [user.function] : []),
+        ...(user?.functions || []),
+        ...activeAssignments,
+      ])
     );
 
+    setSelectedServices(userMergedFunctions);
     setActiveCategory(initialConfig.defaultCategory);
+
+    const mappedCategories = Array.from(
+      new Set(userMergedFunctions.map((fn) => mapFunctionToReportCategory(fn)))
+    );
 
     setCategoryData({
       accountingPeriodName: new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }),
@@ -414,7 +449,8 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
       fieldRecommendations: '',
       fieldProofDocumentName: '',
 
-      activeSelectedCategories: user?.functions && user.functions.length > 0 ? (user.functions as string[]) : ['guichetier', 'caisse'],
+      activeSelectedCategories:
+        mappedCategories.length > 0 ? mappedCategories : ['guichetier', 'caisse'],
     });
 
     // Initialiser les activités et indicateurs selon la configuration centralisée
@@ -442,7 +478,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
           indicator: i.indicator,
           planned: i.planned,
           achieved: 0,
-          variance: 0,
+          variance: -i.planned,
           unit: i.unit,
         }))
       );
@@ -485,19 +521,16 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
       setCategoryData(rep.categoryData);
       if (rep.categoryData.activeSelectedCategories && rep.categoryData.activeSelectedCategories.length > 1) {
         setActiveCategory('polyvalent');
+        setSelectedProfile('agent_polyvalent');
       } else {
-        const cat = (rep.categoryData.activeSelectedCategories?.[0] || rep.authorFunction || 'autre') as AgentReportCategory;
+        const cat = (rep.categoryData.activeSelectedCategories?.[0] || mapFunctionToReportCategory(rep.authorFunction)) as AgentReportCategory;
         setActiveCategory(cat);
+        setSelectedProfile(CATEGORY_TO_PROFILE[cat] || getReportFormConfig(rep.authorFunction, rep.createdByRole).profile);
       }
     } else {
-      let cat: AgentReportCategory = 'guichetier';
-      const f = rep.authorFunction;
-      if (f === 'comptable' || f === 'comptabilite') cat = 'comptable';
-      else if (f === 'caisse') cat = 'caisse';
-      else if (f === 'agent_virtuel' || f === 'agent_vodae') cat = 'agent_virtuel';
-      else if (f === 'agent_change') cat = 'agent_change';
-      else if (f === 'agent_terrain') cat = 'agent_terrain';
-      setActiveCategory(cat);
+      const resolvedCfg = getReportFormConfig(rep.authorFunction, rep.createdByRole);
+      setSelectedProfile(resolvedCfg.profile);
+      setActiveCategory(resolvedCfg.defaultCategory);
       setCategoryData({});
     }
 
@@ -512,16 +545,19 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
     setErrorMsg(null);
     setIsSaving(true);
 
-    if (isSubmitting && !certifiedAccepted) {
-      setErrorMsg('Veuillez cocher la déclaration d\'exactitude avant de soumettre officiellement votre rapport.');
-      setIsSaving(false);
-      return;
-    }
-
-    if (isSubmitting && !formTitle.trim()) {
-      setErrorMsg('L\'intitulé officiel du rapport est obligatoire pour la soumission.');
-      setIsSaving(false);
-      return;
+    if (isSubmitting) {
+      const validation = validateReportAgainstConfig(currentFormConfig, formMode, {
+        title: formTitle,
+        executiveSummary: formExecutiveSummary,
+        activitiesCount: activities.length,
+        linkedBilletageId,
+        certifiedAccepted,
+      });
+      if (!validation.valid) {
+        setErrorMsg(validation.error || 'Veuillez compléter les champs requis du rapport.');
+        setIsSaving(false);
+        return;
+      }
     }
 
     try {
@@ -1045,6 +1081,16 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 {currentFormConfig.description}
               </p>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 font-semibold text-slate-700 dark:text-slate-300 tabular-nums">
+                  {sectionsVisibility.visibleCount} / {sectionsVisibility.totalCount} sections actives ({formMode === 'guide' ? 'Mode Guidé' : 'Mode Personnalisé'})
+                </span>
+                {formMode === 'guide' && sectionsVisibility.hiddenLabels.length > 0 && (
+                  <span>
+                    Masquées pour ce profil : {sectionsVisibility.hiddenLabels.join(', ')}
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center gap-2 self-end sm:self-auto">
@@ -1067,6 +1113,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
           </div>
 
           {/* Section 1 : Informations Générales & Période */}
+          {isSectionVisible(currentFormConfig, 'general', formMode) && (
           <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 p-4 space-y-4">
             <button
               type="button"
@@ -1075,7 +1122,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
             >
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                <span>1. Informations Générales & Identification</span>
+                <span>{currentFormConfig.sections.general.title || '1. Informations Générales & Identification'}</span>
               </div>
               {collapsedSections.general ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
             </button>
@@ -1104,22 +1151,24 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                     onChange={(e) => setFormType(e.target.value as ReportType)}
                     className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-2.5 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none"
                   >
-                    <optgroup label="Recommandés pour votre profil">
+                    <optgroup label="Types adaptés à votre profil">
                       {currentFormConfig.allowedReportTypes.map((t) => (
                         <option key={t.value} value={t.value}>
                           {t.label}
                         </option>
                       ))}
                     </optgroup>
-                    <optgroup label="Autres types de rapports">
-                      {Object.entries(REPORT_TYPE_LABELS)
-                        .filter(([k]) => !currentFormConfig.allowedReportTypes.some((a) => a.value === k))
-                        .map(([k, label]) => (
-                          <option key={k} value={k}>
-                            {label}
-                          </option>
-                        ))}
-                    </optgroup>
+                    {(formMode === 'personnalise' || !currentFormConfig.sections.general.restrictReportTypesInGuide) && (
+                      <optgroup label="Autres types de rapports">
+                        {Object.entries(REPORT_TYPE_LABELS)
+                          .filter(([k]) => !currentFormConfig.allowedReportTypes.some((a) => a.value === k))
+                          .map(([k, label]) => (
+                            <option key={k} value={k}>
+                              {label}
+                            </option>
+                          ))}
+                      </optgroup>
+                    )}
                   </select>
                 </div>
 
@@ -1166,20 +1215,37 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                   </>
                 )}
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Niveau de priorité
-                  </label>
-                  <select
-                    value={formPriority}
-                    onChange={(e) => setFormPriority(e.target.value as ReportPriority)}
-                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-2.5 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none"
-                  >
-                    <option value="normal">Normal</option>
-                    <option value="urgent">Urgent</option>
-                    <option value="critique">Critique (Escalade hiérarchique)</option>
-                  </select>
-                </div>
+                {(formMode === 'personnalise' || currentFormConfig.sections.general.showPriority !== false) && (
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Niveau de priorité
+                    </label>
+                    <select
+                      value={formPriority}
+                      onChange={(e) => setFormPriority(e.target.value as ReportPriority)}
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-2.5 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none"
+                    >
+                      <option value="normal">Normal</option>
+                      <option value="urgent">Urgent</option>
+                      <option value="critique">Critique (Escalade hiérarchique)</option>
+                    </select>
+                  </div>
+                )}
+
+                {(formMode === 'personnalise' || currentFormConfig.sections.general.showNotes) && (
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Notes internes & références de pièces
+                    </label>
+                    <input
+                      type="text"
+                      value={formNotes}
+                      onChange={(e) => setFormNotes(e.target.value)}
+                      placeholder="Ex: Références de bordereaux, numéros de lots ou observations internes..."
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
+                    />
+                  </div>
+                )}
 
                 {/* Données d'auteur authentifié vérifiées (lecture seule) */}
                 <div className="rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 p-2.5 text-xs text-slate-600 dark:text-slate-300">
@@ -1189,6 +1255,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               </div>
             )}
           </div>
+          )}
 
           {/* Section 2 : Résumé Exécutif */}
           {isSectionVisible(currentFormConfig, 'summary', formMode) && (
@@ -1200,7 +1267,10 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               >
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  <span>2. Résumé Exécutif & Synthèse globale</span>
+                  <span>
+                    {currentFormConfig.sections.summary.title || '2. Résumé Exécutif & Synthèse globale'}
+                    {currentFormConfig.sections.summary.required ? ' *' : ''}
+                  </span>
                 </div>
                 {collapsedSections.summary ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
               </button>
@@ -1230,7 +1300,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm">
                   <Sparkles className="h-4 w-4 text-amber-500" />
-                  <span>3. Données Opérationnelles Vérifiées (Calcul Automatique)</span>
+                  <span>{currentFormConfig.sections.metrics.title || '3. Données Opérationnelles Vérifiées (Calcul Automatique)'}</span>
                 </div>
                 <button
                   type="button"
@@ -1243,35 +1313,52 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               </div>
 
               {personalMetrics && (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 pt-1">
-                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Missions exécutées</span>
-                    <p className="mt-0.5 text-base font-black text-slate-900 dark:text-white tabular-nums">
-                      {personalMetrics.operationsCompleted} / {personalMetrics.operationsTotal}
-                    </p>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums">Taux : {personalMetrics.operationsTotal > 0 ? Math.round((personalMetrics.operationsCompleted / personalMetrics.operationsTotal) * 100) : 100}%</p>
-                  </div>
-                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Flux Traités (USD)</span>
-                    <p className="mt-0.5 text-base font-black text-emerald-700 dark:text-emerald-400 tabular-nums">
-                      ${personalMetrics.amountUSD.toLocaleString('fr-FR')}
-                    </p>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500">Devise USD</p>
-                  </div>
-                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Flux Traités (CDF)</span>
-                    <p className="mt-0.5 text-base font-black text-blue-700 dark:text-blue-400 tabular-nums">
-                      {personalMetrics.amountCDF.toLocaleString('fr-FR')} CDF
-                    </p>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500">Devise CDF</p>
-                  </div>
-                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Écart Caisse</span>
-                    <p className={`mt-0.5 text-base font-black tabular-nums ${personalMetrics.discrepancyUSD !== 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-900 dark:text-white'}`}>
-                      ${personalMetrics.discrepancyUSD} / {personalMetrics.discrepancyCDF} CDF
-                    </p>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500">{personalMetrics.discrepancyUSD === 0 && personalMetrics.discrepancyCDF === 0 ? 'Caisse équilibrée' : 'Écart constaté'}</p>
-                  </div>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 pt-1">
+                  {visibleMetricCards.showMissions && (
+                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400">Missions exécutées</span>
+                      <p className="mt-0.5 text-base font-black text-slate-900 dark:text-white tabular-nums">
+                        {personalMetrics.operationsCompleted} / {personalMetrics.operationsTotal}
+                      </p>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums">Taux : {personalMetrics.operationsTotal > 0 ? Math.round((personalMetrics.operationsCompleted / personalMetrics.operationsTotal) * 100) : 100}%</p>
+                    </div>
+                  )}
+                  {visibleMetricCards.showUsdVolume && (
+                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400">Flux Traités (USD)</span>
+                      <p className="mt-0.5 text-base font-black text-emerald-700 dark:text-emerald-400 tabular-nums">
+                        ${personalMetrics.amountUSD.toLocaleString('fr-FR')}
+                      </p>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500">Devise USD</p>
+                    </div>
+                  )}
+                  {visibleMetricCards.showCdfVolume && (
+                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400">Flux Traités (CDF)</span>
+                      <p className="mt-0.5 text-base font-black text-blue-700 dark:text-blue-400 tabular-nums">
+                        {personalMetrics.amountCDF.toLocaleString('fr-FR')} CDF
+                      </p>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500">Devise CDF</p>
+                    </div>
+                  )}
+                  {visibleMetricCards.showBilletage && (
+                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400">Billetages Vérifiés</span>
+                      <p className="mt-0.5 text-sm font-black text-amber-700 dark:text-amber-400 tabular-nums">
+                        ${personalMetrics.billetageTotalUSD.toLocaleString('fr-FR')} / {personalMetrics.billetageTotalCDF.toLocaleString('fr-FR')} CDF
+                      </p>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500">USD &amp; CDF séparés</p>
+                    </div>
+                  )}
+                  {visibleMetricCards.showDiscrepancy && (
+                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400">Écart Caisse</span>
+                      <p className={`mt-0.5 text-base font-black tabular-nums ${personalMetrics.discrepancyUSD !== 0 || personalMetrics.discrepancyCDF !== 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-900 dark:text-white'}`}>
+                        ${personalMetrics.discrepancyUSD} / {personalMetrics.discrepancyCDF} CDF
+                      </p>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500">{personalMetrics.discrepancyUSD === 0 && personalMetrics.discrepancyCDF === 0 ? 'Caisse équilibrée' : 'Écart constaté'}</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -1287,7 +1374,7 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               >
                 <div className="flex items-center gap-2">
                   <Briefcase className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                  <span>4. Déclarations Spécifiques & Volet Métier Adaptatif</span>
+                  <span>{currentFormConfig.sections.category.title || '4. Déclarations Spécifiques & Volet Métier Adaptatif'}</span>
                 </div>
                 {collapsedSections.category ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
               </button>
@@ -1296,7 +1383,13 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                 <div className="pt-1">
                   <ReportAdaptiveCategoryForm
                     category={activeCategory}
-                    onCategoryChange={setActiveCategory}
+                    onCategoryChange={(cat) => {
+                      setActiveCategory(cat);
+                      const mappedProfile = CATEGORY_TO_PROFILE[cat];
+                      if (mappedProfile && mappedProfile !== currentFormConfig.profile) {
+                        setSelectedProfile(mappedProfile);
+                      }
+                    }}
                     data={categoryData}
                     onChange={setCategoryData}
                     formConfig={currentFormConfig}
@@ -1317,7 +1410,10 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                   className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm"
                 >
                   <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                  <span className="tabular-nums">5. Activités Réalisées ({activities.length})</span>
+                  <span className="tabular-nums">
+                    {currentFormConfig.sections.activities.title || '5. Activités Réalisées'} ({activities.length})
+                    {currentFormConfig.sections.activities.required ? ' *' : ''}
+                  </span>
                   {collapsedSections.activities ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
 
@@ -1417,7 +1513,9 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                   className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm"
                 >
                   <CheckCircle2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  <span className="tabular-nums">6. Résultats Obtenus & Objectifs ({results.length})</span>
+                  <span className="tabular-nums">
+                    {currentFormConfig.sections.results.title || '6. Résultats Obtenus & Objectifs'} ({quantitativeData.length + results.length})
+                  </span>
                   {collapsedSections.results ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
 
@@ -1445,6 +1543,83 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
               {!collapsedSections.results && (
                 <div className="space-y-3 pt-2">
+                  {quantitativeData.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        Indicateurs quantitatifs du profil ({currentFormConfig.shortLabel})
+                      </p>
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        {quantitativeData.map((item) => (
+                          <div
+                            key={item.id}
+                            className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 space-y-2 text-xs"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-bold text-slate-900 dark:text-white">{item.indicator}</span>
+                              {item.unit && (
+                                <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:text-slate-300">
+                                  {item.unit}
+                                </span>
+                              )}
+                            </div>
+                            <div className="grid grid-cols-3 gap-2 items-center">
+                              <div>
+                                <span className="block text-[10px] text-slate-400">Prévu</span>
+                                <input
+                                  type="number"
+                                  min={0}
+                                  value={item.planned}
+                                  onChange={(e) => {
+                                    const val = Number(e.target.value);
+                                    setQuantitativeData((cur) =>
+                                      cur.map((q) =>
+                                        q.id === item.id
+                                          ? { ...q, planned: val, variance: q.achieved - val }
+                                          : q
+                                      )
+                                    );
+                                  }}
+                                  className="mt-0.5 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1.5 text-xs tabular-nums text-slate-900 dark:text-slate-100 outline-none"
+                                />
+                              </div>
+                              <div>
+                                <span className="block text-[10px] text-slate-400">Réalisé</span>
+                                <input
+                                  type="number"
+                                  min={0}
+                                  value={item.achieved}
+                                  onChange={(e) => {
+                                    const val = Number(e.target.value);
+                                    setQuantitativeData((cur) =>
+                                      cur.map((q) =>
+                                        q.id === item.id
+                                          ? { ...q, achieved: val, variance: val - q.planned }
+                                          : q
+                                      )
+                                    );
+                                  }}
+                                  className="mt-0.5 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1.5 text-xs font-bold tabular-nums text-emerald-700 dark:text-emerald-400 outline-none"
+                                />
+                              </div>
+                              <div>
+                                <span className="block text-[10px] text-slate-400">Écart</span>
+                                <span
+                                  className={`mt-0.5 inline-block rounded-md px-2 py-1 text-xs font-bold tabular-nums ${
+                                    item.variance >= 0
+                                      ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300'
+                                      : 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300'
+                                  }`}
+                                >
+                                  {item.variance > 0 ? `+${item.variance}` : item.variance}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {results.length === 0 ? (
                     <p className="py-2 text-center text-xs text-slate-400 dark:text-slate-500">
                       Optionnel : ajoutez des objectifs chiffrés pour calculer automatiquement votre taux d'accomplissement.
@@ -1516,7 +1691,9 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                   className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm"
                 >
                   <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                  <span className="tabular-nums">7. Difficultés & Incidents Rencontrés ({difficulties.length + incidents.length})</span>
+                  <span className="tabular-nums">
+                    {currentFormConfig.sections.difficulties.title || '7. Difficultés & Incidents Rencontrés'} ({difficulties.length + incidents.length})
+                  </span>
                   {collapsedSections.difficulties ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
 
@@ -1612,7 +1789,9 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                   className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm"
                 >
                   <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                  <span className="tabular-nums">8. Recommandations & Décisions Demandées ({recommendations.length})</span>
+                  <span className="tabular-nums">
+                    {currentFormConfig.sections.recom.title || '8. Recommandations & Décisions Demandées'} ({recommendations.length})
+                  </span>
                   {collapsedSections.recom ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
 
@@ -1681,7 +1860,12 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm">
                   <Coins className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                  <span>9. Raccordement au Billetage de Caisse</span>
+                  <span>{currentFormConfig.sections.billetage.title || '9. Raccordement au Billetage de Caisse'}</span>
+                  {currentFormConfig.sections.billetage.required && (
+                    <span className="rounded-md bg-amber-100 dark:bg-amber-950/70 px-2 py-0.5 text-[10px] font-bold text-amber-900 dark:text-amber-300">
+                      Obligatoire
+                    </span>
+                  )}
                 </div>
                 {onOpenBilletage && (
                   <button
@@ -1697,7 +1881,8 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
 
               <div className="pt-2">
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Associer un enregistrement de billetage existant (Optionnel)
+                  Associer un enregistrement de billetage existant{' '}
+                  {currentFormConfig.sections.billetage.required ? '(Obligatoire pour ce profil) *' : '(Optionnel)'}
                 </label>
                 <select
                   value={linkedBilletageId}
@@ -1712,30 +1897,33 @@ export default function ReportsModule({ onClose, onOpenBilletage }: ReportsModul
                   ))}
                 </select>
                 <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                  Lier un billetage conserve la référence officielle dans le rapport sans modifier l'opération de caisse d'origine.
+                  {currentFormConfig.sections.billetage.explanation ||
+                    "Lier un billetage conserve la référence officielle dans le rapport sans modifier l'opération de caisse d'origine."}
                 </p>
               </div>
             </div>
           )}
 
           {/* Section 10 : Attestation d'exactitude & Certification */}
-          <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/40 p-4 space-y-3">
-            <div className="flex items-start gap-3">
-              <input
-                id="cert-check"
-                type="checkbox"
-                checked={certifiedAccepted}
-                onChange={(e) => setCertifiedAccepted(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500"
-              />
-              <label htmlFor="cert-check" className="text-xs text-emerald-950 dark:text-emerald-200 font-medium">
-                <strong>Attestation sur l'honneur :</strong> « Je certifie que les informations contenues dans ce rapport sont exactes selon les informations dont je dispose. »
-              </label>
+          {isSectionVisible(currentFormConfig, 'certification', formMode) && (
+            <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/40 p-4 space-y-3">
+              <div className="flex items-start gap-3">
+                <input
+                  id="cert-check"
+                  type="checkbox"
+                  checked={certifiedAccepted}
+                  onChange={(e) => setCertifiedAccepted(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500"
+                />
+                <label htmlFor="cert-check" className="text-xs text-emerald-950 dark:text-emerald-200 font-medium">
+                  <strong>Attestation sur l'honneur :</strong> « {currentFormConfig.sections.certification.statement} »
+                </label>
+              </div>
+              <p className="text-[10px] text-emerald-800/80 dark:text-emerald-300/80">
+                Conformément à la politique d'audit Ets AMANI, votre identité authentifiée ({user?.displayName || user?.email}), l'horodatage et l'adresse réseau sont consignés dans les journaux d'audit officiels.
+              </p>
             </div>
-            <p className="text-[10px] text-emerald-800/80 dark:text-emerald-300/80">
-              Conformément à la politique d'audit Ets AMANI, votre identité authentifiée ({user?.displayName || user?.email}), l'horodatage et l'adresse réseau sont consignés dans les journaux d'audit officiels.
-            </p>
-          </div>
+          )}
 
           {/* Actions de sauvegarde & soumission */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-slate-200 dark:border-slate-800 pt-4">

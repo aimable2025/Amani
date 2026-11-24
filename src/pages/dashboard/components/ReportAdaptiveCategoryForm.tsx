@@ -13,7 +13,10 @@ import {
   Users,
 } from 'lucide-react';
 import type { AgentCategorySpecificData, AgentReportCategory } from '../../../types/report';
-import type { ReportFormConfiguration } from '../../../config/reportFormConfig';
+import {
+  isCategoryFieldVisibleForContext,
+  type ReportFormConfiguration,
+} from '../../../config/reportFormConfig';
 
 export interface CategoryFormProps {
   category: AgentReportCategory;
@@ -89,7 +92,13 @@ export default function ReportAdaptiveCategoryForm({
 
   const isFieldVisible = (fieldKey: keyof AgentCategorySpecificData): boolean => {
     if (showAllCategoryFields || formMode === 'personnalise' || !formConfig) return true;
-    return formConfig.sections.category.allowedFields.includes(fieldKey);
+    return isCategoryFieldVisibleForContext(
+      formConfig,
+      fieldKey,
+      category,
+      activeServices,
+      formMode
+    );
   };
 
   const toggleMultiService = (serviceId: string) => {
@@ -424,6 +433,22 @@ export default function ReportAdaptiveCategoryForm({
               </div>
             )}
           </div>
+
+          {isFieldVisible('cashIncidentsNotes') && (
+            <div className="text-xs">
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                Incidents ou remarques de caisse
+              </label>
+              <input
+                type="text"
+                disabled={readOnly}
+                value={data.cashIncidentsNotes ?? ''}
+                onChange={(e) => updateField('cashIncidentsNotes', e.target.value)}
+                placeholder="Ex: Faux billet intercepté, besoin en petites coupures..."
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
+              />
+            </div>
+          )}
         </div>
       )}
 
@@ -670,7 +695,22 @@ export default function ReportAdaptiveCategoryForm({
             </h5>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 text-xs">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 text-xs">
+            {isFieldVisible('virtualOperationsCount') && (
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  Opérations virtuelles
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  disabled={readOnly}
+                  value={data.virtualOperationsCount ?? 0}
+                  onChange={(e) => updateField('virtualOperationsCount', Number(e.target.value))}
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs font-bold text-cyan-800 dark:text-cyan-400 tabular-nums outline-none"
+                />
+              </div>
+            )}
             {isFieldVisible('requestsReceivedCount') && (
               <div>
                 <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
@@ -712,6 +752,21 @@ export default function ReportAdaptiveCategoryForm({
                   disabled={readOnly}
                   value={data.pendingVirtualFilesCount ?? 0}
                   onChange={(e) => updateField('pendingVirtualFilesCount', Number(e.target.value))}
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs font-bold text-amber-700 dark:text-amber-400 tabular-nums outline-none"
+                />
+              </div>
+            )}
+            {isFieldVisible('technicalIncidentsCount') && (
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  Incidents techniques
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  disabled={readOnly}
+                  value={data.technicalIncidentsCount ?? 0}
+                  onChange={(e) => updateField('technicalIncidentsCount', Number(e.target.value))}
                   className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs font-bold text-amber-700 dark:text-amber-400 tabular-nums outline-none"
                 />
               </div>
@@ -813,7 +868,7 @@ export default function ReportAdaptiveCategoryForm({
             {isFieldVisible('fieldActivitiesCompleted') && (
               <div>
                 <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
-                  Activités réalisées & Résultats obtenus
+                  Activités réalisées sur le terrain
                 </label>
                 <input
                   type="text"
@@ -825,17 +880,47 @@ export default function ReportAdaptiveCategoryForm({
                 />
               </div>
             )}
+            {isFieldVisible('fieldResultsObtained') && (
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  Résultats obtenus
+                </label>
+                <input
+                  type="text"
+                  disabled={readOnly}
+                  value={data.fieldResultsObtained ?? ''}
+                  onChange={(e) => updateField('fieldResultsObtained', e.target.value)}
+                  placeholder="Ex: Fonds livrés intégralement et accusé signé..."
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
+                />
+              </div>
+            )}
             {isFieldVisible('fieldRecommendations') && (
               <div>
                 <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
-                  Recommandations de sécurité / Référence justificatif
+                  Recommandations de sécurité / logistique
                 </label>
                 <input
                   type="text"
                   disabled={readOnly}
                   value={data.fieldRecommendations ?? ''}
                   onChange={(e) => updateField('fieldRecommendations', e.target.value)}
-                  placeholder="Ex: Bordereau physique déposé au coffre..."
+                  placeholder="Ex: Prévoir renfort d'escorte ou maintenance véhicule..."
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
+                />
+              </div>
+            )}
+            {isFieldVisible('fieldProofDocumentName') && (
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  Référence justificatif / bordereau
+                </label>
+                <input
+                  type="text"
+                  disabled={readOnly}
+                  value={data.fieldProofDocumentName ?? ''}
+                  onChange={(e) => updateField('fieldProofDocumentName', e.target.value)}
+                  placeholder="Ex: Bordereau #BR-2026-041 déposé au coffre"
                   className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none"
                 />
               </div>
@@ -872,6 +957,12 @@ export function ReportAdaptiveCategoryView({ data }: { data?: AgentCategorySpeci
             <span className="font-bold text-slate-900 dark:text-white">{data.cashRegisterIdentifier}</span>
           </div>
         )}
+        {data.cashOperationsCount !== undefined && data.cashOperationsCount > 0 && (
+          <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Opérations Caisse</span>
+            <span className="font-bold text-slate-900 dark:text-white tabular-nums">{data.cashOperationsCount}</span>
+          </div>
+        )}
         {data.tellerOperationsCount !== undefined && data.tellerOperationsCount > 0 && (
           <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
             <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Opérations Guichet</span>
@@ -884,16 +975,54 @@ export function ReportAdaptiveCategoryView({ data }: { data?: AgentCategorySpeci
             <span className="font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">{data.clientsServedCount}</span>
           </div>
         )}
+        {data.pendingTransactionsCount !== undefined && data.pendingTransactionsCount > 0 && (
+          <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Opérations en attente</span>
+            <span className="font-bold text-amber-700 dark:text-amber-400 tabular-nums">{data.pendingTransactionsCount}</span>
+          </div>
+        )}
+        {data.cancelledOrRejectedCount !== undefined && data.cancelledOrRejectedCount > 0 && (
+          <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Annulées / Rejetées</span>
+            <span className="font-bold text-red-600 dark:text-red-400 tabular-nums">{data.cancelledOrRejectedCount}</span>
+          </div>
+        )}
         {data.authorizedReceiptsUSD !== undefined && data.authorizedReceiptsUSD > 0 && (
           <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
             <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Recettes Caisse USD</span>
             <span className="font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">${data.authorizedReceiptsUSD.toLocaleString('fr-FR')}</span>
           </div>
         )}
+        {data.authorizedDisbursementsUSD !== undefined && data.authorizedDisbursementsUSD > 0 && (
+          <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Décaissements USD</span>
+            <span className="font-bold text-rose-700 dark:text-rose-400 tabular-nums">${data.authorizedDisbursementsUSD.toLocaleString('fr-FR')}</span>
+          </div>
+        )}
         {data.authorizedReceiptsCDF !== undefined && data.authorizedReceiptsCDF > 0 && (
           <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
             <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Recettes Caisse CDF</span>
             <span className="font-bold text-blue-700 dark:text-blue-400 tabular-nums">{data.authorizedReceiptsCDF.toLocaleString('fr-FR')} CDF</span>
+          </div>
+        )}
+        {data.authorizedDisbursementsCDF !== undefined && data.authorizedDisbursementsCDF > 0 && (
+          <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Décaissements CDF</span>
+            <span className="font-bold text-rose-700 dark:text-rose-400 tabular-nums">{data.authorizedDisbursementsCDF.toLocaleString('fr-FR')} CDF</span>
+          </div>
+        )}
+        {data.virtualOperationsCount !== undefined && data.virtualOperationsCount > 0 && (
+          <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Opérations Virtuelles</span>
+            <span className="font-bold text-cyan-700 dark:text-cyan-400 tabular-nums">{data.virtualOperationsCount}</span>
+          </div>
+        )}
+        {data.requestsResolvedCount !== undefined && data.requestsResolvedCount > 0 && (
+          <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Demandes Virtuelles Résolues</span>
+            <span className="font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
+              {data.requestsResolvedCount}{data.requestsReceivedCount ? ` / ${data.requestsReceivedCount}` : ''}
+            </span>
           </div>
         )}
         {data.exchangeOperationsCount !== undefined && data.exchangeOperationsCount > 0 && (
@@ -920,10 +1049,34 @@ export function ReportAdaptiveCategoryView({ data }: { data?: AgentCategorySpeci
             <span className="font-bold text-purple-800 dark:text-purple-400">{data.accountingPeriodName}</span>
           </div>
         )}
+        {data.filesProcessedCount !== undefined && data.filesProcessedCount > 0 && (
+          <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Dossiers Comptables</span>
+            <span className="font-bold text-slate-900 dark:text-white tabular-nums">{data.filesProcessedCount}</span>
+          </div>
+        )}
+        {data.operationsBookedCount !== undefined && data.operationsBookedCount > 0 && (
+          <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Opérations Comptabilisées</span>
+            <span className="font-bold text-purple-800 dark:text-purple-400 tabular-nums">{data.operationsBookedCount}</span>
+          </div>
+        )}
         {data.reconciliationsDoneCount !== undefined && data.reconciliationsDoneCount > 0 && (
           <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
             <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Rapprochements</span>
             <span className="font-bold text-purple-800 dark:text-purple-400 tabular-nums">{data.reconciliationsDoneCount}</span>
+          </div>
+        )}
+        {data.discrepanciesCount !== undefined && data.discrepanciesCount > 0 && (
+          <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Écarts Comptables</span>
+            <span className="font-bold text-amber-700 dark:text-amber-400 tabular-nums">{data.discrepanciesCount}</span>
+          </div>
+        )}
+        {data.missingReceiptsCount !== undefined && data.missingReceiptsCount > 0 && (
+          <div className="rounded-lg bg-white dark:bg-slate-900 p-2.5 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">Pièces Manquantes</span>
+            <span className="font-bold text-red-600 dark:text-red-400 tabular-nums">{data.missingReceiptsCount}</span>
           </div>
         )}
         {data.assignedMissionTitle && (
@@ -940,6 +1093,13 @@ export function ReportAdaptiveCategoryView({ data }: { data?: AgentCategorySpeci
         )}
       </div>
 
+      {data.accountingCorrectiveActions && (
+        <div className="rounded-lg bg-purple-50 dark:bg-purple-950/40 p-2.5 text-xs text-purple-950 dark:text-purple-200 border border-purple-200 dark:border-purple-900/60">
+          <span className="font-bold">Actions correctives comptables : </span>
+          <span>{data.accountingCorrectiveActions}</span>
+        </div>
+      )}
+
       {data.cashDiscrepancyReason && (
         <div className="rounded-lg bg-amber-50 dark:bg-amber-950/40 p-2.5 text-xs text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-900/60">
           <span className="font-bold">Justification écarts de caisse : </span>
@@ -951,6 +1111,20 @@ export function ReportAdaptiveCategoryView({ data }: { data?: AgentCategorySpeci
         <div className="rounded-lg bg-slate-100 dark:bg-slate-800 p-2.5 text-xs text-slate-700 dark:text-slate-300">
           <span className="font-bold">Anomalies de guichet : </span>
           <span>{data.tellerAnomaliesNotes}</span>
+        </div>
+      )}
+
+      {data.virtualActionsTaken && (
+        <div className="rounded-lg bg-cyan-50 dark:bg-cyan-950/40 p-2.5 text-xs text-cyan-900 dark:text-cyan-200 border border-cyan-200 dark:border-cyan-900/60">
+          <span className="font-bold">Actions flotte virtuelle : </span>
+          <span>{data.virtualActionsTaken}</span>
+        </div>
+      )}
+
+      {data.fieldResultsObtained && (
+        <div className="rounded-lg bg-slate-100 dark:bg-slate-800 p-2.5 text-xs text-slate-700 dark:text-slate-300">
+          <span className="font-bold">Résultats terrain : </span>
+          <span>{data.fieldResultsObtained}</span>
         </div>
       )}
     </div>
